@@ -1,0 +1,18 @@
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: wildcard-tls-vs
+spec:
+  host: '*.f5test.local'
+  tlsProfileName: wildcard-tls
+  virtualServerAddress: 10.1.10.116
+  virtualServerName: "wildcard-tls-vs"
+  httpTraffic: none
+  pools:
+    - path: /
+      service: echo-svc
+      servicePort: 80
+  snat: auto
+

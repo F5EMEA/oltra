@@ -1,0 +1,17 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: two-pools-vs
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.92"
+  virtualServerName: "two-pools-vs"
+  host: pools.f5demo.local
+  pools:
+  - path: /svc1
+    service: app1-svc
+    servicePort: 8080
+  - path: /svc2
+    service: app2-svc
+    servicePort: 8080 

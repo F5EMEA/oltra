@@ -1,0 +1,15 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: approot-vs
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.95"
+  virtualServerName: "approot-vs"
+  rewriteAppRoot: /home
+  host: approot.f5demo.local
+  pools:
+    - path: /
+      service: app1-svc
+      servicePort: 80

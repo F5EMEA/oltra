@@ -1,0 +1,168 @@
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: tea
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    signatures:
+    - signatureId: 200001476
+      enabled: false    
+    - signatureId: 200002476
+      enabled: false    
+    - signatureId: 200001666
+      enabled: false    
+    name: tea
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www1
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www1
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www2
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www2
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www3
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www3
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www4
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www4
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www5
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www5
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www6
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www6
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www7
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www7
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www8
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www8
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+
+
+---
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: www9
+  namespace: app-protect
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: www9
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+

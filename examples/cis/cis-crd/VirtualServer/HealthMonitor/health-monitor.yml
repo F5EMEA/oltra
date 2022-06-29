@@ -1,0 +1,29 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: health-vs
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.94"
+  virtualServerName: "health-vs"
+  host: health.f5demo.local
+  pools:
+  - path: /app1
+    service: app1-svc
+    servicePort: 8080
+    monitor:
+      type: http
+      send: "GET /app1/index.html HTTP/1.1\r\nHost: health.f5demo.local\r\nConnection: Close\r\n\r\n"
+      recv: "200 OK"
+      interval: 3
+      timeout: 10
+  - path: /app2
+    service: app2-svc
+    servicePort: 8080
+    monitor:
+      type: http
+      send: "GET /app2/index.html HTTP/1.1\r\nHost: health.f5demo.local\r\nConnection: Close\r\n\r\n"
+      recv: "200 OK"
+      interval: 3
+      timeout: 10

@@ -1,0 +1,14 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: ipv6-vs
+  labels:
+    f5cr: "true"
+spec:
+  host: ipv6.f5demo.local
+  virtualServerAddress: "2002:0:0:0:10:0:0:2"
+  virtualServerName: "ipv6-vs"
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80

@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fanout
+  annotations:
+    # Provide an IP address for the BIG-IP Virtual Server.
+    virtual-server.f5.com/ip: "10.1.10.50"
+    # Load balancing algorithm
+    virtual-server.f5.com/balance: "round-robin"
+spec:
+  # Provide the IngressClassName as "f5"
+  ingressClassName: f5
+  rules:
+  - host: fanout.f5demo.local
+    http:
+      paths:
+      - path: /app1
+        pathType: Prefix
+        backend:
+          service:
+            name: app1-svc
+            port:
+              number: 80
+      - path: /app2
+        pathType: Prefix
+        backend:
+          service:
+            name: app2-svc
+            port:
+              number: 80

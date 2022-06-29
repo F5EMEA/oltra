@@ -1,0 +1,20 @@
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: coffee-vs
+  namespace: default
+spec:
+  tlsProfileName: redirect-tls-coffee
+  virtualServerAddress: 10.1.10.126
+  virtualServerName: "redirect-tls-vs"
+  httpTraffic: redirect
+  host: coffee.f5demo.local
+  pools:
+    - path: /lattee
+      service: app1-svc
+      servicePort: 8080
+    - path: /mocha
+      service: app2-svc
+      servicePort: 8080

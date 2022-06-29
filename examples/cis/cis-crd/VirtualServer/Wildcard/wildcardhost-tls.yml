@@ -1,0 +1,13 @@
+apiVersion: cis.f5.com/v1
+kind: TLSProfile
+metadata:
+  labels:
+    f5cr: "true"
+  name: wildcard-tls
+spec:
+  hosts:
+    - '*.f5test.local'
+  tls:
+    clientSSL: /Common/clientssl
+    reference: bigip
+    termination: edge

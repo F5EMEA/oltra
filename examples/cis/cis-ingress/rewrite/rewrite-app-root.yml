@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rewrite-app-root
+  annotations:
+    # Provide an IP address for the BIG-IP Virtual Server
+    virtual-server.f5.com/ip: 10.1.10.50
+    # rewrite-app-root annotation will redirect any traffic for root path(http://rewrite1.f5demo.local/) to path(http://rewrite1.f5demo.local/approot1)
+    virtual-server.f5.com/rewrite-app-root: rewrite1.f5demo.local=/approot1,rewrite2.f5demo.local=/approot2
+spec:
+  # Provide the IngressClassName as "f5"
+  ingressClassName: f5
+  rules:
+    - host: rewrite1.f5demo.local
+      http:
+        paths:
+          - backend:
+              service:
+                name: app1-svc
+                port:
+                  number: 80
+            path: /approot1
+            pathType: Prefix
+    - host: rewrite2.f5demo.local
+      http:
+        paths:
+          - backend:
+              service:
+                name: app2-svc
+                port:
+                  number: 80
+            path: /approot2
+            pathType: Prefix

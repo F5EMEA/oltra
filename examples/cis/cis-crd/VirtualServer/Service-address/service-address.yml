@@ -1,0 +1,18 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: service-address-vs
+  labels:
+    f5cr: "true"
+spec:
+  host: service.f5demo.local
+  virtualServerAddress: "10.1.10.99"
+  virtualServerName: "service-address-vs"
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80
+  serviceAddress:
+  - icmpEcho: "enable"
+    arpEnabled: true
+    routeAdvertisement: "all"

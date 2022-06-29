@@ -1,0 +1,16 @@
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: irule-policy-vs
+spec:
+  virtualServerAddress: 10.1.10.199
+  virtualServerName: "irule-policy-vs"
+  host: irule.f5demo.local
+  policyName: irule-policy
+  snat: auto
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80

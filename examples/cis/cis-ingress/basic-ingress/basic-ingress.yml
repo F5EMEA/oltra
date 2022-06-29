@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: basic-ingress
+  annotations:
+    # Provide an IP address for the BIG-IP Virtual Server.
+    virtual-server.f5.com/ip: "10.1.10.49"
+  # Load balancing algorithm
+    virtual-server.f5.com/balance: "round-robin"
+  # Specify the port you want to handle requests
+    virtual-server.f5.com/http-port: "80"
+spec:
+  # Provide the IngressClassName as "f5"
+  ingressClassName: f5
+  defaultBackend:
+    # The name of the Kubernetes Service you want to expose to external traffic
+    service:
+      name: echo-svc
+      port:
+        number: 80

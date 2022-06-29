@@ -1,0 +1,38 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: routing
+spec:
+  host: routing.f5demo.local
+  upstreams:
+  - name: tea-post
+    service: tea-post-svc
+    port: 80
+  - name: tea
+    service: tea-svc
+    port: 80
+  - name: coffee-v1
+    service: coffee-v1-svc
+    port: 80
+  - name: coffee-v2 
+    service: coffee-v2-svc
+    port: 80
+  routes:
+  - path: /tea
+    matches:
+    - conditions:
+      - variable: $request_method
+        value: POST
+      action:
+        pass: tea-post
+    action:
+      pass: tea
+  - path: /coffee
+    matches:
+    - conditions:
+      - cookie: version
+        value: v2
+      action:
+        pass: coffee-v2
+    action:
+      pass: coffee-v1

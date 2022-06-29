@@ -1,0 +1,11 @@
+apiVersion: cis.f5.com/v1
+kind: TLSProfile
+metadata:
+  name: passthrough-tls
+  labels:
+    f5cr: "true"
+spec:
+  hosts:
+    - passthrough.f5demo.local
+  tls:
+    termination: passthrough

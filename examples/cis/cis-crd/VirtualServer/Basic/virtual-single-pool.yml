@@ -1,0 +1,14 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: single-pool-vs
+  labels:
+    f5cr: "true"
+spec:
+  host: app1.f5demo.local
+  virtualServerName: "single-pool-vs"
+  virtualServerAddress: "10.1.10.91"
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80
