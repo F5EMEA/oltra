@@ -31,7 +31,7 @@ Credentials are documented inside the UDF Summary page.
 In this UDF we will demo a number of use-cases around modern applications. These use-cases can be found below:
 
 - [**Reverse Proxy capabilities with CIS**](examples/cis/README.md)
-- **Monitoring K8s services published via NGINX+ with Prometheus, Grafana and Elastic** <br>
+- **Monitoring K8s services published via NGINX+ Ingress Controller with Prometheus, Grafana and Elastic** <br>
 - **Monitoring K8s services published via BIGIP with Prometheus, Grafana and Elastic** <br>
 
 

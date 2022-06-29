@@ -1,22 +1,25 @@
 # Monitoring services published via BIGIP with Prometheus, Grafana and Elastic
-In this section we go through how you can efectively to monitor your BIGIP infrastructure on modern architecture. 
+In this section we go through how you can efectively to monitor your BIGIP devices with an observability platform which is typically used by modern architectures. 
 
-
-The technologies that are being used to provide the analytics are the following:
-- Telemetry Streaming
+The technologies as part of the observability platform are the following:
 - Prometheus
 - Logstash
 - Elasticsearch
 - Grafana
+- Telemetry Streaming (F5)
 
+The dashboards that have been created to assist with the monitoring of the BIGIP devices are:
 
-  - Virtual Server Utilization 
-  - Pool Utilization 
-  - HTTP Profile Statistics
-  - SSL Statistics
-  - Virtual Access Logs
-  - BIGIP Error Logs
+  - CIS Dashboard
+  - Client/Server SSL Performance
+  - HTTP Profiles
+  - Pools
+  - VS Access Logs
+  - BIGIP Error Logs (to be completed)
 
+## CIS Dashboard
+This is the main dashboard to 
+<img src="https://raw.githubusercontent.com/skenderidis/oltra/use-cases/bigip-monitoring/images/dashboard.png">
 
 **Telemetry Streaming**
 
