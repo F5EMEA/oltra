@@ -1,0 +1,44 @@
+
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  name: argo-cd
+  namespace: argocd
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.18"
+  virtualServerPort: 80
+  virtualServerName: "argocd-server"
+  mode: standard
+  snat: auto   
+  pool:
+    service: argocd-server
+    servicePort: 8080
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10
+---
+
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  name: argo-cd-ssl
+  namespace: argocd
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.18"
+  virtualServerPort: 443
+  virtualServerName: "argocd-server-ssl"
+  mode: standard
+  snat: auto   
+  pool:
+    service: argocd-server
+    servicePort: 8080
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10
+

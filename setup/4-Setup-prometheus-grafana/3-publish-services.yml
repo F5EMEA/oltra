@@ -1,0 +1,41 @@
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: grafana
+  namespace: monitoring
+spec:
+  virtualServerAddress: "10.1.10.20"
+  virtualServerPort: 3000
+  virtualServerName: grafana
+  mode: standard
+  snat: auto
+  pool:
+    service: grafana
+    servicePort: 3000
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10
+
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: grafana
+  namespace: monitoring
+spec:
+  virtualServerAddress: "10.1.10.20"
+  virtualServerPort: 3000
+  virtualServerName: grafana
+  mode: standard
+  snat: auto
+  pool:
+    service: grafana
+    servicePort: 3000
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10

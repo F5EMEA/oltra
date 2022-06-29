@@ -1,0 +1,399 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-0
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-0.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-0
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-0
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-0
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-0
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-1.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-1
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-1
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-1
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-1
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-2.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-2
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-2
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-2
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-2
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-3
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-3.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-3
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-3
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-3
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-3
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-4
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-4.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-4
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-4
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-4
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-4
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-5
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-5.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-5
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-5
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-5
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-5
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-6
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-6.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-6
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-6
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-6
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-6
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-7
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-7.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-7
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-7
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-7
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-7
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-8
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-8.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-8
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-8
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-8
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-8
+            port:
+              number: 80
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-community-9
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: test-9.f5demo.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-9
+            port:
+              number: 80
+      - path: /path2
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-9
+            port:
+              number: 80
+      - path: /path3
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-9
+            port:
+              number: 80
+      - path: /path4
+        pathType: Prefix
+        backend:
+          service:
+            name: app-svc-9
+            port:
+              number: 80
