@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+    name: bigip-metrics
+    labels:
+        k8s-app: bigip-metrics
+subsets:
+    - ip: 192.168.3.103
+ports:
+    - name: metrics
+      port: 443
+      protocol: TCP
+---
+
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cis-metrics
+  namespace: monitoring
+  labels:
+    type: nginx-plus
+spec:
+  selector:
+    matchLabels:
+      type: nginx-plus
+  namespaceSelector:
+    matchNames:
+    - nginx
+  endpoints:
+  - interval: 10s
+    path: /metrics
+    port: prometheus
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bigip
+  namespace: monitoring
+spec:
+  endpoints:
+  - basicAuth:
+      password:
+        name: basic-auth
+        key: admin
+      username:
+        name: basic-auth
+        key: Kostas123
+    interval: 30s
+    path: /mgmt/shared/telemetry/pullconsumer/My_Pull_Consumer
+    port: https
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+  selector:
+    matchLabels:
+      k8s-app: bigip-metrics
+
+      

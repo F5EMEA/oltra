@@ -1,0 +1,2800 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-0
+  template:
+    metadata:
+      labels:
+        app: myapp-0
+    spec:
+      containers:
+      - name: myapp-0
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-0
+  labels:
+    app: app-svc-0
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-0
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-1
+  template:
+    metadata:
+      labels:
+        app: myapp-1
+    spec:
+      containers:
+      - name: myapp-1
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-1
+  labels:
+    app: app-svc-1
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-1
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-2
+  template:
+    metadata:
+      labels:
+        app: myapp-2
+    spec:
+      containers:
+      - name: myapp-2
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-2
+  labels:
+    app: app-svc-2
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-2
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-3
+  template:
+    metadata:
+      labels:
+        app: myapp-3
+    spec:
+      containers:
+      - name: myapp-3
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-3
+  labels:
+    app: app-svc-3
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-3
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-4
+  template:
+    metadata:
+      labels:
+        app: myapp-4
+    spec:
+      containers:
+      - name: myapp-4
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-4
+  labels:
+    app: app-svc-4
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-4
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-5
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-5
+  template:
+    metadata:
+      labels:
+        app: myapp-5
+    spec:
+      containers:
+      - name: myapp-5
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-5
+  labels:
+    app: app-svc-5
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-5
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-6
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-6
+  template:
+    metadata:
+      labels:
+        app: myapp-6
+    spec:
+      containers:
+      - name: myapp-6
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-6
+  labels:
+    app: app-svc-6
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-6
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-7
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-7
+  template:
+    metadata:
+      labels:
+        app: myapp-7
+    spec:
+      containers:
+      - name: myapp-7
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-7
+  labels:
+    app: app-svc-7
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-7
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-8
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-8
+  template:
+    metadata:
+      labels:
+        app: myapp-8
+    spec:
+      containers:
+      - name: myapp-8
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-8
+  labels:
+    app: app-svc-8
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-8
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-9
+  template:
+    metadata:
+      labels:
+        app: myapp-9
+    spec:
+      containers:
+      - name: myapp-9
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-9
+  labels:
+    app: app-svc-9
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-9
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-10
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-10
+  template:
+    metadata:
+      labels:
+        app: myapp-10
+    spec:
+      containers:
+      - name: myapp-10
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-10
+  labels:
+    app: app-svc-10
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-10
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-11
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-11
+  template:
+    metadata:
+      labels:
+        app: myapp-11
+    spec:
+      containers:
+      - name: myapp-11
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-11
+  labels:
+    app: app-svc-11
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-11
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-12
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-12
+  template:
+    metadata:
+      labels:
+        app: myapp-12
+    spec:
+      containers:
+      - name: myapp-12
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-12
+  labels:
+    app: app-svc-12
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-12
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-13
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-13
+  template:
+    metadata:
+      labels:
+        app: myapp-13
+    spec:
+      containers:
+      - name: myapp-13
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-13
+  labels:
+    app: app-svc-13
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-13
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-14
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-14
+  template:
+    metadata:
+      labels:
+        app: myapp-14
+    spec:
+      containers:
+      - name: myapp-14
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-14
+  labels:
+    app: app-svc-14
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-14
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-15
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-15
+  template:
+    metadata:
+      labels:
+        app: myapp-15
+    spec:
+      containers:
+      - name: myapp-15
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-15
+  labels:
+    app: app-svc-15
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-15
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-16
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-16
+  template:
+    metadata:
+      labels:
+        app: myapp-16
+    spec:
+      containers:
+      - name: myapp-16
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-16
+  labels:
+    app: app-svc-16
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-16
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-17
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-17
+  template:
+    metadata:
+      labels:
+        app: myapp-17
+    spec:
+      containers:
+      - name: myapp-17
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-17
+  labels:
+    app: app-svc-17
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-17
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-18
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-18
+  template:
+    metadata:
+      labels:
+        app: myapp-18
+    spec:
+      containers:
+      - name: myapp-18
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-18
+  labels:
+    app: app-svc-18
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-18
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-19
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-19
+  template:
+    metadata:
+      labels:
+        app: myapp-19
+    spec:
+      containers:
+      - name: myapp-19
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-19
+  labels:
+    app: app-svc-19
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-19
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-20
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-20
+  template:
+    metadata:
+      labels:
+        app: myapp-20
+    spec:
+      containers:
+      - name: myapp-20
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-20
+  labels:
+    app: app-svc-20
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-20
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-21
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-21
+  template:
+    metadata:
+      labels:
+        app: myapp-21
+    spec:
+      containers:
+      - name: myapp-21
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-21
+  labels:
+    app: app-svc-21
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-21
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-22
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-22
+  template:
+    metadata:
+      labels:
+        app: myapp-22
+    spec:
+      containers:
+      - name: myapp-22
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-22
+  labels:
+    app: app-svc-22
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-22
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-23
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-23
+  template:
+    metadata:
+      labels:
+        app: myapp-23
+    spec:
+      containers:
+      - name: myapp-23
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-23
+  labels:
+    app: app-svc-23
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-23
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-24
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-24
+  template:
+    metadata:
+      labels:
+        app: myapp-24
+    spec:
+      containers:
+      - name: myapp-24
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-24
+  labels:
+    app: app-svc-24
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-24
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-25
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-25
+  template:
+    metadata:
+      labels:
+        app: myapp-25
+    spec:
+      containers:
+      - name: myapp-25
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-25
+  labels:
+    app: app-svc-25
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-25
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-26
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-26
+  template:
+    metadata:
+      labels:
+        app: myapp-26
+    spec:
+      containers:
+      - name: myapp-26
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-26
+  labels:
+    app: app-svc-26
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-26
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-27
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-27
+  template:
+    metadata:
+      labels:
+        app: myapp-27
+    spec:
+      containers:
+      - name: myapp-27
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-27
+  labels:
+    app: app-svc-27
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-27
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-28
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-28
+  template:
+    metadata:
+      labels:
+        app: myapp-28
+    spec:
+      containers:
+      - name: myapp-28
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-28
+  labels:
+    app: app-svc-28
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-28
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-29
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-29
+  template:
+    metadata:
+      labels:
+        app: myapp-29
+    spec:
+      containers:
+      - name: myapp-29
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-29
+  labels:
+    app: app-svc-29
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-29
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-30
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-30
+  template:
+    metadata:
+      labels:
+        app: myapp-30
+    spec:
+      containers:
+      - name: myapp-30
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-30
+  labels:
+    app: app-svc-30
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-30
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-31
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-31
+  template:
+    metadata:
+      labels:
+        app: myapp-31
+    spec:
+      containers:
+      - name: myapp-31
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-31
+  labels:
+    app: app-svc-31
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-31
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-32
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-32
+  template:
+    metadata:
+      labels:
+        app: myapp-32
+    spec:
+      containers:
+      - name: myapp-32
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-32
+  labels:
+    app: app-svc-32
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-32
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-33
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-33
+  template:
+    metadata:
+      labels:
+        app: myapp-33
+    spec:
+      containers:
+      - name: myapp-33
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-33
+  labels:
+    app: app-svc-33
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-33
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-34
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-34
+  template:
+    metadata:
+      labels:
+        app: myapp-34
+    spec:
+      containers:
+      - name: myapp-34
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-34
+  labels:
+    app: app-svc-34
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-34
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-35
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-35
+  template:
+    metadata:
+      labels:
+        app: myapp-35
+    spec:
+      containers:
+      - name: myapp-35
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-35
+  labels:
+    app: app-svc-35
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-35
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-36
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-36
+  template:
+    metadata:
+      labels:
+        app: myapp-36
+    spec:
+      containers:
+      - name: myapp-36
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-36
+  labels:
+    app: app-svc-36
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-36
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-37
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-37
+  template:
+    metadata:
+      labels:
+        app: myapp-37
+    spec:
+      containers:
+      - name: myapp-37
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-37
+  labels:
+    app: app-svc-37
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-37
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-38
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-38
+  template:
+    metadata:
+      labels:
+        app: myapp-38
+    spec:
+      containers:
+      - name: myapp-38
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-38
+  labels:
+    app: app-svc-38
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-38
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-39
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-39
+  template:
+    metadata:
+      labels:
+        app: myapp-39
+    spec:
+      containers:
+      - name: myapp-39
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-39
+  labels:
+    app: app-svc-39
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-39
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-40
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-40
+  template:
+    metadata:
+      labels:
+        app: myapp-40
+    spec:
+      containers:
+      - name: myapp-40
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-40
+  labels:
+    app: app-svc-40
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-40
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-41
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-41
+  template:
+    metadata:
+      labels:
+        app: myapp-41
+    spec:
+      containers:
+      - name: myapp-41
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-41
+  labels:
+    app: app-svc-41
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-41
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-42
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-42
+  template:
+    metadata:
+      labels:
+        app: myapp-42
+    spec:
+      containers:
+      - name: myapp-42
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-42
+  labels:
+    app: app-svc-42
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-42
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-43
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-43
+  template:
+    metadata:
+      labels:
+        app: myapp-43
+    spec:
+      containers:
+      - name: myapp-43
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-43
+  labels:
+    app: app-svc-43
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-43
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-44
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-44
+  template:
+    metadata:
+      labels:
+        app: myapp-44
+    spec:
+      containers:
+      - name: myapp-44
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-44
+  labels:
+    app: app-svc-44
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-44
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-45
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-45
+  template:
+    metadata:
+      labels:
+        app: myapp-45
+    spec:
+      containers:
+      - name: myapp-45
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-45
+  labels:
+    app: app-svc-45
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-45
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-46
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-46
+  template:
+    metadata:
+      labels:
+        app: myapp-46
+    spec:
+      containers:
+      - name: myapp-46
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-46
+  labels:
+    app: app-svc-46
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-46
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-47
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-47
+  template:
+    metadata:
+      labels:
+        app: myapp-47
+    spec:
+      containers:
+      - name: myapp-47
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-47
+  labels:
+    app: app-svc-47
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-47
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-48
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-48
+  template:
+    metadata:
+      labels:
+        app: myapp-48
+    spec:
+      containers:
+      - name: myapp-48
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-48
+  labels:
+    app: app-svc-48
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-48
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-49
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-49
+  template:
+    metadata:
+      labels:
+        app: myapp-49
+    spec:
+      containers:
+      - name: myapp-49
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-49
+  labels:
+    app: app-svc-49
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-49
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-50
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-50
+  template:
+    metadata:
+      labels:
+        app: myapp-50
+    spec:
+      containers:
+      - name: myapp-50
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-50
+  labels:
+    app: app-svc-50
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-50
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-51
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-51
+  template:
+    metadata:
+      labels:
+        app: myapp-51
+    spec:
+      containers:
+      - name: myapp-51
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-51
+  labels:
+    app: app-svc-51
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-51
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-52
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-52
+  template:
+    metadata:
+      labels:
+        app: myapp-52
+    spec:
+      containers:
+      - name: myapp-52
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-52
+  labels:
+    app: app-svc-52
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-52
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-53
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-53
+  template:
+    metadata:
+      labels:
+        app: myapp-53
+    spec:
+      containers:
+      - name: myapp-53
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-53
+  labels:
+    app: app-svc-53
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-53
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-54
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-54
+  template:
+    metadata:
+      labels:
+        app: myapp-54
+    spec:
+      containers:
+      - name: myapp-54
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-54
+  labels:
+    app: app-svc-54
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-54
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-55
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-55
+  template:
+    metadata:
+      labels:
+        app: myapp-55
+    spec:
+      containers:
+      - name: myapp-55
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-55
+  labels:
+    app: app-svc-55
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-55
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-56
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-56
+  template:
+    metadata:
+      labels:
+        app: myapp-56
+    spec:
+      containers:
+      - name: myapp-56
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-56
+  labels:
+    app: app-svc-56
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-56
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-57
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-57
+  template:
+    metadata:
+      labels:
+        app: myapp-57
+    spec:
+      containers:
+      - name: myapp-57
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-57
+  labels:
+    app: app-svc-57
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-57
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-58
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-58
+  template:
+    metadata:
+      labels:
+        app: myapp-58
+    spec:
+      containers:
+      - name: myapp-58
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-58
+  labels:
+    app: app-svc-58
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-58
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-59
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-59
+  template:
+    metadata:
+      labels:
+        app: myapp-59
+    spec:
+      containers:
+      - name: myapp-59
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-59
+  labels:
+    app: app-svc-59
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-59
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-60
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-60
+  template:
+    metadata:
+      labels:
+        app: myapp-60
+    spec:
+      containers:
+      - name: myapp-60
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-60
+  labels:
+    app: app-svc-60
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-60
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-61
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-61
+  template:
+    metadata:
+      labels:
+        app: myapp-61
+    spec:
+      containers:
+      - name: myapp-61
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-61
+  labels:
+    app: app-svc-61
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-61
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-62
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-62
+  template:
+    metadata:
+      labels:
+        app: myapp-62
+    spec:
+      containers:
+      - name: myapp-62
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-62
+  labels:
+    app: app-svc-62
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-62
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-63
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-63
+  template:
+    metadata:
+      labels:
+        app: myapp-63
+    spec:
+      containers:
+      - name: myapp-63
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-63
+  labels:
+    app: app-svc-63
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-63
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-64
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-64
+  template:
+    metadata:
+      labels:
+        app: myapp-64
+    spec:
+      containers:
+      - name: myapp-64
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-64
+  labels:
+    app: app-svc-64
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-64
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-65
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-65
+  template:
+    metadata:
+      labels:
+        app: myapp-65
+    spec:
+      containers:
+      - name: myapp-65
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-65
+  labels:
+    app: app-svc-65
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-65
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-66
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-66
+  template:
+    metadata:
+      labels:
+        app: myapp-66
+    spec:
+      containers:
+      - name: myapp-66
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-66
+  labels:
+    app: app-svc-66
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-66
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-67
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-67
+  template:
+    metadata:
+      labels:
+        app: myapp-67
+    spec:
+      containers:
+      - name: myapp-67
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-67
+  labels:
+    app: app-svc-67
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-67
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-68
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-68
+  template:
+    metadata:
+      labels:
+        app: myapp-68
+    spec:
+      containers:
+      - name: myapp-68
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-68
+  labels:
+    app: app-svc-68
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-68
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-69
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-69
+  template:
+    metadata:
+      labels:
+        app: myapp-69
+    spec:
+      containers:
+      - name: myapp-69
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-69
+  labels:
+    app: app-svc-69
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-69
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-70
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-70
+  template:
+    metadata:
+      labels:
+        app: myapp-70
+    spec:
+      containers:
+      - name: myapp-70
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-70
+  labels:
+    app: app-svc-70
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-70
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-71
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-71
+  template:
+    metadata:
+      labels:
+        app: myapp-71
+    spec:
+      containers:
+      - name: myapp-71
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-71
+  labels:
+    app: app-svc-71
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-71
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-72
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-72
+  template:
+    metadata:
+      labels:
+        app: myapp-72
+    spec:
+      containers:
+      - name: myapp-72
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-72
+  labels:
+    app: app-svc-72
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-72
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-73
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-73
+  template:
+    metadata:
+      labels:
+        app: myapp-73
+    spec:
+      containers:
+      - name: myapp-73
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-73
+  labels:
+    app: app-svc-73
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-73
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-74
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-74
+  template:
+    metadata:
+      labels:
+        app: myapp-74
+    spec:
+      containers:
+      - name: myapp-74
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-74
+  labels:
+    app: app-svc-74
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-74
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-75
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-75
+  template:
+    metadata:
+      labels:
+        app: myapp-75
+    spec:
+      containers:
+      - name: myapp-75
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-75
+  labels:
+    app: app-svc-75
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-75
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-76
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-76
+  template:
+    metadata:
+      labels:
+        app: myapp-76
+    spec:
+      containers:
+      - name: myapp-76
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-76
+  labels:
+    app: app-svc-76
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-76
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-77
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-77
+  template:
+    metadata:
+      labels:
+        app: myapp-77
+    spec:
+      containers:
+      - name: myapp-77
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-77
+  labels:
+    app: app-svc-77
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-77
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-78
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-78
+  template:
+    metadata:
+      labels:
+        app: myapp-78
+    spec:
+      containers:
+      - name: myapp-78
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-78
+  labels:
+    app: app-svc-78
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-78
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-79
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-79
+  template:
+    metadata:
+      labels:
+        app: myapp-79
+    spec:
+      containers:
+      - name: myapp-79
+        image: nginxdemos/nginx-hello:plain-text
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-79
+  labels:
+    app: app-svc-79
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: myapp-79
+
+

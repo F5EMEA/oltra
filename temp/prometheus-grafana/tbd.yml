@@ -1,0 +1,35 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bigip
+  namespace: monitoring
+spec:
+  endpoints:
+  - basicAuth:
+      password:
+        name: basic-auth
+        key: password
+      username:
+        name: basic-auth
+        key: user
+    interval: 30s
+    path: /mgmt/shared/telemetry/pullconsumer/My_Pull_Consumer
+    port: metrics
+    scheme: https
+    tlsConfig:
+      insecureSkipVerify: true
+  selector:
+    matchLabels:
+      type: bigip-metrics
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: basic-auth
+  namespace: monitoring
+data:
+  password: S29zdGFzMTIzCg== # Kostas123
+  user: YWRtaW4= # admin
+type: Opaque

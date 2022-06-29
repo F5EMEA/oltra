@@ -1,0 +1,49 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: vs-nginx-80
+  namespace: nginx
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "192.168.3.49"
+  virtualServerName: "vs-nginx-80"
+  virtualServerHTTPPort: 80
+  pools:
+  - path: /
+    service: nginx-plus
+    servicePort: 80
+
+---
+
+apiVersion: cis.f5.com/v1
+kind: TLSProfile
+metadata:
+  name: reencrypt-tls
+  namespace: nginx
+  labels:
+    f5cr: "true"
+spec:
+  tls:
+    termination: reencrypt
+    clientSSL: /Common/clientssl
+    serverSSL: /Common/serverssl
+    reference: bigip
+
+---
+
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: vs-nginx-443
+  namespace: nginx
+spec:
+  tlsProfileName: reencrypt-tls
+  virtualServerAddress: "192.168.3.49"
+  virtualServerName: "vs-nginx-443"
+  pools:
+    - path: /
+      service: nginx-plus
+      servicePort: 443
