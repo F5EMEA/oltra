@@ -5,8 +5,6 @@
 :url-repo: https://github.com/F5EMEA/oltra
 :toc: preamble
 
-.Abstract
-
 The latest https://www.f5.com/state-of-application-strategy-repor[F5 State of Application Strategy Report (2022)] highlighted that 90% of organizations are executing on a Digital Transformation strategy. Those efforts proceed through the stages of Automation, Digital Expansion, and AI-assisted Business.
 
 Kubernetes and micro-services architectures in general play a key role in achieving success in the Digital Expansion phase of that transformation. 
@@ -83,7 +81,7 @@ The VirtualServer and VirtualServerRoute custom resources both support condition
 
 In the example below we route to either the main application service `app-svc` or the canary `app-canary-svc` depending on the existence and value of a HTTP header called `my-header`. If it exists and has a value of `always` we send the request to the canary, otherwise it goes to the main application service.
 
-[cols="1,3"]
+[cols="1,3", stripes=none]
 |===
 h|Annotations | none
 h|ConfigMap  | none
@@ -116,12 +114,12 @@ The `http-snippet` in the ConfigMap sets up an NGINX https://nginx.org/r/map[map
 
 The two annotations on the Ingress resource set up an internal location within NGINX at the path `/canary` which load balances (`proxy_pass`) to a named canary service.
 
-[cols="1,3"]
+[cols="1,3", stripes=none]
 |===
 h|Annotations | nginx.org/server-snippets *and* nginx.org/location-snippets
 h|ConfigMap  | Required
 2+l|
-    nginx.org/server-snippets: \|
+nginx.org/server-snippets: \|
       location /canary {
         internal;
         set $service <canary-service>;
@@ -131,7 +129,7 @@ h|ConfigMap  | Required
       if ( $access_canary = 1 ) {
         rewrite ^(.*)$ /canary/$1 last;
       }
-2+l| 
+2+l|
     kind: ConfigMap
     apiVersion: v1
     metadata:
@@ -150,7 +148,7 @@ h|ConfigMap  | Required
 
 In this example we are passing 10% of the traffic to the new version of the application in the `myapp-new` upstream, and 90% to the current `myapp` upstream.
 
-[cols="1,3"]
+[cols="1,3", stripes=none]
 |===
 h|Annotations | none
 h|ConfigMap  | none
@@ -175,7 +173,7 @@ This Ingress example is very similar to the canary example above. The main diffe
 
 Also there is a `set` in the server-snippet which selects the variable to use as context for the splitting. In this case we're using the `$request_id` which is the same variable the CRDs use.
 
-[cols="1,3"]
+[cols="1,3", stripes=none]
 |===
 h|Annotations | nginx.org/server-snippets *and* nginx.org/location-snippets
 h|ConfigMap  | Required
