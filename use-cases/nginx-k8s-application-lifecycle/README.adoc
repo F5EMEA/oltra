@@ -72,8 +72,11 @@ The blue/green name comes from a physical computing practice where an enterprise
 
 The Ingress examples below make use of snippets, and so require snippets to be enabled on the Ingress Controller, otherwise they wont work. Where possible chose the CRD alternative.
 
-[NOTE]
-TODO: See the example in the examples folder....
+=== Available Examples
+
+The Canary use-case is essentially advanced routing, so take a look at the following example walk-throughs in the `examples` folder:
+
+* NGINX xref:../../examples/nginx-crd/advanced-routing/[Advanced Routing] CRDs
 
 === Canary Example (CRD)
 
