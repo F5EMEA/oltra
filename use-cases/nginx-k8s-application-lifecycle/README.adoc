@@ -205,3 +205,8 @@ h|ConfigMap  | Required
 
 [NOTE]
 The `$request_id` is a unique identifier for each request, and so there is no persistence for the client. In the case of Ingress we can chose to use a different variable (eg a cookie), but we don't have that option with the CRD.
+
+== Further Reading
+
+* https://www.cncf.io/phippy/[An Illustrated Guide to Kubernetes]
+* https://www.nginx.com/products/nginx-ingress-controller/nginx-ingress-resources/[NGINX Custom Resources]
