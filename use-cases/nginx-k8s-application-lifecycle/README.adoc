@@ -61,9 +61,149 @@ Those features can be used, but will be used in combination with `Canary` testin
 
 A `Canary Release` is when you provide access to a new or alternative version of an application or service to a limited set of clients. This is commonly used for doing a full functionality test of an update in production prior to rolling out the upgrade more widely.
 
+[TIP]
+Blue/Green updates are sometimes also referred to as `Weighted Canary`.
+
 === Blue/Green Updates
 
 The `Blue/Green update` process is where the new version of an application is gradually introduced into service. This is commonly achieved by `traffic splitting`; where an initially small percentage of traffic is sent to the new release, and gradually increased while monitoring for issues. Eventually all the traffic is migrated to the new version. 
 
 The blue/green name comes from a physical computing practice where an enterprise would have two complete production capable stacks, and the live stack would alternate between the two. The non-live stack would generally be used for staging the new release and testing in preperation for the next blue/green transition.
 
+== Examples
+
+The Ingress examples below make use of snippets, and so require snippets to be enabled on the Ingress Controller, otherwise they wont work. Where possible chose the CRD alternative.
+
+[NOTE]
+TODO: See the example in the examples folder....
+
+=== Canary Example (CRD)
+
+The VirtualServer and VirtualServerRoute custom resources both support conditional routing, which is a fundamental requirement for Canary releases. 
+
+In the example below we route to either the main application service `app-svc` or the canary `app-canary-svc` depending on the existence and value of a HTTP header called `my-header`. If it exists and has a value of `always` we send the request to the canary, otherwise it goes to the main application service.
+
+[cols="1,3"]
+|===
+h|Annotations | none
+h|ConfigMap  | none
+2+l|
+    path: /
+    matches:
+    - conditions:
+      - header: my-header
+        value: never
+      action:
+        pass: app-svc
+    - conditions:
+      - header: my-header
+        value: always
+      action:
+        pass: app-canary-svc
+    action:
+      pass:  app-svc
+|===
+
+
+=== Canary Example (Ingress)
+
+[WARNING]
+We strongly urge you to make use of the VirtualServer (CRD) for advanced load balancing use-cases like Canary. See the CRD example above.
+
+The example below shows how you can achieve a Canary setup based on an incoming header called `my-header`. We use two snippets via annotations (`nginx.org/server-snippet` and `nginx.org/location-snippet`), and a third snippet in the NGINX `ConfigMap` to set a `http-snippet`.
+
+The `http-snippet` in the ConfigMap sets up an NGINX https://nginx.org/r/map[map] directive to associate our header `my-header` with a custom `$access_canary` variable. If the header is set to `always` then the access variable is set to 1, else it is set to 0.
+
+The two annotations on the Ingress resource set up an internal location within NGINX at the path `/canary` which load balances (`proxy_pass`) to a named canary service.
+
+[cols="1,3"]
+|===
+h|Annotations | nginx.org/server-snippets *and* nginx.org/location-snippets
+h|ConfigMap  | Required
+2+l|
+    nginx.org/server-snippets: \|
+      location /canary {
+        internal;
+        set $service <canary-service>;
+        proxy_pass http://<ns>-<ingress>-<hostname>-<service>-<port>/
+      }
+    nginx.org/location-snippets: \|
+      if ( $access_canary = 1 ) {
+        rewrite ^(.*)$ /canary/$1 last;
+      }
+2+l| 
+    kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: nginx-config
+      namespace: nginx-ingress
+    data:
+      http-snippets: \|
+        map $http_my_header $access_canary {
+          default          0;
+          never            0;
+          always           1;
+        }
+|===
+
+=== Blue / Green (CRD)
+
+In this example we are passing 10% of the traffic to the new version of the application in the `myapp-new` upstream, and 90% to the current `myapp` upstream.
+
+[cols="1,3"]
+|===
+h|Annotations | none
+h|ConfigMap  | none
+2+l|
+    spec:
+    ...
+    routes:
+      splits:
+      - weight: 10
+        action:
+          pass myapp-new
+      - weight: 90
+        action:
+          pass: myapp
+|===
+
+An SRE would need to update the VS or VSR resources periodically to gradually increase the amount of traffic being sent to the new application until the update is complete.
+
+=== Blue / Green (Ingress)
+
+This Ingress example is very similar to the canary example above. The main difference is the ConfigMap has changed the http-snippet to use a split_clients directive instead of the map used previously.
+
+Also there is a `set` in the server-snippet which selects the variable to use as context for the splitting. In this case we're using the `$request_id` which is the same variable the CRDs use.
+
+[cols="1,3"]
+|===
+h|Annotations | nginx.org/server-snippets *and* nginx.org/location-snippets
+h|ConfigMap  | Required
+2+l|
+    nginx.org/server-snippets: \|
+      set $split_var $request_id;
+      location /canary {
+        internal;
+        set $service <canary-service>;
+        proxy_pass http://<ns>-<ingress>-<hostname>-<service>-<port>/
+      }
+    nginx.org/location-snippets: \|
+      if ( $access_canary = 1 ) {
+        rewrite ^(.*)$ /canary/$1 last;
+      }
+2+l| 
+    kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: nginx-config
+      namespace: nginx-ingress
+    data:
+      http-snippets: \|
+        split_clients $split_var $access_canary {
+          10%              1;
+          *                0;
+        }
+|===
+
+[NOTE]
+The `$request_id` is a unique identifier for each request, and so there is no persistence for the client. In the case of Ingress we can chose to use a different variable (eg a cookie), but we don't have that option with the CRD.
