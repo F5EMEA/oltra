@@ -1,4 +1,4 @@
-# Multi-tenant Cluster K8s
+# Multi-tenant Ingress services
 
 In this use-case we go through how we can build a multi-tenant kubernetes cluster from the ingress and load balancing perpective. This includes clusters shared by different users at a single organization or clusters that are shared by different orginizations.
 
