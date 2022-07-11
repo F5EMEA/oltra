@@ -27,7 +27,7 @@ Credentials are documented inside the UDF Summary page.
 ## Use-Cases
 The use-case build for OLTRA can be found below:
 
-- **Building Multi-tenant Ingress services** <br>
+- [**Building Multi-tenant Ingress services**](use-cases/multi-tenancy/README.md)
 - **Deploying Active-Active or Active-Standby services in a multicluster K8s with CIS and NGINX** <br>
 - **Implementing eb application security into a DevOps environment**
 
@@ -35,7 +35,7 @@ The use-case build for OLTRA can be found below:
 ## Demos
 The demos build for OLTRA can be found below:
 
-- **Monitoring K8s services published via BIGIP with Prometheus, Grafana and Elastic** <br>
+- [**Monitoring K8s services published via BIGIP with Prometheus, Grafana and Elastic**](demos/bigip-monitoring/README.md)
 - **Monitoring K8s services published via NGINX+ Ingress Controller with Prometheus, Grafana and Elastic** <br>
 - **Publishing NGINX+ Ingress with BIGIP** <br>
 - **Securing K8s services against L3/L7 DDoS attacks with BIGIP** <br>
