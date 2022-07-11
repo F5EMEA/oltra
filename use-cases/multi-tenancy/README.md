@@ -18,7 +18,7 @@ Typically the requirement of a multi-tenat K8s environments in terms of Ingress/
 In order to address the above requirements we have designed a 2-tier architecture. The 1st tier is based on NGNIX+ Ingress Controller and will be deployed in each tentant while the 2nd tier is based on BIGIP/CIS that will have the role of the external load balancer.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/cluster-multi-tenancy/multi-tenancy.png" style="width:75%">
+  <img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/cluster-multi-tenancy/multi-tenancy.png" style="width:85%">
 </p>
 
 ### Tier 1 - NGINX+ Ingress Controller
