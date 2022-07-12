@@ -16,21 +16,18 @@ The following examples can be used to demonstrate the most common functionality 
 
 In this section we provide examples for the most common use-cases of Ingress Resources with F5 CIS
 
-* [Basic-Ingress](cis-ingress/basic-ingress)
-* [FQDN-Based-Routing](cis-ingress/host-routing)
-* [Fan-out/Path-Based-Routing](cis-ingress/fanout)
-* [Health Monitor](cis-ingress/health-monitor)
-* [AppRoot/URL Rewrite](cis-ingress/rewrite)
-* [TLS Ingress Examples](cis-ingress/tls)
+* [Basic Ingress](cis-ingress/basic-ingress)
+* [Host based routing](cis-ingress/host-routing)
+* [Path based routing](cis-ingress/fanout)
+* [Health Monitors](cis-ingress/health-monitor)
+* [Rewrite](cis-ingress/rewrite)
+* [TLS Ingress](cis-ingress/tls)
 
 ## VirtualServer CRD examples
 
-* [Basic Virtual Server (without Host parameter) ](cis-crd/VirtualServer/Basic/#http-virtual-server-without-host-parameter)
-* [Basic Virtual Server (with Host parameter) ](cis-crd/VirtualServer/Basic/#http-virtual-server-with-host-parameter-and-a-single-service)
-* [Path based routing](cis-crd/VirtualServer/Basic/http-virtual-server-with-two-services-path-based-forwarding)
-* [Host based routing](cis-ingress/VirtualServer/HostGroup)
-* [AppRoot Rewrite](cis-crd/VirtualServer/PathRewrite/#uri-path-re-write)
-* [URI Path Rewrite](cis-crd/VirtualServer/PathRewrite/#app-root-re-write)
+* [Basic VirtualServer ](cis-crd/VirtualServer/Basic/)
+* [Host based routing](cis-crd/VirtualServer/HostGroup)
+* [Rewrite](cis-crd/VirtualServer/PathRewrite/)
 * [HTTP Redirect](cis-crd/VirtualServer/hhtpTraffc/)
 * [Dynamic IP Allocation (IPAM)](cis-crd/VirtualServer/IpamLabel)
 * [Health Monitors](cis-crd/VirtualServer/HealthMonitor)
