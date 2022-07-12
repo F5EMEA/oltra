@@ -9,7 +9,7 @@ The following examples can be used to demonstrate the most common functionality 
 - EDNS examples
 
 <p align="center">
-  <img src="cis.png" style="width:85%">
+  <img src="cis.png" style="width:100%">
 </p>
 
 ## Ingress Resource examples
