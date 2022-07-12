@@ -7,7 +7,7 @@ metadata:
 spec:
   host: app1.f5demo.local
   virtualServerName: "hostgroup-vs"
-  virtualServerAddress: "10.1.10.100"
+  virtualServerAddress: "10.1.10.59"
   hostGroup: "apps"
   pools:
     - path: /
@@ -23,7 +23,7 @@ metadata:
 spec:
   host: app2.f5demo.local
   virtualServerName: "hostgroup-vs"
-  virtualServerAddress: "10.1.10.100"
+  virtualServerAddress: "10.1.10.59"
   hostGroup: "apps"
   pools:
     - path: /

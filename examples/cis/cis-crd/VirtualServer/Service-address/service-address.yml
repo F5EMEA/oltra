@@ -6,7 +6,7 @@ metadata:
     f5cr: "true"
 spec:
   host: service.f5demo.local
-  virtualServerAddress: "10.1.10.99"
+  virtualServerAddress: "10.1.10.67"
   virtualServerName: "service-address-vs"
   pools:
   - path: /

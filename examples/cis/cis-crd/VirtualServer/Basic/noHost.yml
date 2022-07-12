@@ -5,7 +5,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.90"
+  virtualServerAddress: "10.1.10.54"
   virtualServerName: "nohost-vs"
   pools:
   - path: /

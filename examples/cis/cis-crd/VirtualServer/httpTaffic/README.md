@@ -38,7 +38,7 @@ metadata:
   namespace: default
 spec:
   tlsProfileName: redirect-tls-coffee
-  virtualServerAddress: 10.1.10.126
+  virtualServerAddress: 10.1.10.60
   httpTraffic: redirect
   host: coffee.f5demo.local
   pools:
@@ -64,7 +64,7 @@ kubectl get vs
 
 Access the service on Port 80 using the following example. 
 ```
-curl -v http://coffee.f5demo.local/mocha --resolve coffee.f5demo.local:80:10.1.10.126
+curl -v http://coffee.f5demo.local/mocha --resolve coffee.f5demo.local:80:10.1.10.60
 ```
 
 Verify that BIGIP redirected the traffic to the HTTPS Server (port 443)

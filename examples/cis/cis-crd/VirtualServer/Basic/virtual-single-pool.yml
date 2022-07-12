@@ -7,7 +7,7 @@ metadata:
 spec:
   host: app1.f5demo.local
   virtualServerName: "single-pool-vs"
-  virtualServerAddress: "10.1.10.91"
+  virtualServerAddress: "10.1.10.55"
   pools:
   - path: /
     service: echo-svc

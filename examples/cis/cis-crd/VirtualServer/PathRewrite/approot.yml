@@ -5,7 +5,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.95"
+  virtualServerAddress: "10.1.10.61"
   virtualServerName: "approot-vs"
   rewriteAppRoot: /home
   host: approot.f5demo.local

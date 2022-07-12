@@ -20,7 +20,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.93"
+  virtualServerAddress: "10.1.10.72"
   host: "*.f5demo.local"
   pools:
   - path: /
@@ -32,7 +32,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f virtual-wildcardhost.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.93` and attaches a policy which forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
+CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.72` and attaches a policy which forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
 
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
@@ -42,7 +42,7 @@ kubectl get vs
 
 Try accessing the service with curl as per the examples below. 
 ```
-curl http://test.example.local/ --resolve test.example.local:80:10.1.10.93
+curl http://test.example.local/ --resolve test.example.local:80:10.1.10.72
 
 ```
 In the above example you should see a reset connection as it didnt match the configured Host parameter.
@@ -51,11 +51,11 @@ In the above example you should see a reset connection as it didnt match the con
 
 Try again with the examples below
 ```
-curl http://test1.f5demo.local/ --resolve test1.f5demo.local:80:10.1.10.93
-curl http://test2.f5demo.local/ --resolve test2.f5demo.local:80:10.1.10.93
+curl http://test1.f5demo.local/ --resolve test1.f5demo.local:80:10.1.10.72
+curl http://test2.f5demo.local/ --resolve test2.f5demo.local:80:10.1.10.72
 ...
 ...
-curl http://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.93
+curl http://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.72
 
 ```
 
@@ -102,7 +102,7 @@ metadata:
 spec:
   host: '*.f5demo.local'
   tlsProfileName: wildcard-tls
-  virtualServerAddress: 10.1.10.93
+  virtualServerAddress: 10.1.10.72
   virtualServerName: "wildcard-tls-vs"
   httpTraffic: none
   pools:
@@ -117,7 +117,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f virtual-wildcardhost.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.93` and attaches a policy which forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
+CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.72` and attaches a policy which forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
 
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
@@ -127,7 +127,7 @@ kubectl get vs
 
 Try accessing the service with curl as per the examples below. 
 ```
-curl -k https://test.example.local/ --resolve test.example.local:80:10.1.10.93
+curl -k https://test.example.local/ --resolve test.example.local:80:10.1.10.72
 
 ```
 In the above example you should see a reset connection as it didnt match the configured Host parameter.
@@ -136,11 +136,11 @@ In the above example you should see a reset connection as it didnt match the con
 
 Try again with the examples below
 ```
-curl -k https://test1.f5demo.local/ --resolve test1.f5demo.local:80:10.1.10.93
-curl -k https://test2.f5demo.local/ --resolve test2.f5demo.local:80:10.1.10.93
+curl -k https://test1.f5demo.local/ --resolve test1.f5demo.local:80:10.1.10.72
+curl -k https://test2.f5demo.local/ --resolve test2.f5demo.local:80:10.1.10.72
 ...
 ...
-curl -k https://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.93
+curl -k https://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.72
 
 ```
 

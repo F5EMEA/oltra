@@ -7,7 +7,7 @@ metadata:
   namespace: default
 spec:
   host: k8s.f5demo.local
-  virtualServerAddress: 10.1.10.124
+  virtualServerAddress: 10.1.10.71
   virtualServerName: "k8s-tls-vs"
   tlsProfileName: k8s-tls
   pools:

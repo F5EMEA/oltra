@@ -12,7 +12,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.94"
+  virtualServerAddress: "10.1.10.58"
   host: health.f5demo.local
   pools:
   - path: /app1

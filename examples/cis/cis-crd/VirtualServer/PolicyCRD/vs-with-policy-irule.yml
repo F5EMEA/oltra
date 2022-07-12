@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: irule-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.199
+  virtualServerAddress: 10.1.10.63
   virtualServerName: "irule-policy-vs"
   host: irule.f5demo.local
   policyName: irule-policy

@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: xff-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.97
+  virtualServerAddress: 10.1.10.66
   virtualServerName: "xff-policy-vs"
   host: policy.f5demo.local
   policyName: xff-policy

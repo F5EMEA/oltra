@@ -22,7 +22,7 @@ metadata:
     f5cr: "true"
 spec:
   host: app1.f5demo.local
-  virtualServerAddress: "10.1.10.100"
+  virtualServerAddress: "10.1.10.59"
   virtualServerName: "hostgroup-vs"  
   hostGroup: "apps"
   pools:
@@ -38,7 +38,7 @@ metadata:
     f5cr: "true"
 spec:
   host: app2.f5demo.local
-  virtualServerAddress: "10.1.10.100"
+  virtualServerAddress: "10.1.10.59"
   virtualServerName: "hostgroup-vs"  
   hostGroup: "apps"
   pools:
@@ -47,7 +47,7 @@ spec:
       servicePort: 8080
 
 ```
-By deploying the above 2 VirtualServer CRDs in your cluster, CIS will create a single HTTP Virtual Server (with VIP `10.1.10.100`) on the BIG-IP system with different hostnames (in this example, `app1.f5demo.local` and `app2.f5demo.local`) since both VS CRDs share the same hostGroup property.
+By deploying the above 2 VirtualServer CRDs in your cluster, CIS will create a single HTTP Virtual Server (with VIP `10.1.10.59`) on the BIG-IP system with different hostnames (in this example, `app1.f5demo.local` and `app2.f5demo.local`) since both VS CRDs share the same hostGroup property.
 
 Create the VS CRD resources. 
 ```
@@ -61,7 +61,7 @@ kubectl get vs
 
 Try accessing the service as per the example below. 
 ```
-curl http://test.f5demo.local/ --resolve test.f5demo.local:80:10.1.10.100
+curl http://test.f5demo.local/ --resolve test.f5demo.local:80:10.1.10.59
 
 ```
 In the above example you should see a reset connection as it didnt match the configured Host parameter.
@@ -70,8 +70,8 @@ In the above example you should see a reset connection as it didnt match the con
 
 Try again with the examples below
 ```
-curl http://app1.f5demo.local/ --resolve app1.f5demo.local:80:10.1.10.100
-curl http://app2.f5demo.local/ --resolve app2.f5demo.local:80:10.1.10.100
+curl http://app1.f5demo.local/ --resolve app1.f5demo.local:80:10.1.10.59
+curl http://app2.f5demo.local/ --resolve app2.f5demo.local:80:10.1.10.59
 
 ```
 

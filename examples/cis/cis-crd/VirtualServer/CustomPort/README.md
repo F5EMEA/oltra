@@ -13,7 +13,7 @@ metadata:
     f5cr: "true"
 spec:
   host: custom.f5demo.local
-  virtualServerAddress: "10.1.10.114"
+  virtualServerAddress: "10.1.10.57"
   virtualServerName: "custom-port-http-vs"
   virtualServerHTTPPort: 8080
   pools:
@@ -28,7 +28,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f custom-http-port.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.114` and attaches a policy which forwards all traffic to pool echo-svc when the Host Header is equal to `custom.f5demo.local`.   
+CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.57` and attaches a policy which forwards all traffic to pool echo-svc when the Host Header is equal to `custom.f5demo.local`.   
 
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
@@ -38,7 +38,7 @@ kubectl get vs
 
 Try accessing the service with curl as per the examples below. 
 ```
-curl http://custom.f5demo.local:8080 --resolve custom.f5demo.local:8080:10.1.10.114
+curl http://custom.f5demo.local:8080 --resolve custom.f5demo.local:8080:10.1.10.57
 ```
 
 You should be able to access the service running in K8s.

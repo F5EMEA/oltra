@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: waf-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.98
+  virtualServerAddress: 10.1.10.65
   virtualServerName: "waf-policy-vs"
   host: waf.f5demo.local
   policyName: waf-policy

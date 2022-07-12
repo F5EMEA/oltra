@@ -5,7 +5,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.92"
+  virtualServerAddress: "10.1.10.56"
   virtualServerName: "two-pools-vs"
   host: pools.f5demo.local
   pools:

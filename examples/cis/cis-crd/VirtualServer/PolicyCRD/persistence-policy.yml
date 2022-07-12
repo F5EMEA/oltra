@@ -3,7 +3,7 @@ kind: Policy
 metadata:
   labels:
     f5cr: "true"
-  name: xff-policy
+  name: persistence-policy
 spec:
   profiles:
-    http: /Common/http-xff
+    persistenceProfile: none

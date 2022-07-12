@@ -12,7 +12,7 @@ This section demonstrates the deployment of a Virtual Server with custom HTTP, P
 ## PolicyCRD XFF
 This section demonstrates the deployment of a Virtual Server with a custom HTTP Profiles that add XFF header.
 
-Eg: policy-vs /policy-crd 
+Eg: xff-policy.yml / vs-with-policy-xff.yml
 ```yml
 apiVersion: cis.f5.com/v1
 kind: Policy
@@ -31,7 +31,7 @@ metadata:
     f5cr: "true"
   name: xff-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.97
+  virtualServerAddress: 10.1.10.66
   host: policy.f5demo.local
   policyName: policy-xff
   snat: auto
@@ -56,7 +56,7 @@ On the BIGIP we created a profile called `http-xff` on the common partition that
 
 Access the service using the following example. 
 ```
-curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.97
+curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.66
 ```
 
 Verify that the `x-forwarded-for` Header exists and contains the client's actual IP
@@ -65,7 +65,7 @@ Verify that the `x-forwarded-for` Header exists and contains the client's actual
 ## PolicyCRD persistence
 The default persistence that is configured with CIS is **/Common/cookie**. In this section we will demonstrate the deployment of a Virtual Server with persistence profile set to **None**.
 
-Eg: VirtualServer / PolicyCRD 
+Eg: persistence-policy.yml / vs-with-policy-persistence.yml 
 ```yml
 apiVersion: cis.f5.com/v1
 kind: Policy
@@ -84,7 +84,7 @@ metadata:
     f5cr: "true"
   name: persistence-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.198
+  virtualServerAddress: 10.1.10.64
   host: persistence.f5demo.local
   policyName: persistence-policy
   snat: auto
@@ -107,9 +107,9 @@ kubectl get vs
 
 Access the service few times using the following example.
 ```
-curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.198
-curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.198
-curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.198
+curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
+curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
+curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
 ```
 
 Verify that the transactions are actually going to multiple backend pods and they dont persist on a single one.
@@ -119,7 +119,7 @@ Verify that the transactions are actually going to multiple backend pods and the
 ## PolicyCRD iRule
 This section demonstrates the deployment of a Virtual Server with a iRules to provide a **Sorry Page**.
 
-Eg: VirtualServer / PolicyCRD 
+Eg: irule-policy.yml / vs-with-policy-irule.yml 
 ```yml
 apiVersion: cis.f5.com/v1
 kind: Policy
@@ -138,7 +138,7 @@ metadata:
     f5cr: "true"
   name: irule-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.199
+  virtualServerAddress: 10.1.10.63
   host: irule.f5demo.local
   policyName: irule-policy
   snat: auto
@@ -163,7 +163,7 @@ On the BIGIP we created an iRule  called **sorry-page**, on the Common Partition
 
 Access the service few times using the following example.
 ```
-curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.199
+curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.63
 ```
 
 Verify that the sorry page is sent back from BIGIP.
@@ -173,7 +173,7 @@ Verify that the sorry page is sent back from BIGIP.
 ## PolicyCRD WAF
 This section demonstrates the deployment of a Virtual Server with a WAF policy to protect against Layer 7 threats.
 
-Eg: VirtualServer / PolicyCRD 
+Eg: waf-policy.yml / vs-with-policy-waf.yml
 ```yml
 apiVersion: cis.f5.com/v1
 kind: Policy
@@ -196,7 +196,7 @@ metadata:
     f5cr: "true"
   name: waf-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.98
+  virtualServerAddress: 10.1.10.65
   host: waf.f5demo.local
   policyName: waf-policy
   snat: auto
@@ -221,7 +221,7 @@ On the BIGIP we created a WAF policy **basic_waf_policy** to block HTTP attacks,
 
 Access the service using the following example that contains a XSS violations. 
 ```
-curl -v "http://waf.f5demo.local/index.php?parameter=<script/>" --resolve waf.f5demo.local:80:10.1.10.98
+curl -v "http://waf.f5demo.local/index.php?parameter=<script/>" --resolve waf.f5demo.local:80:10.1.10.65
 ```
 
 Verify that the  transaction that contains the attack gets blocked by BIGIP WAF.

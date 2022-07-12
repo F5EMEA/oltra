@@ -7,7 +7,7 @@ metadata:
   namespace: default
 spec:
   tlsProfileName: redirect-tls-coffee
-  virtualServerAddress: 10.1.10.126
+  virtualServerAddress: 10.1.10.60
   virtualServerName: "redirect-tls-vs"
   httpTraffic: redirect
   host: coffee.f5demo.local

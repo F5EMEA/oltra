@@ -19,7 +19,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.95"
+  virtualServerAddress: "10.1.10.61"
   rewriteAppRoot: /home
   host: approot.f5demo.local
   pools:
@@ -40,7 +40,7 @@ kubectl get vs
 
 Access the service using curl. 
 ```
-curl -v http://approot.f5demo.local/ --resolve approot.f5demo.local:80:10.1.10.95
+curl -v http://approot.f5demo.local/ --resolve approot.f5demo.local:80:10.1.10.61
 ```
 
 You should receive a 302 redirect from BIGIP with Location Header set as `/home`.
@@ -58,7 +58,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.96"
+  virtualServerAddress: "10.1.10.62"
   host: rewrite.f5demo.local
   pools:
     - path: /lab
@@ -84,8 +84,8 @@ kubectl get vs
 
 Access the service using curl. 
 ```
-curl http://rewrite.f5demo.local/lab --resolve rewrite.f5demo.local:80:10.1.10.96
-curl http://rewrite.f5demo.local/lib --resolve rewrite.f5demo.local:80:10.1.10.96
+curl http://rewrite.f5demo.local/lab --resolve rewrite.f5demo.local:80:10.1.10.62
+curl http://rewrite.f5demo.local/lib --resolve rewrite.f5demo.local:80:10.1.10.62
 ```
 
 Note that the paths are rewritten from `/lib` to `/library` and from `/lab` to `/laboratory`

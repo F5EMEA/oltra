@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: persistence-policy-vs
 spec:
-  virtualServerAddress: 10.1.10.198
+  virtualServerAddress: 10.1.10.64
   virtualServerName: "persistence-policy-vs"
   host: persistence.f5demo.local
   policyName: persistence-policy

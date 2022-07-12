@@ -36,7 +36,7 @@ metadata:
 spec:
   host: edge.f5demo.local
   tlsProfileName: edge-tls
-  virtualServerAddress: 10.1.10.121
+  virtualServerAddress: 10.1.10.68
   virtualServerName: "edge-tls-vs"
   pools:
       path: /
@@ -57,7 +57,7 @@ kubectl get vs
 
 Access the `echo-svc` service using the following example. 
 ```
-curl -vk https://edge.f5demo.local/ --resolve edge.f5demo.local:443:10.1.10.121
+curl -vk https://edge.f5demo.local/ --resolve edge.f5demo.local:443:10.1.10.68
 ```
 
 
@@ -94,7 +94,7 @@ metadata:
 spec:
   host: reencrypt.f5demo.local
   tlsProfileName: reencrypt-tls
-  virtualServerAddress: 10.1.10.122
+  virtualServerAddress: 10.1.10.69
   virtualServerName: "reencrypt-tls-vs"
   pools:
       path: /
@@ -116,7 +116,7 @@ kubectl get vs
 
 Access the `secure-app` service using the following example. 
 ```
-curl -vk https://reencrypt.f5demo.local/ --resolve reencrypt.f5demo.local:443:10.1.10.122
+curl -vk https://reencrypt.f5demo.local/ --resolve reencrypt.f5demo.local:443:10.1.10.69
 ```
 
 
@@ -151,7 +151,7 @@ metadata:
 spec:
   host: passthrough.f5demo.local
   tlsProfileName: passthrough-tls
-  virtualServerAddress: 10.1.10.123
+  virtualServerAddress: 10.1.10.70
   virtualServerName: "passthrough-tls-vs"
   pools:
       path: /
@@ -174,7 +174,7 @@ kubectl get vs
 
 Access the `echo-svc` service using the following example. 
 ```
-curl -vk https://passthrough.f5demo.local/ --resolve passthrough.f5demo.local:443:10.1.10.123
+curl -vk https://passthrough.f5demo.local/ --resolve passthrough.f5demo.local:443:10.1.10.70
 ```
 
 
@@ -224,7 +224,7 @@ metadata:
   namespace: default
 spec:
   host: k8s.f5demo.local
-  virtualServerAddress: 10.1.10.124
+  virtualServerAddress: 10.1.10.71
   virtualServerName: "k8s-tls-vs"
   tlsProfileName: k8s-tls
   pools:
@@ -247,5 +247,5 @@ kubectl get vs
 
 Access the `echo-svc` service using the following example. 
 ```
-curl -vk https://k8s.f5demo.local/ --resolve k8s.f5demo.local:443:10.1.10.124
+curl -vk https://k8s.f5demo.local/ --resolve k8s.f5demo.local:443:10.1.10.71
 ```
