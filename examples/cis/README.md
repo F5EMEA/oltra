@@ -1,11 +1,18 @@
 # Reverse Proxy capabilities with CIS
 
-In this section we will be exploring two modes that CIS can be configured for in order to publish Kubernetes HTTP services; Ingress and VirtualServer CRD.
-The following examples can be used to demonstrate the most common functionality for Ingress Services with CIS.
+In this section we will be exploring five modes that CIS can be configured for in order to publish Kubernetes services; Ingress and VirtualServer CRD.
+The following examples can be used to demonstrate the most common functionality for Ingress Services with CIS. The examples include:
+- Ingress Resource examples
+- VirtualServer CRD examples
+- TransportServer CRD examples
+- Service Type LoadBalancer examples
+- EDNS examples
 
-<IMAGE>
+<p align="center">
+  <img src="cis.png" style="width:85%">
+</p>
 
-## Ingress Examples
+## Ingress Resource examples
 
 In this section we provide examples for the most common use-cases of Ingress Resources with F5 CIS
 
@@ -16,7 +23,7 @@ In this section we provide examples for the most common use-cases of Ingress Res
 * [AppRoot/URL Rewrite](cis-ingress/rewrite)
 * [TLS Ingress Examples](cis-ingress/tls)
 
-## VirtualServer CRD Examples
+## VirtualServer CRD examples
 
 * [Basic Virtual Server (without Host parameter) ](cis-crd/VirtualServer/Basic/#http-virtual-server-without-host-parameter)
 * [Basic Virtual Server (with Host parameter) ](cis-crd/VirtualServer/Basic/#http-virtual-server-with-host-parameter-and-a-single-service)
@@ -34,3 +41,10 @@ In this section we provide examples for the most common use-cases of Ingress Res
 * [Custom HTTP Profile](cis-crd/VirtualServer/PolicyCRD/#policycrd-xff)
 * [VirtualServer with custom Port](cis-crd/VirtualServer/CustomPort/)
 
+## TransportServer CRD examples
+
+
+## Service Type LoadBalancer examples
+
+
+## EDNS examples

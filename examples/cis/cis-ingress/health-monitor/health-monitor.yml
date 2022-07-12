@@ -4,7 +4,6 @@ metadata:
   name: health-monitor
   namespace: default
   annotations:
-    # BIG-IP Virtual Server IP address
     virtual-server.f5.com/ip: "10.1.10.50"
     # BIG-IP Health Monitor
     virtual-server.f5.com/health: |

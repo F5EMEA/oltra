@@ -3,12 +3,9 @@ kind: Ingress
 metadata:
   name: fanout
   annotations:
-    # Provide an IP address for the BIG-IP Virtual Server.
     virtual-server.f5.com/ip: "10.1.10.50"
-    # Load balancing algorithm
     virtual-server.f5.com/balance: "round-robin"
 spec:
-  # Provide the IngressClassName as "f5"
   ingressClassName: f5
   rules:
   - host: fanout.f5demo.local
