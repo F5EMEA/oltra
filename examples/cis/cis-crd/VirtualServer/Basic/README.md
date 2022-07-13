@@ -28,6 +28,11 @@ spec:
     servicePort: 80
 ```
 
+Change the working directory to `basic`.
+```
+cd ~/oltra/examples/cis/cis-crd/VirtualServer/Basic
+```
+
 Create the VS CRD resource. 
 ```
 kubectl apply -f noHost.yml
@@ -37,20 +42,33 @@ CIS will create a Virtual Server on BIG-IP with VIP "10.1.10.54" and attaches a 
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs nohost-vs 
 ```
 
 Access the service as per the examples below. 
-
 ```
 curl http://10.1.10.54 
 curl http://10.1.10.54/test.php
 curl http://test.f5demo.local --resolve test.f5demo.local:80:10.1.10.54
 ```
 
-In all cases you should be able to access the service running in K8s.
+In all cases you should be able to access the service running in K8s. The output should be similar to:
 
-
+```cmd
+{
+    "Server Name": "test.f5demo.local",
+    "Server Address": "10.244.140.93",
+    "Server Port": "80",
+    "Request Method": "GET",
+    "Request URI": "/",
+    "Query String": "",
+    "Headers": [{"host":"test.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+    "Remote Address": "10.1.20.5",
+    "Remote Port": "39478",
+    "Timestamp": "1657610216",
+    "Data": "0"
+}
+```
 
 ## HTTP Virtual Server with Host parameter and a single service.
 
@@ -74,22 +92,20 @@ spec:
     servicePort: 80
 ```
 
-Change the working directory to `host-routing`.
+Change the working directory to `basic`.
 ```
 cd ~/oltra/examples/cis/cis-crd/VirtualServer/Basic
 ```
-
 
 Create the VS CRD resource. 
 ```
 kubectl apply -f virtual-single-pool.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and attaches a policy which forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
-
+CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs single-pool-vs
 ```
 
 Try accessing the service with curl as per the examples below. 
@@ -107,9 +123,23 @@ curl http://app1.f5demo.local --resolve app1.f5demo.local:80:10.1.10.55
 curl http://app1.f5demo.local/test --resolve app1.f5demo.local:80:10.1.10.55
 ```
 
-In both cases you should be able to access the service running in K8s.
+In both cases you should be able to access the service running in K8s. The output should be similar to:
 
-
+```cmd
+{
+    "Server Name": "app1.f5demo.local",
+    "Server Address": "10.244.196.135",
+    "Server Port": "80",
+    "Request Method": "GET",
+    "Request URI": "/test",
+    "Query String": "",
+    "Headers": [{"host":"app1.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+    "Remote Address": "10.1.20.5",
+    "Remote Port": "34724",
+    "Timestamp": "1657610340",
+    "Data": "0"
+}
+```
 
 ## HTTP Virtual Server with two services (Path Based Routing).
 
@@ -137,16 +167,20 @@ spec:
     servicePort: 8080    
 ```
 
+Change the working directory to `basic`.
+```
+cd ~/oltra/examples/cis/cis-crd/VirtualServer/Basic
+```
+
 Create the VS CRD resource. 
 ```
 kubectl apply -f virtual-two-pools.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and attaches a policy which forwards traffic to service app1-svc or app2-svc depending on the URI path.   
-
+CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and will attach a policy that forwards traffic to service app1-svc or app2-svc based on the URI path.   
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs two-pools-vs
 ```
 
 Try accessing the service with curl as per the examples below. 
@@ -157,13 +191,18 @@ curl http://pools.f5demo.local/ --resolve pools.f5demo.local:80:10.1.10.56
 In the above example you should see a reset connection as it didnt match the configured URI Path.
 `curl: (56) Recv failure: Connection reset by peer`
 
-
-
 Try again with the examples below
 ```
 curl http://pools.f5demo.local/svc1 --resolve pools.f5demo.local:80:10.1.10.56
 curl http://pools.f5demo.local/svc2 --resolve pools.f5demo.local:80:10.1.10.56
 ```
 
-Verify that the traffic was forwarded to the right service depending on the path that was entered.
+Verify that the traffic was forwarded to the right service depending on the path that was entered. The output should be similar to:
 
+```cmd
+Server address: 10.244.140.116:8080
+Server name: app2-78c95bccb5-jvfnr
+Date: 12/Jul/2022:07:21:49 +0000
+URI: /svc2                                    <======== URI Path
+Request ID: a5b08e8249b65a11aaaacd307feeca8e  
+```

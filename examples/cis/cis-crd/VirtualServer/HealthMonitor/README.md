@@ -34,6 +34,10 @@ spec:
       interval: 3
       timeout: 10
 ```
+Change the working directory to `HealthMonitor`.
+```
+cd ~/oltra/examples/cis/cis-crd/VirtualServer/HealthMonitor
+```
 
 Create the CRD resource.
 ```
@@ -42,7 +46,7 @@ kubectl apply -f health-monitor.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs health-vs  
 ```
 
 On the BIGIP UI, you should see the application pool marked as green and a custom monitor assigned to the pool

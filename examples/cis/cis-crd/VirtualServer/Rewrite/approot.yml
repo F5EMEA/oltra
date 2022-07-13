@@ -12,4 +12,4 @@ spec:
   pools:
     - path: /
       service: app1-svc
-      servicePort: 80
+      servicePort: 8080

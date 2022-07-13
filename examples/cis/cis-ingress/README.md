@@ -36,6 +36,6 @@ kubectl get pod -n kube-system | grep f5
 NAME                              READY   STATUS  
 f5-cis-crd-588bc4844f-64qjv       1/1     Running   
 f5-cis-ingress-84856fd767-rnwd5   1/1     Running  
-f5ipam-5bf9fbdb5-dzqwd            1/1     Running   
+f5-ipam-5bf9fbdb5-dzqwd            1/1     Running   
 
 ```

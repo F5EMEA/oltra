@@ -7,7 +7,7 @@ metadata:
 spec:
   host: '*.f5test.local'
   tlsProfileName: wildcard-tls
-  virtualServerAddress: 10.1.10.72
+  virtualServerAddress: 10.1.10.73
   virtualServerName: "wildcard-tls-vs"
   httpTraffic: none
   pools:

@@ -9,7 +9,7 @@ This section demonstrates the three option to configure VirtualServer TLS termin
 This section demonstrates how to configure VirtualServer with edge TLS termination.
 For this configuration we will need 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
 
-Eg: edge-tls.yml
+Eg: edge-tls.yml / edge-vs.yml
 ```yml
 apiVersion: cis.f5.com/v1
 kind: TLSProfile
@@ -24,9 +24,9 @@ spec:
     termination: edge
     clientSSL: /Common/clientssl
     reference: bigip
-```
-Eg: edge-vs.yml
-```yml
+
+---
+
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
 metadata:
@@ -44,6 +44,11 @@ spec:
       servicePort: 80
 ```
 
+Change the working directory to `TLS-Termination`.
+```
+cd ~/oltra/examples/cis/cis-crd/VirtualServer/TLS-Termination
+```
+
 Create the TLSProfile and VirtualServer resources.
 ```
 kubectl apply -f edge-tls.yml
@@ -52,7 +57,7 @@ kubectl apply -f edge-vs.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs edge-tls-vs
 ```
 
 Access the `echo-svc` service using the following example. 
@@ -60,13 +65,12 @@ Access the `echo-svc` service using the following example.
 curl -vk https://edge.f5demo.local/ --resolve edge.f5demo.local:443:10.1.10.68
 ```
 
-
 ## Re-Encrypt TLS Termination
 This section demonstrates how to configure VirtualServer with re-encrypt TLS termination.
 For this configuration we will need 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
 
 
-Eg: re-encrypt-tls.yml
+Eg: re-encrypt-tls.yml / re-encrypt-vs.yml
 ```yml
 apiVersion: cis.f5.com/v1
 kind: TLSProfile
@@ -82,9 +86,7 @@ spec:
     clientSSL: /Common/clientssl
     serverSSL: /Common/serverssl
     reference: bigip
-```
-Eg: re-encrypt-vs.yml
-```yml
+---
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
 metadata:
@@ -100,18 +102,22 @@ spec:
       path: /
       service: echo-svc
       servicePort: 80
+```
 
+Change the working directory to `TLS-Termination`.
+```
+cd ~/oltra/examples/cis/cis-crd/VirtualServer/TLS-Termination
 ```
 
 Create the TLSProfile and VirtualServer resources.
 ```
-kubectl apply -f re-encrypt-tls.yml
-kubectl apply -f re-encrypt-vs.yml
+kubectl apply -f reencrypt-tls.yml
+kubectl apply -f reencrypt-vs.yml
 ```
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs reencrypt-tls-vs
 ```
 
 Access the `secure-app` service using the following example. 
@@ -126,7 +132,7 @@ This section demonstrates how to configure VirtualServer with passthrough TLS te
 For this configuration we will need 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
 
 
-Eg: passthrough-tls.yml
+Eg: passthrough-tls.yml / passthrough-vs.yml
 ```yml
 apiVersion: cis.f5.com/v1
 kind: TLSProfile
@@ -139,9 +145,7 @@ spec:
     - passthrough.f5demo.local
   tls:
     termination: passthrough
-```
-Eg: passthrough-vs.yml
-```yml
+---
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
 metadata:
@@ -157,8 +161,11 @@ spec:
       path: /
       service: echo-svc
       servicePort: 80
+```
 
-
+Change the working directory to `TLS-Termination`.
+```
+cd ~/oltra/examples/cis/cis-crd/VirtualServer/TLS-Termination
 ```
 
 Create the TLSProfile and VirtualServer resources.
@@ -169,7 +176,7 @@ kubectl apply -f passthrough-vs.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs passthrough-tls-vs
 ```
 
 Access the `echo-svc` service using the following example. 
@@ -183,7 +190,7 @@ This section demonstrates how to configure VirtualServer with edge TLS terminati
 For this configuration we will need 1 secret to hold the TLS certificate and 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
 
 
-Eg: reference-secret.yml
+Eg: reference-secret.yml / reference-tls.yml / reference-vs.yml
 ```yml
 apiVersion: v1
 kind: Secret
@@ -194,10 +201,7 @@ data:
   tls.crt: certificate_in_base64.........
   tls.key: key_in_base64.................
 type: kubernetes.io/tls
-```
-
-Eg: reference-tls.yml
-```yml
+---
 apiVersion: cis.f5.com/v1
 kind: TLSProfile
 metadata:
@@ -211,10 +215,7 @@ spec:
     reference: secret
   hosts:
     - k8s.f5demo.local
-```
-
-Eg: reference-vs.yml
-```yml
+---
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
 metadata:
@@ -242,7 +243,7 @@ kubectl apply -f reference-vs.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs k8s-tls-vs
 ```
 
 Access the `echo-svc` service using the following example. 

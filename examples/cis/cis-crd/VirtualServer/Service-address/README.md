@@ -25,6 +25,10 @@ spec:
     routeAdvertisement: "all"
 
 ```
+Change the working directory to `Service-address`.
+```
+cd ~/oltra/examples/cis/cis-crd/VirtualServer/Service-address
+```
 
 Create the VirtualServerCRD resource.
 ```
@@ -33,5 +37,5 @@ kubectl apply -f service-address-vs.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get vs service-address-vs
 ```
