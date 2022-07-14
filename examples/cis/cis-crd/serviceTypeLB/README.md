@@ -181,7 +181,7 @@ kubectl -n kube-system describe deployment f5ipam
       /app/bin/f5-ipam-controller
     Args:
       --orchestration=kubernetes
-      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189"}'
+      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","customer1":"10.1.10.190-10.1.10.192","customer2":"10.1.10.193-10.1.10.195","customer3":"10.1.10.196-10.1.10.199"}'
       --log-level=DEBUG
 ...
 ...
