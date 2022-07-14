@@ -1,11 +1,12 @@
-# Unsecured Transport Server
+#  TransportServer CRD
+In this section we provide examples for the most common use-cases of TransportServer CRDs with F5 CIS.
+- [TCP TransportServer](#tcp-transport-server)
+- [TCP TransportServer with IPAM](#tcp-transport-server-with-ipam)
+- [UDP TransportServer](#udp-transport-server)
 
-This section demonstrates the deployment of Transport Servers.
-User may able to expose L4 services (TCP or UDP) via CIS using Transport Server CRD.
 
 ## TCP Transport Server
-
-This section demonstrates the deployment of a TCP Transport Server.
+This section demonstrates the deployment of a TCP TransportServer CRD.
 
 Eg: tcp-transport-server.yml
 ```yml

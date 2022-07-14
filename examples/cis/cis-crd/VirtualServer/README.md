@@ -1,18 +1,18 @@
 # Ingress Examples
-
-In this section we provide examples for the most common use-cases of Ingress Resources with F5 CIS
+In this section we provide examples for the most common use-cases of VirtualServer CRDs with F5 CIS
 
 * [Basic VirtualServer ](cis-crd/VirtualServer/Basic/)
 * [Host based routing](cis-crd/VirtualServer/HostGroup)
-* [Rewrite](cis-crd/VirtualServer/PathRewrite/)
-* [HTTP Redirect](cis-crd/VirtualServer/hhtpTraffc/)
+* [Rewrite](cis-crd/VirtualServer/Rewrite/)
+* [HTTP Redirect](cis-crd/VirtualServer/httpTraffic/)
 * [Dynamic IP Allocation (IPAM)](cis-crd/VirtualServer/IpamLabel)
 * [Health Monitors](cis-crd/VirtualServer/HealthMonitor)
 * [Wildcard Hostname](cis-crd/VirtualServer/Wildcard)
-* [TLS VirtualServer](cis-crd/VirtualServer/TLS-termination/)
-* [Using iRules ](cis-crd/VirtualServer/PolicyCRD/#policycrd-iRules)
-* [Managing Persistence](cis-crd/VirtualServer/PolicyCRD/#policycrd-persistence)
-* [Custom HTTP Profile](cis-crd/VirtualServer/PolicyCRD/#policycrd-xff)
+* [TLS VirtualServer](cis-crd/VirtualServer/TLS-Termination/)
+* [Using iRules ](cis-crd/VirtualServer/PolicyCRD/#iRules)
+* [Managing Persistence](cis-crd/VirtualServer/PolicyCRD/#Persistence)
+* [Custom HTTP Profile](cis-crd/VirtualServer/PolicyCRD/#custom-http-profile)
+* [Enable WAF Policies](cis-crd/VirtualServer/PolicyCRD/#waf-policies)
 * [VirtualServer with custom Port](cis-crd/VirtualServer/CustomPort/)
 
 
@@ -53,3 +53,5 @@ f5-cis-ingress-84856fd767-rnwd5   1/1     Running
 f5-ipam-5bf9fbdb5-dzqwd           1/1     Running   
 
 ```
+
+

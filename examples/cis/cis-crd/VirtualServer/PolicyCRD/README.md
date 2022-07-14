@@ -4,12 +4,12 @@ Policy is used to apply existing BIG-IP profiles and policy with Virtual Server 
 
 This section demonstrates the deployment of a Virtual Server with custom HTTP, Persistence, iRule and WAF Profiles with PolicyCRD.
 
-- [PolicyCRD XFF](#policycrd-xff)
-- [PolicyCRD WAF](#policycrd-persistence)
-- [PolicyCRD WAF](#policycrd-iRule)
-- [PolicyCRD WAF](#policycrd-waf)
+- [HTTP Profile](#custom-http-profile)
+- [Persistence](#persistence)
+- [iRules](#iRules)
+- [WAF Policies](#waf-policies)
 
-## PolicyCRD XFF
+## Custom HTTP Profile
 This section demonstrates the deployment of a Virtual Server with a custom HTTP Profiles that add XFF header.
 
 Eg: xff-policy.yml / vs-with-policy-xff.yml
@@ -62,7 +62,7 @@ curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.66
 Verify that the `x-forwarded-for` Header exists and contains the client's actual IP
 
 
-## PolicyCRD persistence
+## Persistence
 The default persistence that is configured with CIS is **/Common/cookie**. In this section we will demonstrate the deployment of a Virtual Server with persistence profile set to **None**.
 
 Eg: persistence-policy.yml / vs-with-policy-persistence.yml 
@@ -116,7 +116,7 @@ Verify that the transactions are actually going to multiple backend pods and the
 
 
 
-## PolicyCRD iRule
+## iRules
 This section demonstrates the deployment of a Virtual Server with a iRules to provide a **Sorry Page**.
 
 Eg: irule-policy.yml / vs-with-policy-irule.yml 
@@ -170,7 +170,7 @@ Verify that the sorry page is sent back from BIGIP.
 
 
 
-## PolicyCRD WAF
+## WAF Policies
 This section demonstrates the deployment of a Virtual Server with a WAF policy to protect against Layer 7 threats.
 
 Eg: waf-policy.yml / vs-with-policy-waf.yml

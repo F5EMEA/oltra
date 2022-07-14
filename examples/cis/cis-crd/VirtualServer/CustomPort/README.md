@@ -1,4 +1,4 @@
-# Secure Virtual Server with Re-encrypt Termination using BIG-IP Profiles
+# Using custom ports
 
 This section demonstrates the option to configure VirtualAddress with custom HTTP/HTTPS port numbers.  
 For this example section CIS will create a Virtual Server on BIG-IP with custom port (8080). To achieve this we will add `virtualServerHTTPPort` parameter on the VirtualServer resource with the port that we want BIGIP VIP to listen to. 

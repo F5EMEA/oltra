@@ -1,43 +1,19 @@
 # ServiceType LoadBalancer
-
 This section demonstrates three options on how to configure Service TypeLB (LoadBalancer).
 
-- Simple TypeLB
-- Multiport TypeLB
-- Health Monitor
+- [Service Type LoadBalancer](#service-type-loadbalancer)
+- [Multiport Type LoadBalancer](#create-multiport-type-loadbalancer)
+- [Service Type LoadBalancer with Health monitor](#service-type-loadbalancer-with-health-monitor)
 
-Service TypeLB relies on F5 IPAM to provide automatically IP addresses for the published services, by adding the annotation `cis.f5.com/ipamLabel`
-In order for the `ipamLabel` to provide an IP address, you need to have a F5 IPAM controller running and with the defined Labels/IP-ranges.
+A service of type LoadBalancer is the simplest and the fastest way to expose a service inside a Kubernetes cluster to the external world. You only need to specify the service type as type=LoadBalancer in the service definition.
 
-First lets verify that the IPAM is running.
+Services of type LoadBalancer are natively supported in Kubernetes deployments. When you create a service of type LoadBalancer it spins up service in integration with F5 IPAM Controller which allocates an IP address that will forward all traffic to your service.
 
-```
-kubectl get po -n kube-system | grep f5ipam
+For services of the type LoadBalancer, the controller deployed inside the Kubernetes cluster configures a service type LB. Using CIS, you can load balance the incoming traffic to the Kubernetes cluster. CIS manages IP addresses using FIC so you can maximize the utilization of load balancer resources and significantly reduce your operational expenses.
 
-**************** Expected Result ****************
-NAME                                      READY   STATUS    RESTARTS       AGE
-f5ipam-5bf9fbdb5-dzqwd                    1/1     Running   12 (39h ago)   18d
-```
+The mandatory parameter for service type LoadBalancer to work alongside CIS is to add the annotation `cis.f5.com/ipamLabel` on the service you want to publish.
 
-Review the IPAM IP ranges.
-
-```
-kubectl -n kube-system describe deployment f5ipam
-
-**************** Expected Result ****************
-...
-...
-    Command:
-      /app/bin/f5-ipam-controller
-    Args:
-      --orchestration=kubernetes
-      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189"}'
-      --log-level=DEBUG
-...
-...
-```
-
-## Create a Simple Type LoadBalancer
+## Service Type LoadBalancer
 
 This section demonstrates the deployment of a service as Type LoadBalancer. 
 
@@ -80,8 +56,7 @@ curl http://<IP address provided from IPAM>
 ```
 
 
-
-## Create a Simple Type LoadBalancer with Health Monitor
+## Service Type LoadBalancer with Health Monitor
 
 This section demonstrates the deployment of a service as Type LoadBalancer with a Health Monitor on the BIGIP pool. Options which can be used to configure health monitor:
 ```
@@ -133,7 +108,7 @@ Go to the F5 GUI and make sure that the pool created is now marked as Green by t
 
 
 
-## Create a MultiPort Type LoadBalancer
+## MultiPort Type LoadBalancer
 
 This section demonstrates the deployment of a multi port service as Type LoadBalancer that will create two Virtual Servers with different ports on BIG-IP. 
 
@@ -181,3 +156,33 @@ curl -k https://<IP address provided from IPAM>
 ```
 
 
+
+
+### Verify IPAM
+Verify that IPAM is running.
+
+```
+kubectl get po -n kube-system | grep f5ipam
+
+**************** Expected Result ****************
+NAME                                      READY   STATUS    RESTARTS       AGE
+f5-ipam-5bf9fbdb5-dzqwd                    1/1     Running   12 (39h ago)   18d
+```
+
+Review the IPAM configured IP ranges.
+
+```
+kubectl -n kube-system describe deployment f5ipam
+
+**************** Expected Result ****************
+...
+...
+    Command:
+      /app/bin/f5-ipam-controller
+    Args:
+      --orchestration=kubernetes
+      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189"}'
+      --log-level=DEBUG
+...
+...
+```
