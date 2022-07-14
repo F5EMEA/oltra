@@ -2,10 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    cis.f5.com/ipamLabel: Prod
+    cis.f5.com/ipamLabel: prod
   labels:
-    app: svc-lb1
-  name: svc-lb1
+    app: svc-lb-ipam
+  name: svc-lb-ipam
   namespace: default
 spec:
   ports:

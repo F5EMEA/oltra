@@ -3,15 +3,15 @@ kind: TransportServer
 metadata:
   labels:
     f5cr: "true"
-  name: svc1-udp-transport-server
+  name: udp-transport-server
   namespace: default
 spec:
-  virtualServerAddress: "10.1.10.112"
-  virtualServerPort: 8444
-  virtualServerName: svc1-udp-ts
+  virtualServerAddress: "10.1.10.75"
+  virtualServerPort: 53
+  virtualServerName: svc-udp-ts
   type: udp
   mode: standard
   snat: auto
   pool:
-    service: (TODO)
-    servicePort: 8182
+    service: coredns
+    servicePort: 5353

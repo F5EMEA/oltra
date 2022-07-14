@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: tcp-ts
 spec:
-  virtualServerAddress: "10.1.10.111"
+  virtualServerAddress: "10.1.10.74"
   virtualServerPort: 80
   virtualServerName: tcp-ts
   mode: standard

@@ -24,7 +24,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    cis.f5.com/ipamLabel: Prod
+    cis.f5.com/ipamLabel: prod
   labels:
     app: svc-lb1
   name: svc-lb1
@@ -40,20 +40,49 @@ spec:
   type: LoadBalancer
 ```
 
+Change the working directory to `serviceTypeLB`.
+```
+cd ~/oltra/examples/cis/cis-crd/serviceTypeLB
+```
+
 Create the K8s service. 
 ```
 kubectl apply -f serviceTypeLB.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see the Load Balancer IP address on the service that was just created..
+Confirm that the VS CRD is deployed correctly. You should see the Load Balancer IP address on the service that was just created.
 ```
-kubectl get svc 
+kubectl get svc svc-lb-ipam
 ```
+
+Save the IP adresses that was assigned by the IPAM for this service
+```
+IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
 
 Try accessing the service with curl as per the examples below. 
 ```
-curl http://<IP address provided from IPAM>
+curl http://$IP
 ```
+
+The output should be similar to:
+```cmd
+{
+    "Server Name": "10.1.10.171",
+    "Server Address": "10.244.140.88",
+    "Server Port": "80",
+    "Request Method": "GET",
+    "Request URI": "/",
+    "Query String": "",
+    "Headers": [{"host":"10.1.10.171","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+    "Remote Address": "10.1.20.5",
+    "Remote Port": "51550",
+    "Timestamp": "1657781705",
+    "Data": "0"
+}
+```
+
 
 
 ## Service Type LoadBalancer with Health Monitor
@@ -162,7 +191,7 @@ curl -k https://<IP address provided from IPAM>
 Verify that IPAM is running.
 
 ```
-kubectl get po -n kube-system | grep f5ipam
+kubectl get po -n kube-system | grep f5-ipam
 
 **************** Expected Result ****************
 NAME                                      READY   STATUS    RESTARTS       AGE
@@ -172,7 +201,7 @@ f5-ipam-5bf9fbdb5-dzqwd                    1/1     Running   12 (39h ago)   18d
 Review the IPAM configured IP ranges.
 
 ```
-kubectl -n kube-system describe deployment f5ipam
+kubectl -n kube-system describe deployment f5-ipam
 
 **************** Expected Result ****************
 ...
