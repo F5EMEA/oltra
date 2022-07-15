@@ -158,26 +158,26 @@ Once the script has been completed we should be able to observe the reports and 
 On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
 
 <p align="left">
-  <img src="grafana.png" style="width:75%">
+  <img src="images/grafana.png" style="width:75%">
 </p>
 
 Login to Grafana (credentials **admin/IngressLab123**)
 <p align="left">
-  <img src="login.png" style="width:75%">
+  <img src="images/login.png" style="width:75%">
 </p>
 
 
 Go to **Dashboards->Browse**
 
 <p align="left">
-  <img src="browse.png" style="width:75%">
+  <img src="images/browse.png" style="width:75%">
 </p>
 
 
 Select any Dashboard you want to review
 
 <p align="left">
-  <img src="dashboards.png" style="width:75%">
+  <img src="images/dashboards.png" style="width:75%">
 </p>
 
 
@@ -201,7 +201,7 @@ Prometheus is an open-source systems monitoring and alerting toolkit originally 
 In our environemnt Prometheus has been configured to scrape BIGIP for all metrics every 30 seconds.
 You can find more information on how Prometheus has been configured to scrape BIGIP can be found on the link below:
 
-- [Scraping BIGIP](#../setup/4-Setup-prometheus-grafana/1-scraping-bigip.yml)
+- [Scraping BIGIP](#https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/1-scraping-bigip.yml)
 
 ### **Elasticsearch**
 
