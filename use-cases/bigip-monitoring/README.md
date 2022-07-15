@@ -39,7 +39,7 @@ Both Client and Server SSL dashboards provide insight on multiple SSL metrics. T
 - SSL Cipher used
 - SSL Key exchange
 
-<img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/bigip-monitoring/images/client-ssl.png">
+<img src="images/client-ssl.png">
 
 >:information_source:
 >  The source of information used to create this dashboard is Prometheus.
@@ -52,7 +52,7 @@ In the Pool dashboard we provide more details on the utilization and transaction
 - Transactions over time (per member)
 - Utilization over time (per memeber)
 
-<img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/bigip-monitoring/images/pools.png">
+<img src="images/pools.png">
 
 >:information_source:
 >  The source of information used to create this dashboard is Prometheus.
@@ -60,7 +60,7 @@ In the Pool dashboard we provide more details on the utilization and transaction
 ## HTTP Profile Dashboard
 In the HTTP Profile dashboard we get a detail view on the HTTP response code (2xx, 3xx, 4xx, 5xx) per HTTP Profile and can observe the trend over time.
 
-<img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/bigip-monitoring/images/http-profile.png">
+<img src="images/http-profile.png">
 
 >:information_source:
 >  The source of information used to create this dashboard is Prometheus.
@@ -84,7 +84,7 @@ VS Access logs dashboard provides insight on the HTTP Request/Response transacti
 - Detail Logs per transaction
 
 
-<img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/bigip-monitoring/images/access-logs.png">
+<img src="images/access-logs.png">
 
 >:information_source:
 >  The source of information used to create this dashboard is Elasticsearch.
