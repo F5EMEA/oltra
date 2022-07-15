@@ -159,26 +159,26 @@ Once the script has been completed we should be able to observe the reports and 
 On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
 
 <p align="left">
-  <img src="images/grafana.png" style="width:75%">
+  <img src="images/grafana.png" style="width:35%">
 </p>
 
 Login to Grafana (credentials **admin/IngressLab123**)
 <p align="left">
-  <img src="images/login.png" style="width:75%">
+  <img src="images/login.png" style="width:50%">
 </p>
 
 
 Go to **Dashboards->Browse**
 
 <p align="left">
-  <img src="images/browse.png" style="width:75%">
+  <img src="images/browse.png" style="width:22%">
 </p>
 
 
 Select any Dashboard you want to review
 
 <p align="left">
-  <img src="images/dashboards.png" style="width:75%">
+  <img src="images/dashboards.png" style="width:90%">
 </p>
 
 
