@@ -5,7 +5,7 @@ clear
 echo "Traffic generation started"
 echo
 
-for i in {1..500};
+for i in {1..700};
     do
         curl http://`shuf -n 1 ./ips.txt``shuf -n 1 ./urls.txt`
         curl http://`shuf -n 1 ./ips.txt``shuf -n 1 ./urls.txt`

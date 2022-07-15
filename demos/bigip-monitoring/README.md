@@ -138,12 +138,14 @@ xff-policy-vs         policy.f5demo.local                                       
 ```
 
 
-**Step 2 - Send traffic to the BIGIP Virtual Servers** 
+### Step 2 - Send traffic to the BIGIP Virtual Servers** 
 The second script will send traffic to BIGIP's VIPs for about 1-2 minutes in order to populate the graphs with meaningful data.
 
 ```
 ./traffic.sh
 ```
+
+### Step 3 - Review Dashboards in Grafana
 Once the script has been completed we should be able to observe the reports and see interesting data such as:
 - Utilization per virtual server
 - Traffic per pool and pool memebers
@@ -153,41 +155,59 @@ Once the script has been completed we should be able to observe the reports and 
 - SSL version used
 - URLs that have slow response time and URLs that generate 500 and 404 errors
 
-**Step 3 - Clean up the environment** 
-Running the following script will remove the existing virtualservers CRDs and Ingress resources so that we clean up the environemnt.
+On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
 
-```
-run asdasdsad.sh
-```
+<p align="left">
+  <img src="grafana.png" style="width:75%">
+</p>
+
+Login to Grafana (credentials **admin/IngressLab123**)
+<p align="left">
+  <img src="login.png" style="width:75%">
+</p>
 
 
-<br>
+Go to **Dashboards->Browse**
+
+<p align="left">
+  <img src="browse.png" style="width:75%">
+</p>
+
+
+Select any Dashboard you want to review
+
+<p align="left">
+  <img src="dashboards.png" style="width:75%">
+</p>
 
 
 ## Technologies
 
 ### **Telemetry Streaming**
 
-Telemetry Streaming (TS) enables you to declaratively aggregate, normalize, and forward statistics and events from the BIG-IP to a consumer application. There are multiple consumers supported by Telemetry streaming. You can find more information about Telemetry streaming on the following <a href="https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest"> link </a>
-There are 2 type of consumers that we will be using for the BIGIP dashboard; Elasticsearch consumer (Push) and Prometheus consumer (Pull). <br>
-The Elasticsearch consumer has been configured is sending all the access logs that are collected via an iRule to ElasticSearch. The pre-requisite for collection of the logs this is to attach the **iRule** to the desired Virtual Server.<br>
-The Prometheus Consumer has also been enabled in order to expose a new HTTP API endpoint that will be scraped by Prometheus for metrics. The consumer outputs the telemetry data according to the Prometheus data model specification. <br>
-You can find more information on how Telemetry Streaming has been configured on the following link (TTTTOOOO ADDDDD):
-- iRule to collect logs
-- Telemetry streaming declaration
+Telemetry Streaming (TS) enables you to declaratively aggregate, normalize, and forward statistics and events from the BIG-IP to a consumer application. There are multiple consumers supported by Telemetry streaming. You can find more information about Telemetry streaming on the following <a href="https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest"> link </a> <br><br>
+There are 2 types of consumers that we will be using for the BIGIP dashboard; Elasticsearch consumer (Push) and Prometheus consumer (Pull). <br>
+The **Elasticsearch** consumer has been configured is sending all the access logs that are collected via an iRule to ElasticSearch. This is achieved by attaching the **iRule** called *"/Common/Shared/telemetry_log_iRule"* to the desired VirtualServer CRD.<br>
+The **Prometheus** consumer has also been enabled in order to expose a new HTTP API endpoint that will be scraped by Prometheus for metrics. The consumer outputs the telemetry data according to the Prometheus data model specification. <br><br>
+
+You can find more information on how Telemetry Streaming has been configured on the following links:
+- [iRule to collect logs](#)
+- [Telemetry streaming declaration](#)
 
 
 ### **Prometheus**
 Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. Since its inception in 2012, many companies and organizations have adopted Prometheus, and the project has a very active developer and user community. It is now a standalone open source project and maintained independently of any company. To emphasize this, and to clarify the project's governance structure, Prometheus joined the Cloud Native Computing Foundation in 2016 as the second hosted project, after Kubernetes.
 
 In our environemnt Prometheus has been configured to scrape BIGIP for all metrics every 30 seconds.
-You can find more information on how Prometheus has been configured on the following link (TTTTOOOO ADDDDD)
+You can find more information on how Prometheus has been configured to scrape BIGIP can be found on the link below:
+
+- [Scraping BIGIP](#../setup/4-Setup-prometheus-grafana/1-scraping-bigip.yml)
 
 ### **Elasticsearch**
 
 Elasticsearch is a distributed, free and open search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured. Elasticsearch is built on Apache Lucene and was first released in 2010 by Elasticsearch N.V. (now known as Elastic). Known for its simple REST APIs, distributed nature, speed, and scalability, Elasticsearch is the central component of the Elastic Stack, a set of free and open tools for data ingestion, enrichment, storage, analysis, and visualization. Commonly referred to as the ELK Stack (after Elasticsearch, Logstash, and Kibana), the Elastic Stack now includes a rich collection of lightweight shipping agents known as Beats for sending data to Elasticsearch.
 
-In our environemnt Elasticsearch is been used to store the logs and events that are generated from BIGIP.
+In our environment Elasticsearch is been used to store the logs and events that are generated from BIGIP.
 You can find more information on how Prometheus has been configured on the following link (TTTTOOOO ADDDDD)
 
 
