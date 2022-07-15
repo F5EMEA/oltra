@@ -1,0 +1,35 @@
+when CLIENT_ACCEPTED {
+    set client_ip [IP::client_addr]
+    set vip [IP::local_addr]
+    set vip_port [TCP::local_port]
+}
+when HTTP_REQUEST {
+    set http_host [HTTP::host]
+    set http_path [string range [HTTP::path] 0 400]
+    set http_method [HTTP::method]
+    if { [HTTP::header exists "User-Agent"] } {
+        set user_agent [string range [HTTP::header "User-Agent"] 0 200]
+    } else
+    {
+        set user_agent "Not-Available"
+    }
+    if { [HTTP::header exists "Referer"] } {
+        set referer [string range [HTTP::header "Referer"] 0 200]
+    } else
+    {
+        set referer "Not-Available"
+    }
+    set tcp_start_time [clock clicks -milliseconds]
+    set pool_name [LB::server pool]
+    set event_timestamp  [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"]
+}
+when HTTP_RESPONSE {
+    set node [IP::server_addr]
+    set node_port [TCP::server_port]
+    set http_status [HTTP::status]
+    set response_time [expr {[clock clicks -milliseconds] - $tcp_start_time}]
+    set hsl [HSL::open -proto TCP -pool /Common/Shared/telemetry]
+    set event_source "HTTP_logging"
+    HSL::send $hsl "event_source=\"$event_source\",event_timestamp=\"$event_timestamp\",client_ip=\"$client_ip\",vip=\"$vip\",vip_port=\"$vip_port\",http_method=\"$http_method\",http_host=\"$http_host\",http_path=\"$http_path\",user_agent=\"$user_agent\",referer=\"$referer\",pool_name=\"$pool_name\",node=\"$node\",node_port=\"$node_port\",http_status=\"$http_status\",response_time=\"$response_time\"
+"
+}

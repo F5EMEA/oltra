@@ -144,6 +144,7 @@ The second script will send traffic to BIGIP's VIPs for about 1-2 minutes in ord
 ```
 ./traffic.sh
 ```
+>**Note:** You might want to run the script multiple times to collect more logs/statistics.
 
 ### Step 3 - Review Dashboards in Grafana
 Once the script has been completed we should be able to observe the reports and see interesting data such as:
@@ -191,8 +192,8 @@ The **Elasticsearch** consumer has been configured is sending all the access log
 The **Prometheus** consumer has also been enabled in order to expose a new HTTP API endpoint that will be scraped by Prometheus for metrics. The consumer outputs the telemetry data according to the Prometheus data model specification. <br><br>
 
 You can find more information on how Telemetry Streaming has been configured on the following links:
-- [iRule to collect logs](#)
-- [Telemetry streaming declaration](#)
+- [iRule to collect logs](#https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/7-telemetry-log-irule.txt)
+- [Telemetry streaming declaration](#https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/6-setup-f5-telemetry.txt)
 
 
 ### **Prometheus**
@@ -208,7 +209,6 @@ You can find more information on how Prometheus has been configured to scrape BI
 Elasticsearch is a distributed, free and open search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured. Elasticsearch is built on Apache Lucene and was first released in 2010 by Elasticsearch N.V. (now known as Elastic). Known for its simple REST APIs, distributed nature, speed, and scalability, Elasticsearch is the central component of the Elastic Stack, a set of free and open tools for data ingestion, enrichment, storage, analysis, and visualization. Commonly referred to as the ELK Stack (after Elasticsearch, Logstash, and Kibana), the Elastic Stack now includes a rich collection of lightweight shipping agents known as Beats for sending data to Elasticsearch.
 
 In our environment Elasticsearch is been used to store the logs and events that are generated from BIGIP.
-You can find more information on how Prometheus has been configured on the following link (TTTTOOOO ADDDDD)
 
 
 ### **Grafana**
@@ -217,12 +217,9 @@ Grafana is an open source solution for running data analytics, pulling up metric
 Grafana connects with every possible data source, commonly referred to as databases such as Graphite, Prometheus, Influx DB, ElasticSearch, MySQL, PostgreSQL etc.
 
 In our environment we connected Grafana to Elasticsearch and Prometheus. The Dashboards created can be found on Grafana Hub:
-- asd
-- asd
-- sasd
-- asda 
-
-### **BIGIP Access logs**
-
-There are multiple ways to collect the transaction information from a BIGIP device. In our example, we used an iRule to collect the logs. iRules give use the flexibility to create our custom logic and collect any metric/parameter we need. The iRule that has been created to collect the logs can be found on  (TODDODODOD)
+- [BIGIP CIS - Dashboard](#https://grafana.com/grafana/dashboards/16176)
+- [BIGIP CIS - Client SSL Profiles](#https://grafana.com/grafana/dashboards/16174)
+- [BIGIP CIS - Server SSL Profiles](#https://grafana.com/grafana/dashboards/16172)
+- [BIGIP CIS - Pools](#https://grafana.com/grafana/dashboards/16173)
+- [BIGIP CIS - LTM Logs](#https://grafana.com/grafana/dashboards/16171)
 

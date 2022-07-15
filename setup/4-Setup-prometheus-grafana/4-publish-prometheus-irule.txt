@@ -1,10 +1,4 @@
 ************  iRules  ****************
-#when HTTP_REQUEST {
-#    if { [HTTP::header exists "Host"]} {
-#        HTTP::header replace "Host" "grafana.f5demo.local"
-#    }
-#}
-**************************************
 
 when HTTP_REQUEST {
     if { [HTTP::header exists "Host"]} {
