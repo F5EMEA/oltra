@@ -192,8 +192,8 @@ The **Elasticsearch** consumer has been configured is sending all the access log
 The **Prometheus** consumer has also been enabled in order to expose a new HTTP API endpoint that will be scraped by Prometheus for metrics. The consumer outputs the telemetry data according to the Prometheus data model specification. <br><br>
 
 You can find more information on how Telemetry Streaming has been configured on the following links:
-- [iRule to collect logs](#https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/7-telemetry-log-irule.txt)
-- [Telemetry streaming declaration](#https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/6-setup-f5-telemetry.txt)
+- <a href="https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/7-telemetry-log-irule.txt"> iRule to collect logs </a>
+- <a href="https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/6-setup-f5-telemetry.txt"> Telemetry streaming declaration </a>
 
 
 ### **Prometheus**
@@ -202,7 +202,7 @@ Prometheus is an open-source systems monitoring and alerting toolkit originally 
 In our environemnt Prometheus has been configured to scrape BIGIP for all metrics every 30 seconds.
 You can find more information on how Prometheus has been configured to scrape BIGIP can be found on the link below:
 
-- [Scraping BIGIP](#https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/1-scraping-bigip.yml)
+- <a href="https://github.com/f5emea/oltra/setup/4-Setup-prometheus-grafana/1-scraping-bigip.yml"> Scraping BIGIP </a>
 
 ### **Elasticsearch**
 
