@@ -92,7 +92,7 @@ VS Access logs dashboard provides insight on the HTTP Request/Response transacti
 ## How to Demo
 In order to demo the usefullness of the dashboards we are to create traffic through the BIGIP. 
 
-### Step 1 - Create multiple Ingress and VS CRDs
+#### Step 1 - Create multiple Ingress and VS CRDs
 Change the working directory to `bigip-monitoring`.
 ```
 cd ~/oltra/demos/bigip-monitoring/
@@ -138,7 +138,7 @@ xff-policy-vs         policy.f5demo.local                                       
 ```
 
 
-### Step 2 - Send traffic to the BIGIP Virtual Servers** 
+#### Step 2 - Send traffic to the BIGIP Virtual Servers** 
 The second script will send traffic to BIGIP's VIPs for about 1-2 minutes in order to populate the graphs with meaningful data.
 
 ```
@@ -146,7 +146,7 @@ The second script will send traffic to BIGIP's VIPs for about 1-2 minutes in ord
 ```
 >**Note:** You might want to run the script multiple times to collect more logs/statistics.
 
-### Step 3 - Review Dashboards in Grafana
+#### Step 3 - Review Dashboards in Grafana
 Once the script has been completed we should be able to observe the reports and see interesting data such as:
 - Utilization per virtual server
 - Traffic per pool and pool memebers
@@ -184,7 +184,7 @@ Select any Dashboard you want to review
 
 ## Technologies
 
-### **Telemetry Streaming**
+#### **Telemetry Streaming**
 
 Telemetry Streaming (TS) enables you to declaratively aggregate, normalize, and forward statistics and events from the BIG-IP to a consumer application. There are multiple consumers supported by Telemetry streaming. You can find more information about Telemetry streaming on the following <a href="https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest"> link </a> <br><br>
 There are 2 types of consumers that we will be using for the BIGIP dashboard; Elasticsearch consumer (Push) and Prometheus consumer (Pull). <br>
@@ -196,7 +196,7 @@ You can find more information on how Telemetry Streaming has been configured on 
 - <a href="https://github.com/F5EMEA/oltra/blob/main/setup/4-Setup-prometheus-grafana/6-setup-f5-telemetry.txt"> Telemetry streaming declaration </a>
 
 
-### **Prometheus**
+#### **Prometheus**
 Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. Since its inception in 2012, many companies and organizations have adopted Prometheus, and the project has a very active developer and user community. It is now a standalone open source project and maintained independently of any company. To emphasize this, and to clarify the project's governance structure, Prometheus joined the Cloud Native Computing Foundation in 2016 as the second hosted project, after Kubernetes.
 
 In our environemnt Prometheus has been configured to scrape BIGIP for all metrics every 30 seconds.
@@ -211,7 +211,7 @@ Elasticsearch is a distributed, free and open search and analytics engine for al
 In our environment Elasticsearch is been used to store the logs and events that are generated from BIGIP.
 
 
-### **Grafana**
+#### **Grafana**
  
 Grafana is an open source solution for running data analytics, pulling up metrics that make sense of the massive amount of data & to monitor our apps with the help of cool customizable dashboards.
 Grafana connects with every possible data source, commonly referred to as databases such as Graphite, Prometheus, Influx DB, ElasticSearch, MySQL, PostgreSQL etc.
