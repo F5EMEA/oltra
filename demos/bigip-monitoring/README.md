@@ -90,18 +90,59 @@ VS Access logs dashboard provides insight on the HTTP Request/Response transacti
 >  The source of information used to create this dashboard is Elasticsearch.
 
 ## How to Demo
-In order to demo the usefullness of the dashboards we are to create traffic through the BIGIP.   
-**Step 1 - Create multiple Ingress and VS CRDs** 
-With the following script we will deploy the virtualservers CRDs and Ingress resources so that we prepare the BIGIP to receive traffic. 
+In order to demo the usefullness of the dashboards we are to create traffic through the BIGIP. 
+
+### Step 1 - Create multiple Ingress and VS CRDs
+Change the working directory to `bigip-monitoring`.
+```
+cd ~/oltra/demos/bigip-monitoring/
+```
+
+Scale the deployment of `echo-svc` to 5 pods
+```
+kubectl scale deployment echo --replicas=5
+```
+
+Run the following script that will deploy multiple HTTP/HTTPS VirtualServer CRDs so that we prepare the BIGIP to receive traffic. 
+```
+kubectl apply -f deploy_services.yml
+
+###############   expected result   ###############
+tlsprofile.cis.f5.com/reencrypt-tls created
+virtualserver.cis.f5.com/reencrypt-tls-vs created
+policy.cis.f5.com/xff-policy created
+virtualserver.cis.f5.com/xff-policy-vs created
+virtualserver.cis.f5.com/vs-test1 created
+virtualserver.cis.f5.com/vs-test2 created
+virtualserver.cis.f5.com/vs-test3 created
+virtualserver.cis.f5.com/vs-test4 created
+####################################################
 
 ```
-run asdasdsad.sh
+
+Verify that the VirtualServers have been configured correctly.
 ```
+kubectl get vs
+
+###############   expected result   ###############
+
+NAME                  HOST                       TLSPROFILENAME        HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
+reencrypt-tls-vs      reencrypt.f5demo.local     reencrypt-tls                       10.1.10.69               None            Ok       2d
+vs-test1                                                                             10.1.10.79               None            Ok       2m13s
+vs-test2                                                                             10.1.10.80               None            Ok       2m13s
+vs-test3                                                                             10.1.10.81               None            Ok       2m13s
+vs-test4                                                                             10.1.10.82               None            Ok       2m13s
+xff-policy-vs         policy.f5demo.local                                            10.1.10.66               None            Ok       2m13s
+
+####################################################
+```
+
+
 **Step 2 - Send traffic to the BIGIP Virtual Servers** 
 The second script will send traffic to BIGIP's VIPs for about 1-2 minutes in order to populate the graphs with meaningful data.
 
 ```
-run asdasdsad.sh
+./traffic.sh
 ```
 Once the script has been completed we should be able to observe the reports and see interesting data such as:
 - Utilization per virtual server

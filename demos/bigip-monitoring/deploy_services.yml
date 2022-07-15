@@ -1,0 +1,150 @@
+apiVersion: cis.f5.com/v1
+kind: TLSProfile
+metadata:
+  name: reencrypt-tls
+  labels:
+    f5cr: "true"
+spec:
+  hosts:
+    - reencrypt.f5demo.local
+  tls:
+    termination: reencrypt
+    clientSSL: /Common/clientssl
+    serverSSL: /Common/serverssl
+    reference: bigip
+
+---
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: reencrypt-tls-vs
+spec:
+  host: reencrypt.f5demo.local
+  tlsProfileName: reencrypt-tls
+  virtualServerAddress: 10.1.10.69
+  virtualServerName: "reencrypt-tls-vs"
+  policyName: log-policy
+  pools:
+  - path: /
+    service: secure-app
+    servicePort: 8443
+
+---
+apiVersion: cis.f5.com/v1
+kind: Policy
+metadata:
+  labels:
+    f5cr: "true"
+  name: xff-policy
+spec:
+  profiles:
+    http: /Common/http-xff
+
+---
+apiVersion: cis.f5.com/v1
+kind: Policy
+metadata:
+  labels:
+    f5cr: "true"
+  name: log-policy
+spec:
+  iRules:
+    insecure: /Common/Shared/telemetry_log_iRule
+---
+
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: xff-policy-vs
+spec:
+  virtualServerAddress: 10.1.10.66
+  virtualServerName: "xff-policy-vs"
+  host: policy.f5demo.local
+  policyName: xff-policy
+  snat: auto
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80
+
+---
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: vs-test1
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.79"
+  virtualServerName: "vs-test1"
+  policyName: log-policy
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80
+---
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: vs-test2
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.80"
+  virtualServerName: "vs-test2"
+  policyName: log-policy
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80
+---
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: vs-test3
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.81"
+  virtualServerName: "vs-test3"
+  policyName: log-policy
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80
+---
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: vs-test4
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.82"
+  virtualServerName: "vs-test4"
+  policyName: log-policy
+  pools:
+  - path: /
+    service: echo-svc
+    servicePort: 80
+---
+apiVersion: cis.f5.com/v1
+kind: VirtualServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: readiness-vs
+spec:
+  virtualServerAddress: 10.1.10.83
+  virtualServerName: "readiness-vs"
+  host: readiness.f5demo.local
+  policyName: log-policy
+  snat: auto
+  pools:
+  - path: /
+    service: readiness-svc
+    servicePort: 80
