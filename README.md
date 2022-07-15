@@ -51,11 +51,6 @@ The examples build for OLTRA can be found below:
 - **Publishing services with Type LoadBalancer with CIS** <br>
 - **Continuous Deployment with ArgoCD** <br>
 
-<<<<<<< Updated upstream
-
-
-=======
->>>>>>> Stashed changes
 ---
 
 ## Support
