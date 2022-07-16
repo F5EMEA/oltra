@@ -77,13 +77,14 @@ kubectl create namespace tenant-2
 
 ### Step 2. Deploy NGINX+ Ingress Controller
 
-For each tenant deploy a seperate NGINX+ Ingress Controller. 
+For each tenant we will deploy a seperate NGINX+ Ingress Controller. 
 
+1. Create a namespace per tenant
 ```
-kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/ns-and-sa.yaml -n tenant-1
-kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/ns-and-sa.yaml -n tenant-2
-
-kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/role-bnding.yaml -n tenant-2
+kubectl create namespace  -n tenant-1
+kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/sa.yaml -n tenant-1
+kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/sa.yaml -n tenant-2
+kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/rbac.yaml -n tenant-2
 kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/role-bnding.yaml -n tenant-2
 
 ```

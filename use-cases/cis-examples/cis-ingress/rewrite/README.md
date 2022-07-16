@@ -44,7 +44,7 @@ spec:
 
 Change the working directory to `rewrite`.
 ```
-cd ~/oltra/examples/cis/cis-ingress/rewrite
+cd ~/oltra/use-cases/cis-examples/cis-ingress/rewrite
 ```
 
 Create the Ingress resource.
@@ -121,7 +121,7 @@ In the following example we deploy an Ingress resource that rewrites the URL fro
 
 Change the working directory to `rewrite`.
 ```
-cd ~/oltra/examples/cis/cis-ingress/rewrite
+cd ~/oltra/use-cases/cis-examples/cis-ingress/rewrite
 ```
 
 Create the Ingress resource.

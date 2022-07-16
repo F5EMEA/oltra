@@ -40,7 +40,7 @@ spec:
 
 Change the working directory to `health-monitor`
 ```
-cd ~/oltra/examples/cis/cis-ingress/health-monitor
+cd ~/oltra/use-cases/cis-examples/cis-ingress/health-monitor
 ```
 
 Create the Ingress resource.

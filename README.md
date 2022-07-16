@@ -35,7 +35,7 @@ The use-case build for OLTRA can be found below:
 ## Demos
 The demos build for OLTRA can be found below:
 
-- [**Monitoring K8s services published via BIGIP with Prometheus, Grafana and Elastic**](demos/bigip-monitoring/README.md)
+- [**Monitoring K8s services published via BIGIP with Prometheus, Grafana and Elastic**](use-cases/bigip-monitoring/README.md)
 - **Monitoring K8s services published via NGINX+ Ingress Controller with Prometheus, Grafana and Elastic** <br>
 - **Publishing NGINX+ Ingress with BIGIP** <br>
 - **Securing K8s services against L3/L7 DDoS attacks with BIGIP** <br>
@@ -46,11 +46,13 @@ The demos build for OLTRA can be found below:
 ## Examples
 The examples build for OLTRA can be found below:
 
-- [**Reverse Proxy capabilities with CIS**](examples/cis/README.md)
+- [**Reverse Proxy capabilities with CIS**](use-cases/cis-examples/README.md)
 - **DNS Publishing of K8s services with CIS EDNS CRDs** <br>
 - **Publishing services with Type LoadBalancer with CIS** <br>
 - **Continuous Deployment with ArgoCD** <br>
-
+<br>
+<br>
+<br>
 ---
 
 ## Support

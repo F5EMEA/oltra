@@ -38,7 +38,7 @@ spec:
 
 Change the working directory to `fanout`
 ```
-cd ~/oltra/examples/cis/cis-ingress/fanout
+cd ~/oltra/use-cases/cis-examples/cis-ingress/fanout
 ```
 
 Create the Ingress resource.
@@ -94,7 +94,7 @@ curl http://fanout.f5demo.local/app2 --resolve fanout.f5demo.local:80:10.1.10.50
 In all cases you should see similar outputs but from different backend pods (__app1__ and __app2__ pods) depending on the path.
 
 ```cmd
-~/oltra/examples/cis/cis-ingress/fanout$ curl http://fanout.f5demo.local/app2 --resolve fanout.f5demo.local:80:10.1.10.50
+~/oltra/use-cases/cis-examples/cis-ingress/fanout$ curl http://fanout.f5demo.local/app2 --resolve fanout.f5demo.local:80:10.1.10.50
 
 Server address: 10.244.140.66:8080
 Server name: app2-78c95bccb5-jvfnr              <======  app2 pods

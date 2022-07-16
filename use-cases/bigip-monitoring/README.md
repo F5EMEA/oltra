@@ -1,4 +1,4 @@
-# Monitoring services published via BIGIP with Prometheus, Grafana and Elastic
+# Monitoring BIGIP services with Prometheus, Grafana and Elastic
 In this section we go through how you can efectively to monitor K8s services that are being delivered by BIGIP/CIS with an observability platform. The technologies that are part of the observability platform are [**Prometheus**](#prometheus), [**Elasticsearch**](#elasticsearch), [**Grafana**](#grafana) and [**Telemetry Streaming (F5)**](#telemetry-streaming). 
 
 <p align="center">
@@ -204,7 +204,7 @@ You can find more information on how Prometheus has been configured to scrape BI
 
 - <a href="https://github.com/F5EMEA/oltra/blob/main/setup/4-Setup-prometheus-grafana/1-scraping-bigip.yml"> Scraping BIGIP </a>
 
-### **Elasticsearch**
+#### **Elasticsearch**
 
 Elasticsearch is a distributed, free and open search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured. Elasticsearch is built on Apache Lucene and was first released in 2010 by Elasticsearch N.V. (now known as Elastic). Known for its simple REST APIs, distributed nature, speed, and scalability, Elasticsearch is the central component of the Elastic Stack, a set of free and open tools for data ingestion, enrichment, storage, analysis, and visualization. Commonly referred to as the ELK Stack (after Elasticsearch, Logstash, and Kibana), the Elastic Stack now includes a rich collection of lightweight shipping agents known as Beats for sending data to Elasticsearch.
 
@@ -222,4 +222,6 @@ In our environment we connected Grafana to Elasticsearch and Prometheus. The Das
 - [BIGIP CIS - Server SSL Profiles](#https://grafana.com/grafana/dashboards/16172)
 - [BIGIP CIS - Pools](#https://grafana.com/grafana/dashboards/16173)
 - [BIGIP CIS - LTM Logs](#https://grafana.com/grafana/dashboards/16171)
+
+
 
