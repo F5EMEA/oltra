@@ -84,8 +84,8 @@ For each tenant we will deploy a seperate NGINX+ Ingress Controller.
 cd ~/oltra/use-cases/multi-tenancy
 mkdir nginx_t1
 mkdir nginx_t2
-cp -R ~/oltra/setup/2-Deploy-plus/* nginx_t1
-cp -R ~/oltra/setup/2-Deploy-plus/* nginx_t2
+cp -R ~/oltra/setup/nginx-ic/* nginx_t1
+cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 ```
 
 2. Replace the namespace `nginx` with `tenant-1` and `tenant-2` for the required manifests
@@ -96,18 +96,17 @@ cp -R ~/oltra/setup/2-Deploy-plus/* nginx_t2
 3. Apply configuration
 ```
 kubectl create namespace  -n tenant-1
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/1-Nginx-RBAC
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/1-Nginx-RBAC
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/2-Nginx-resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/2-Nginx-resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/4-Nginx-Plus
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/4-Nginx-Plus
-//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/5-Publish-NGINX-with-CIS
-//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/5-Publish-NGINX-with-CIS
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/rbac
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/rbac
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/resources
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/resources
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/nginx-plus
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/4-nginx-plus
+//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/publish
+//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
 ```
 
 ### Step 3. Deploy Applications
-
 
 Verify that the NGINX pods are up and running on each tenant 
 ```
