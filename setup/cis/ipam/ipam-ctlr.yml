@@ -18,11 +18,11 @@ spec:
       containers:
       - args:
         - --orchestration=kubernetes
-        - --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189"}'
+        - --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","tenant-1":"10.1.10.190-10.1.10.192","tenant-2":"10.1.10.193-10.1.10.195"}'        
         - --log-level=DEBUG
         command:
         - /app/bin/f5-ipam-controller
-        image: f5networks/f5-ipam-controller:0.1.7
+        image: f5networks/f5-ipam-controller:0.1.8
         imagePullPolicy: IfNotPresent
         name: f5-ipam-controller
         terminationMessagePath: /dev/termination-log

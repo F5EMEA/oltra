@@ -79,15 +79,35 @@ kubectl create namespace tenant-2
 
 For each tenant we will deploy a seperate NGINX+ Ingress Controller. 
 
-1. Create a namespace per tenant
+1. Copy the NGINX plus deployment from the setup folder
+```
+cd ~/oltra/use-cases/multi-tenancy
+mkdir nginx_t1
+mkdir nginx_t2
+cp -R ~/oltra/setup/2-Deploy-plus/* nginx_t1
+cp -R ~/oltra/setup/2-Deploy-plus/* nginx_t2
+```
+
+2. Replace the namespace `nginx` with `tenant-1` and `tenant-2` for the required manifests
+```
+./rename.sh
+```
+
+3. Apply configuration
 ```
 kubectl create namespace  -n tenant-1
-kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/sa.yaml -n tenant-1
-kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/sa.yaml -n tenant-2
-kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/rbac.yaml -n tenant-2
-kubectl apply -f ~oltra/setup/2-Deploy-plus/1-Nginx-RBAC/role-bnding.yaml -n tenant-2
-
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/1-Nginx-RBAC
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/1-Nginx-RBAC
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/2-Nginx-resources
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/2-Nginx-resources
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/4-Nginx-Plus
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/4-Nginx-Plus
+//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/5-Publish-NGINX-with-CIS
+//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/5-Publish-NGINX-with-CIS
 ```
+
+### Step 3. Deploy Applications
+
 
 Verify that the NGINX pods are up and running on each tenant 
 ```
@@ -95,11 +115,12 @@ kubectl get pods -n customer-a -n cudstomer-b
 ....
 
 
-
-
+4. Deploy applications on each tenant
+```
+kubectl apply -f 
 ```
 
-### Step 3. BIGIP CIS / IPAM 
+### Step 4. Verify CIS / IPAM deployment 
 
 CIS and IPAM are already setup and running on the K8s cluster.
 ```
@@ -114,7 +135,7 @@ $ kubectl describe deployment f5-ipam -n kube-sytem
 
 ```
 
-### Step 4. Publish Ingress Controller
+### Step 4. Verify CIS / IPAM deployment 
 
 In this step we will publish the NGINX IC by creating a CIS CRD (TransportServer) on each namespace. An example of such CRD can be found below.
 ```yaml
