@@ -95,7 +95,7 @@ cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 
 3. Apply configuration
 ```
-kubectl create namespace  -n tenant-1
+kubectl create namespace  -n tenant1
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/rbac
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/rbac
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/resources
