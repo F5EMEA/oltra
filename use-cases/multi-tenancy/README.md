@@ -71,8 +71,8 @@ More information on CIS and IPAM can be found on the following links:
 
 Create the namespace for each tenant (Tenant-1, Tenant-2)
 ```
-kubectl create namespace tenant-1
-kubectl create namespace tenant-2
+kubectl create namespace tenant1
+kubectl create namespace tenant2
 ```
 
 ### Step 2. Deploy NGINX+ Ingress Controller
@@ -93,30 +93,29 @@ cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 ./rename.sh
 ```
 
-3. Apply configuration
+3. Apply configurations
 ```
-kubectl create namespace  -n tenant1
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/rbac
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/rbac
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/resources
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/resources
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/nginx-plus
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/4-nginx-plus
-//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/publish
-//kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/nginx-plus
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/publish
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
 ```
 
 ### Step 3. Deploy Applications
 
 Verify that the NGINX pods are up and running on each tenant 
 ```
-kubectl get pods -n customer-a -n cudstomer-b
+kubectl get pods -n tentant1 -n tenant2
 ....
 
 
 4. Deploy applications on each tenant
 ```
-kubectl apply -f 
+kubectl apply -f ~/oltra/
 ```
 
 ### Step 4. Verify CIS / IPAM deployment 
@@ -126,7 +125,7 @@ CIS and IPAM are already setup and running on the K8s cluster.
 $ kubectl get po -n kube-sytem | grep f5
 ```
 
-Verify that IPAM labels are configured for both Customer-A and Customer-B
+Verify that IPAM labels are configured for both Tenant1 and Tenant2
 ```
 $ kubectl describe deployment f5-ipam -n kube-sytem
 
