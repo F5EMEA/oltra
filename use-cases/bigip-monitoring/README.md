@@ -95,7 +95,7 @@ In order to demo the usefullness of the dashboards we are to create traffic thro
 #### Step 1 - Create multiple Ingress and VS CRDs
 Change the working directory to `bigip-monitoring`.
 ```
-cd ~/oltra/demos/bigip-monitoring/
+cd ~/oltra/use-cases/bigip-monitoring/
 ```
 
 Scale the deployment of `echo-svc` to 5 pods
@@ -147,7 +147,7 @@ The second script will send traffic to BIGIP's VIPs for about 1-2 minutes in ord
 >**Note:** You might want to run the script multiple times to collect more logs/statistics.
 
 #### Step 3 - Review Dashboards in Grafana
-Once the script has been completed we should be able to observe the reports and see interesting data such as:
+Once the script has been completed we should be able to see statistics/events on the Grafana dasbboards such as:
 - Utilization per virtual server
 - Traffic per pool and pool memebers
 - HTTP Response Code statistics
