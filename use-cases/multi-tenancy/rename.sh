@@ -3,22 +3,26 @@ sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/ns-and-sa.yaml
 sed -i '1, 5d' nginx_t1/rbac/ns-and-sa.yaml
 sed -i '1, 5d' nginx_t2/rbac/ns-and-sa.yaml
 
-
 sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/ap-rbac.yaml
 sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/ap-rbac.yaml
-sed -i '1, 126d' nginx_t1/rbac/ap-rbac.yaml
-sed -i '1, 126d' nginx_t2/rbac/ap-rbac.yaml
+sed -i '1, 16d' nginx_t1/rbac/ap-rbac.yaml
+sed -i '1, 16d' nginx_t2/rbac/ap-rbac.yaml
+sed -i '4s/name: nginx-ingress-app-protect/name: nginx-ingress-app-protect-tenant1/' nginx_t1/rbac/ap-rbac.yaml
+sed -i '4s/name: nginx-ingress-app-protect/name: nginx-ingress-app-protect-tenant2/' nginx_t2/rbac/ap-rbac.yaml
 
 sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/apdos-rbac.yaml
 sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/apdos-rbac.yaml
 sed -i '1, 16d' nginx_t1/rbac/apdos-rbac.yaml
 sed -i '1, 16d' nginx_t2/rbac/apdos-rbac.yaml
+sed -i '4s/name: nginx-ingress-app-protect-dos/name: nginx-ingress-app-protect-dos-tenant1/' nginx_t1/rbac/apdos-rbac.yaml
+sed -i '4s/name: nginx-ingress-app-protect-dos/name: nginx-ingress-app-protect-dos-tenant2/' nginx_t2/rbac/apdos-rbac.yaml
 
 sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/rbac.yaml
 sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/rbac.yaml
-sed -i '1, 16d' nginx_t1/rbac/rbac.yaml
-sed -i '1, 16d' nginx_t2/rbac/rbac.yaml
-
+sed -i '1, 126d' nginx_t1/rbac/rbac.yaml
+sed -i '1, 126d' nginx_t2/rbac/rbac.yaml
+sed -i '4s/name: nginx-ingress/name: nginx-ingress-tenant1/' nginx_t1/rbac/rbac.yaml
+sed -i '4s/name: nginx-ingress/name: nginx-ingress-tenant2/' nginx_t2/rbac/rbac.yaml
 
 sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/resources/default-server-secret.yaml
 sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/resources/default-server-secret.yaml

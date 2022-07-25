@@ -109,7 +109,7 @@ kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
 
 Verify that the NGINX pods are up and running on each tenant 
 ```
-kubectl get pods -n tentant1 -n tenant2
+kubectl get pods -n tenant1 -n tenant2
 ....
 
 
