@@ -175,7 +175,7 @@ Go to **Dashboards->Browse**
 </p>
 
 
-Select any Dashboard you want to review
+Select any Dashboard you want to review under CIS
 
 <p align="left">
   <img src="images/dashboards.png" style="width:90%">

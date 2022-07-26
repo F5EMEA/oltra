@@ -88,7 +88,7 @@ cp -R ~/oltra/setup/nginx-ic/* nginx_t1
 cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 ```
 
-2. Replace the namespace `nginx` with `tenant-1` and `tenant-2` for the required manifests
+2. Replace the namespace `nginx` with `tenant1` and `tenant2` for the required manifests
 ```
 ./rename.sh
 ```
@@ -105,91 +105,231 @@ kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/publish
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
 ```
 
-### Step 3. Deploy Applications
-
-Verify that the NGINX pods are up and running on each tenant 
-```
-kubectl get pods -n tenant1 -n tenant2
-....
-
-
-4. Deploy applications on each tenant
-```
-kubectl apply -f ~/oltra/
-```
-
-### Step 4. Verify CIS / IPAM deployment 
-
-CIS and IPAM are already setup and running on the K8s cluster.
-```
-$ kubectl get po -n kube-sytem | grep f5
-```
-
-Verify that IPAM labels are configured for both Tenant1 and Tenant2
-```
-$ kubectl describe deployment f5-ipam -n kube-sytem
-
-....
+4. Verify that the NGINX pods are up and running on each tenant
 
 ```
+kubectl get pods -n tenant1
+kubectl get pods -n tenant2
 
-### Step 4. Verify CIS / IPAM deployment 
+############      Expected Output   ##############
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
+##################################################
 
-In this step we will publish the NGINX IC by creating a CIS CRD (TransportServer) on each namespace. An example of such CRD can be found below.
-```yaml
-apiVersion: "cis.f5.com/v1"
-kind: TransportServer
+
+5. Confirm that CIS TransportServer CRDs have been deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+```
+kubectl get ts -n tenant1
+kubectl get ts -n tenant2
+
+############      Expected Output   ##############
+NAME            VIRTUALSERVERADDRESS   VIRTUALSERVERPORT   POOL            POOLPORT   IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
+nginx-tenant1                          80                  nginx-tenant1   80         tenant1     10.1.10.191     Ok       30h
+##################################################
+
+6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
+```
+IP_tenant1=$(kubectl get ts nginx-tenant1 -n tenant1 --template '{{.status.vsAddress}}')
+IP_tenant2=$(kubectl get ts nginx-tenant2 -n tenant2 --template '{{.status.vsAddress}}')
+```
+
+7. Try accessing the service as per the example below. 
+```
+curl http://$IP_tenant1
+curl http://$IP_tenant2
+```
+
+The output should be similar to:
+
+```html
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.21.5</center>
+</body>
+</html>
+```
+
+### Step 3. Deploy services for each tenant
+
+1. Deploy demo applications in each tenant
+```
+kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant1
+kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
+```
+
+2. Deploy Ingress services for each tenant
+```yml
+cat <<EOF | kubectl apply -f -
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  labels:
-    f5cr: "true"
-  name: nginx-customer-a
-  namespace: customer-a
+  name: apps-tentant1
+  namespace: tenant1
 spec:
-  ipamLabel: "customer-a"
-  virtualServerPort: 80
-  virtualServerName: nginx-customer-a
-  mode: standard
-  snat: auto
-  pool:
-    service: nginx-svc
-    servicePort: 80
-    monitor:
-      type: tcp
-      interval: 3
-      timeout: 10
+  ingressClassName: nginx-tenant1
+  rules:
+  - host: tenant1.f5demo.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app1-svc
+            port:
+              number: 80
+      - path: /app2
+        pathType: Prefix
+        backend:
+          service:
+            name: app2-svc
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: apps-tentant2
+  namespace: tenant2
+spec:
+  ingressClassName: nginx-tenant2
+  rules:
+  - host: tenant2.f5demo.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: app1-svc
+            port:
+              number: 80
+      - path: /app2
+        pathType: Prefix
+        backend:
+          service:
+            name: app2-svc
+            port:
+              number: 80
+EOF
 ```
 
-Deploy CIS Transport Server CRDs
 
+3. Access the services for both tenants as per the example below. 
 ```
-$ kubectl apply -f ts_crds.yaml
-```
-
-Verify that CRDs have been deployed successuly.
-
-
-Send a 
-
-
-### Step 5. Deploy applications
-
-For each tenant deploy 2 demo applications
-
-```
-$ kubectl apply -f apps.yaml
+curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
+curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
+curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
+curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
 ```
 
-Publish the applications through Ingress under different FQDNs.
 
+### Step 6. (Optional) Review Grafana Dashboards 
+
+1. Setup scraping for the new NGINX instances
+```yml
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-metrics-tenant1
+  namespace: tenant1
+  labels:
+    type: nginx-metrics
+spec:
+  ports:
+  - port: 9113
+    protocol: TCP
+    targetPort: 9113
+    name: prometheus
+  selector:
+    app: nginx-tenant1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-metrics-tenant2
+  namespace: tenant2
+  labels:
+    type: nginx-metrics
+spec:
+  ports:
+  - port: 9113
+    protocol: TCP
+    targetPort: 9113
+    name: prometheus
+  selector:
+    app: nginx-tenant2
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nginx-metrics
+  namespace: monitoring
+  labels:
+    type: nginx-plus
+spec:
+  selector:
+    matchLabels:
+      type: nginx-metrics
+  namespaceSelector:
+    matchNames:
+    - nginx
+    - tenant1
+    - tenant2
+  endpoints:
+  - interval: 30s
+    path: /metrics
+    port: prometheus
+EOF
 ```
-$ kubectl apply -f nginx_tenants.yaml
+
+2. Login to Grafana. On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
+
+<p align="left">
+  <img src="images/grafana.png" style="width:35%">
+</p>
+
+Login to Grafana (credentials **admin/IngressLab123**)
+<p align="left">
+  <img src="images/login.png" style="width:50%">
+</p>
+
+
+Go to **Dashboards->Browse**
+
+<p align="left">
+  <img src="images/browse.png" style="width:22%">
+</p>
+
+
+Select any of the 2 Ingress Dashboards (NGINX Ingress / NGINX Ingress Details) which can be found on NGINX Folder
+
+<p align="left">
+  <img src="images/dashboards.png" style="width:40%">
+</p>
+
+
+
+2. Run the following script to generate traffic and review the Grafana Dashboards
+```cmd
+for i in {1..500} ; do curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1; \
+curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2;  \
+curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1; \
+curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2; \
+done
 ```
 
-Try and access these services.
+**Ingress Dashboard**
 
+<p align="left">
+  <img src="images/ingress.png" style="width:90%">
+</p>
 
+**Ingress Dashboard Details**
 
-### Step 6. Dashboards
-
-
-### Step 7. Remove environment
+<p align="left">
+  <img src="images/ingress-details.png" style="width:90%">
+</p>

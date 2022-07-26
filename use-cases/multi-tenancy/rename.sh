@@ -43,16 +43,19 @@ sed -i '33, 33d' nginx_t2/nginx-plus/svc-plus.yaml
 sed -i '1, 22d' nginx_t2/nginx-plus/svc-plus.yaml 
 sed -i 's/type: NodePort/type: ClusterIP/' nginx_t1/nginx-plus/svc-plus.yaml
 sed -i 's/type: NodePort/type: ClusterIP/' nginx_t2/nginx-plus/svc-plus.yaml
-sed -i 's/nginx-infra/nginx-tenant-1/' nginx_t1/nginx-plus/svc-plus.yaml
-sed -i 's/nginx-infra/nginx-tenant-2/' nginx_t2/nginx-plus/svc-plus.yaml
+sed -i 's/nginx-infra/nginx-tenant1/' nginx_t1/nginx-plus/svc-plus.yaml
+sed -i 's/nginx-infra/nginx-tenant2/' nginx_t2/nginx-plus/svc-plus.yaml
 sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/nginx-plus/svc-plus.yaml
 sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/nginx-plus/svc-plus.yaml
-sed -i 's/nginx-plus/nginx-tenant-1/' nginx_t1/publish/transport.yml
-sed -i 's/nginx-plus/nginx-tenant-2/' nginx_t2/publish/transport.yml
+sed -i 's/nginx-plus/nginx-tenant1/' nginx_t1/publish/transport.yml
+sed -i 's/nginx-plus/nginx-tenant2/' nginx_t2/publish/transport.yml
 sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/publish/transport.yml
 sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/publish/transport.yml
 sed -i 's/virtualServerAddress: "10.1.10.40"/ipamLabel: "tenant1"/' nginx_t1/publish/transport.yml
 sed -i 's/virtualServerAddress: "10.1.10.40"/ipamLabel: "tenant2"/' nginx_t2/publish/transport.yml
+sed -i '22, 43d' nginx_t1/publish/transport.yml
+sed -i '22, 43d' nginx_t2/publish/transport.yml
+
 mv nginx_t1/nginx-plus/nginx-infra.yaml nginx_t1/nginx-plus/nginx.yaml
 mv nginx_t2/nginx-plus/nginx-infra.yaml nginx_t2/nginx-plus/nginx.yaml
 mv nginx_t1/nginx-plus/ingress-class-infra.yaml nginx_t1/nginx-plus/ingress-class.yaml
