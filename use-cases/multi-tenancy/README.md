@@ -115,7 +115,7 @@ kubectl get pods -n tenant2
 NAME                            READY   STATUS    RESTARTS   AGE
 nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
 ##################################################
-
+```
 
 5. Confirm that CIS TransportServer CRDs have been deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
@@ -126,6 +126,7 @@ kubectl get ts -n tenant2
 NAME            VIRTUALSERVERADDRESS   VIRTUALSERVERPORT   POOL            POOLPORT   IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
 nginx-tenant1                          80                  nginx-tenant1   80         tenant1     10.1.10.191     Ok       30h
 ##################################################
+```
 
 6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
 ```
