@@ -1,7 +1,7 @@
 # OLTRA
 **One lab to rule them all (OLTRA)**
 
-This repository contains examples, use-cases and demos for modern architectures that you can use with **OLTRA**. OLTRA can be deployed either in F5's [UDF environment](https://udf.f5.com/b/94afd04b-a46b-4429-b2e1-2b3ac9813579) or in the public cloud provider of your choice ([AWS](/deployment/aws) or [Azure](/deployment/azure)) with the use of Terraform/Ansible. OLTRA is maintained by the EMEA Solution Architect team.
+This repository contains examples, use-cases and demos for modern architectures that you can use with **OLTRA**. **OLTRA** can be deployed either in F5's [UDF environment](https://udf.f5.com/b/94afd04b-a46b-4429-b2e1-2b3ac9813579) or in the public cloud provider of your choice ([AWS](/deployment/aws) or [Azure](/deployment/azure)) with the use of Terraform/Ansible. OLTRA is maintained by F5's EMEA Solution Architect team.
 
 The high level diagram for OLTRA environment can be found below along with the technologies that are being used on this lab.
 
@@ -29,7 +29,7 @@ The use-case build for OLTRA can be found below:
 
 - [**Building Multi-tenant Ingress services**](use-cases/multi-tenancy/README.md)
 - **Deploying Active-Active or Active-Standby services in a multicluster K8s with CIS and NGINX** <br>
-- **Implementing eb application security into a DevOps environment**
+- **Implementing web application security into a DevOps environment** ()
 
 
 ## Demos
@@ -46,7 +46,7 @@ The demos build for OLTRA can be found below:
 ## Examples
 The examples build for OLTRA can be found below:
 
-- [**Reverse Proxy capabilities with CIS**](use-cases/cis-examples/README.md)
+- [**Ingress capabilities with CIS**](use-cases/cis-examples/README.md)
 - **DNS Publishing of K8s services with CIS EDNS CRDs** <br>
 - **Publishing services with Type LoadBalancer with CIS** <br>
 - **Continuous Deployment with ArgoCD** <br>

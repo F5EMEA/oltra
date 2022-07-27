@@ -44,9 +44,9 @@ Tenants, have at least one NGINX IC service running on their environment and som
 
 | Type | Functionality |
 |---|---|
-| VirtualServer CRD | With VS CRD you can enable multiple functionalities such as **reverse proxy**, **DDoS**, **BoT mitigation**, **SSL offloading**, **HTTP/HTTP2 profiles**, **L4/7 iRules**, **WAF policies**, **SNAT pools** , **Cookie/IP Persistence**, **EDNS** |
-| TransportServer CRD |  With TS CRD you can enable primarily L4 functionalities such as **reverse proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence** |
-| Service Type LB | With service type LB you can enable primarily L4 functionalities like TS CRD such as **reverse proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence** |
+| VirtualServer CRD | With VS CRD you can enable multiple functionalities such as **Reverse Proxy**, **DDoS**, **BoT mitigation**, **SSL offloading**, **HTTP/HTTP2 profiles**, **L4/7 iRules**, **WAF policies**, **SNAT pools** , **Cookie/IP Persistence**, **EDNS**. <br> Examples on VirtualServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#virtualserver-crd-examples">here</a> |
+| TransportServer CRD |  With TS CRD you can enable primarily L4 functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence**.<br> Examples on TransportServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#transportserver-crd-examples">here</a> |
+| Service Type LB | With service type LB you can enable primarily L4 functionalities like TS CRD such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |
 
 
 **Separation** 
@@ -110,22 +110,24 @@ kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
 ```
 kubectl get pods -n tenant1
 kubectl get pods -n tenant2
-
-############      Expected Output   ##############
+```
+```
+####################################      Expected Output   ######################################
 NAME                            READY   STATUS    RESTARTS   AGE
 nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
-##################################################
+##################################################################################################
 ```
 
 5. Confirm that CIS TransportServer CRDs have been deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
 kubectl get ts -n tenant1
 kubectl get ts -n tenant2
-
-############      Expected Output   ##############
+```
+```
+####################################      Expected Output   ######################################
 NAME            VIRTUALSERVERADDRESS   VIRTUALSERVERPORT   POOL            POOLPORT   IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
 nginx-tenant1                          80                  nginx-tenant1   80         tenant1     10.1.10.191     Ok       30h
-##################################################
+##################################################################################################
 ```
 
 6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
@@ -227,7 +229,7 @@ curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tena
 ```
 
 
-### Step 6. (Optional) Review Grafana Dashboards 
+### Step 4. (Optional) Grafana Dashboards 
 
 1. Setup scraping for the new NGINX instances
 ```yml
@@ -314,7 +316,7 @@ Select any of the 2 Ingress Dashboards (NGINX Ingress / NGINX Ingress Details) w
 
 
 
-2. Run the following script to generate traffic and review the Grafana Dashboards
+2. Run the following script to generate traffic and review the Grafana Dashboards per tenant
 ```cmd
 for i in {1..500} ; do curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1; \
 curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2;  \
