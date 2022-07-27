@@ -3,7 +3,6 @@
 /images.png
 /portal
 /test
-/images/ball.png
-/css/page.css
+/app2
+/app2
 /api
-

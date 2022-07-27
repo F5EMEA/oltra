@@ -1,5 +1,0 @@
-app1.nginx.local
-app2.nginx.local
-app3.nginx.local
-readiness.nginx.local
-echo.nginx.local
