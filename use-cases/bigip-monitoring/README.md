@@ -1,5 +1,5 @@
 # Monitoring BIGIP services with Prometheus, Grafana and Elastic
-In this section we go through how you can efectively to monitor K8s services that are being delivered by BIGIP/CIS with an observability platform. The technologies that are part of the observability platform are [**Prometheus**](#prometheus), [**Elasticsearch**](#elasticsearch), [**Grafana**](#grafana) and [**Telemetry Streaming (F5)**](#telemetry-streaming). 
+In this section we go through how you can efectively to monitor K8s services that are being delivered by BIGIP/CIS. The technologies that are part of the observability platform are [**Prometheus**](#prometheus), [**Elasticsearch**](#elasticsearch), [**Grafana**](#grafana) and [**Telemetry Streaming (F5)**](#telemetry-streaming). 
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/bigip-monitoring/images/UDF-Lab-Monitoring-BIGIP.png" style="width:75%">
@@ -8,9 +8,9 @@ In this section we go through how you can efectively to monitor K8s services tha
 The dashboards that have been created to assist with the monitoring of the K8s services are:
   - [**CIS Dashboard**](#cis-dashboard)
   - [**Client/Server SSL Performance**](#clientserver-ssl-dashboard)
-  - [**HTTP Profiles**](#http-profiles) 
+  - [**HTTP Profiles**](#http-profile-dashboard) 
   - [**Pools**](#pools-dashboard)
-  - [**VS Access Logs**](#vs-access-logs)
+  - [**VS Access Logs**](#vs-access-logs-dashboard)
   - BIGIP Error Logs (**pending**)
 
 ## CIS Dashboard
@@ -192,8 +192,8 @@ The **Elasticsearch** consumer has been configured is sending all the access log
 The **Prometheus** consumer has also been enabled in order to expose a new HTTP API endpoint that will be scraped by Prometheus for metrics. The consumer outputs the telemetry data according to the Prometheus data model specification. <br><br>
 
 You can find more information on how Telemetry Streaming has been configured on the following links:
-- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/4-Setup-prometheus-grafana/7-telemetry-log-irule.txt"> iRule to collect logs </a>
-- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/4-Setup-prometheus-grafana/6-setup-f5-telemetry.txt"> Telemetry streaming declaration </a>
+- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/prometheus-grafana/7-telemetry-log-irule.txt"> iRule to collect logs </a>
+- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/prometheus-grafana/6-setup-f5-telemetry.txt"> Telemetry streaming declaration </a>
 
 
 #### **Prometheus**
@@ -202,7 +202,7 @@ Prometheus is an open-source systems monitoring and alerting toolkit originally 
 In our environemnt Prometheus has been configured to scrape BIGIP for all metrics every 30 seconds.
 You can find more information on how Prometheus has been configured to scrape BIGIP can be found on the link below:
 
-- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/4-Setup-prometheus-grafana/1-scraping-bigip.yml"> Scraping BIGIP </a>
+- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/prometheus-grafana/1-scraping-bigip.yml"> Scraping BIGIP </a>
 
 #### **Elasticsearch**
 
@@ -217,11 +217,12 @@ Grafana is an open source solution for running data analytics, pulling up metric
 Grafana connects with every possible data source, commonly referred to as databases such as Graphite, Prometheus, Influx DB, ElasticSearch, MySQL, PostgreSQL etc.
 
 In our environment we connected Grafana to Elasticsearch and Prometheus. The Dashboards created can be found on Grafana Hub:
-- [BIGIP CIS - Dashboard](#https://grafana.com/grafana/dashboards/16176)
-- [BIGIP CIS - Client SSL Profiles](#https://grafana.com/grafana/dashboards/16174)
-- [BIGIP CIS - Server SSL Profiles](#https://grafana.com/grafana/dashboards/16172)
-- [BIGIP CIS - Pools](#https://grafana.com/grafana/dashboards/16173)
-- [BIGIP CIS - LTM Logs](#https://grafana.com/grafana/dashboards/16171)
+- <a href="https://grafana.com/grafana/dashboards/16176">BIGIP CIS - Dashboard</a>
+- <a href="https://grafana.com/grafana/dashboards/16174">BIGIP CIS - Client SSL Profiles</a>
+- <a href="https://grafana.com/grafana/dashboards/16172">BIGIP CIS - Server SSL Profiles</a>
+- <a href="https://grafana.com/grafana/dashboards/16173">BIGIP CIS - Pools</a>
+- <a href="https://grafana.com/grafana/dashboards/16171">BIGIP CIS - LTM Logs</a>
+
 
 
 
