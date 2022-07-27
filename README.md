@@ -1,8 +1,8 @@
 # OLTRA
-**One lab to rule them all (OLTRA)**
 
-This repository contains examples, use-cases and demos for modern architectures that you can use with **OLTRA**. **OLTRA** can be deployed either in F5's [UDF environment](https://udf.f5.com/b/94afd04b-a46b-4429-b2e1-2b3ac9813579) or in the public cloud provider of your choice ([AWS](/deployment/aws) or [Azure](/deployment/azure)) with the use of Terraform/Ansible. OLTRA is maintained by F5's EMEA Solution Architect team.
+This repository contains examples, use-cases and demos for modern architectures that you can use with **OLTRA** (one lab to rule all). 
 
+**OLTRA** can be deployed either in F5's [UDF environment](https://udf.f5.com/b/94afd04b-a46b-4429-b2e1-2b3ac9813579) or in the public cloud provider of your choice ([AWS](/deployment/aws) or [Azure](/deployment/azure)) with the use of Terraform/Ansible. OLTRA is maintained by F5's EMEA Solution Architect team.
 The high level diagram for OLTRA environment can be found below along with the technologies that are being used on this lab.
 
 <img src="udf-lab.png">
@@ -50,7 +50,6 @@ The examples build for OLTRA can be found below:
 - [**Publishing Type LoadBalancer services with CIS**](use-cases/cis-examples/cis-crd/serviceTypeLB/README.md)
 - **DNS Publishing of K8s services with CIS EDNS CRDs** <br>
 - **Continuous Deployment with ArgoCD** <br>
-<br>
 <br>
 <br>
 ---
