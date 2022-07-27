@@ -5,7 +5,7 @@ This repository contains examples, use-cases and demos for modern architectures 
 
 The high level diagram for OLTRA environment can be found below along with the technologies that are being used on this lab.
 
-<img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/setup/images/udf-lab.png">
+<img src="udf-lab.png">
 
 
 | Name | Notes |
@@ -35,8 +35,8 @@ The use-case build for OLTRA can be found below:
 ## Demos
 The demos build for OLTRA can be found below:
 
-- [**Monitoring K8s services published via BIGIP with Prometheus, Grafana and Elastic**](use-cases/bigip-monitoring/README.md)
-- **Monitoring K8s services published via NGINX+ Ingress Controller with Prometheus, Grafana and Elastic** <br>
+- [**Monitoring BIGIP services with Prometheus, Grafana and Elastic**](use-cases/bigip-monitoring/README.md)
+- [**Monitoring NGINX+ Ingress services with Prometheus, Grafana and Elastic**](use-cases/nginx-monitoring/README.md)
 - **Publishing NGINX+ Ingress with BIGIP** <br>
 - **Securing K8s services against L3/L7 DDoS attacks with BIGIP** <br>
 - **Securing K8s services against L7 DDoS attacks with NGINX+** <br>
@@ -48,7 +48,7 @@ The examples build for OLTRA can be found below:
 
 - [**Ingress capabilities with CIS**](use-cases/cis-examples/README.md)
 - **DNS Publishing of K8s services with CIS EDNS CRDs** <br>
-- **Publishing services with Type LoadBalancer with CIS** <br>
+- **Publishing Type LoadBalancer services with CIS** <br>
 - **Continuous Deployment with ArgoCD** <br>
 <br>
 <br>

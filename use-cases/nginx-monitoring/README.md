@@ -1,93 +1,46 @@
-# Monitoring BIGIP services with Prometheus, Grafana and Elastic
-In this section we go through how you can efectively to monitor K8s services that are being delivered by BIGIP/CIS. The technologies that are part of the observability platform are [**Prometheus**](#prometheus), [**Elasticsearch**](#elasticsearch), [**Grafana**](#grafana) and [**Telemetry Streaming (F5)**](#telemetry-streaming). 
+# Monitoring NGINX+ Ingress services with Prometheus, Grafana and Elastic
+In this section we go through how you can efectively to monitor NGINX+ K8s services (Ingress and VirtualServer). The technologies that are part of the observability platform are [**Prometheus**](#prometheus), [**Grafana**](#grafana), [**Elasticsearch**](#elasticsearch) and [**Logstash**](#logstash). 
 
 <p align="center">
-  <img src="images/udf-lab.png" style="width:75%">
+  <img src="images/monitoring-nginx.png" style="width:75%">
 </p>
 
 The dashboards that have been created to assist with the monitoring of the K8s services are:
-  - [**CIS Dashboard**](#cis-dashboard)
-  - [**Client/Server SSL Performance**](#clientserver-ssl-dashboard)
-  - [**HTTP Profiles**](#http-profile-dashboard) 
-  - [**Pools**](#pools-dashboard)
-  - [**VS Access Logs**](#vs-access-logs-dashboard)
-  - BIGIP Error Logs (**pending**)
+  - [**NGINX Ingress**](#nginx-ingress-dashboard)
+  - [**NGINX Ingress Details**](#nginx-ingress-details-dashboard)
+  - NGINX Access Logs (**pending**)
+  - NGINX Error Logs (**pending**)
 
-## CIS Dashboard
-This dashboard provides an overall view on the utilization and performance of the applications handled by BIGIP. 
-The dashboard provides visibility on the following:
-- Total number of Virtual Servers, Pools and Members on the BIGIP appliances
-- HTTP Reponse Codes (2xx, 3xx, 4xx and 5xx) for the specific period across the entire appliance
-- Pool availability (requires a monitor to be assinged to the pool)
-- Virtual Servers statistics (with drill in capabiltiy)
-- Pool statistics (with drill in capabiltiy)
-- Client/Server SSL Profile stastics 
-- HTTP Profile stastics 
-- Utilization and L7 TPS over time
+## NGINX Ingress Dashboard
+This dashboard provides an overall view across all ingress resources and virtualserver CRDs managed by NGINX+ per hostname with the ability to filter per **IngressClass**, **Namespace**, **Ingress Name** and **Hostname**.
+The collected metrics include the following:
+- Total number of transactions
+- HTTP Reponse Codes (2xx, 3xx, 4xx and 5xx)
+- Open transactions (processing)
+- Dropped transactions
+- Bytes In/Out
 
-<img src="images/dashboard.png">
+
+<img src="images/ingress-dashboard.png">
 
 >:information_source:
 >  The source of information used to create this dashboard is Prometheus.
 
-## Client/Server SSL Dashboard
-Both Client and Server SSL dashboards provide insight on multiple SSL metrics. The information provided on this dashboard includes:
-- SSL transaction over time
-- SSL transaction offloaded on software vs Hardware
-- SSL Failure
-- SSL Version
-- SSL Cipher used
-- SSL Key exchange
+## NGINX Ingress Details Dashboard
+This dashboard provides for each IngressClass a view across all services that are part of the ingress resources and virtualserver CRDs of NGINX+. The dashboads gives the ability to filter per **Namespace**, **Resource**, **Service** and **Upstream**.
+The collected metrics include the following:
+- Total number of transactions
+- Response Time (ms)
+- HTTP Reponse Codes (2xx, 3xx, 4xx and 5xx)
+- Actve connections
+- Failed transactions
+- Bytes In/Out
 
-<img src="images/client-ssl.png">
-
->:information_source:
->  The source of information used to create this dashboard is Prometheus.
-
-## Pools Dashboard
-In the Pool dashboard we provide more details on the utilization and transaction for a specific pool and its members. The information provided from this dashboard includes:
-- Total number of Pool Members
-- Pool member availability (%)
-- Usage stastitics per member
-- Transactions over time (per member)
-- Utilization over time (per memeber)
-
-<img src="images/pools.png">
+<img src="images/ingress-details-dashboard.png">
 
 >:information_source:
 >  The source of information used to create this dashboard is Prometheus.
 
-## HTTP Profile Dashboard
-In the HTTP Profile dashboard we get a detail view on the HTTP response code (2xx, 3xx, 4xx, 5xx) per HTTP Profile and can observe the trend over time.
-
-<img src="images/http-profile.png">
-
->:information_source:
->  The source of information used to create this dashboard is Prometheus.
-
-## VS Access Logs Dashboard
-VS Access logs dashboard provides insight on the HTTP Request/Response transaction details. The transactions details have been recorded on BIGIP thought the use of an iRule that has been enabled for specific Virtual Servers. The iRule can record all transactions proccessed by a VS (and send to Elastic via Telemetry streaming) but it is recommended to be modified to record "key" transactions, like slow and/or failed transactions. In addition the iRule can be modified to record additional information like a specific HTTP Header/cookie.   
- The information provided from this dashboard includes:
-- Total transactions
-- HTTP Responses (2xx, 3xx, 4xx, 5xx)
-- Avg Response Time
-- Top Virutal Servers 
-- Top Pools
-- Top Pool Members
-- Top Clients 
-- Top Countries
-- Top User Agents
-- Transactions over time
-- Response time over time
-- Response time per URL
-- World Map View
-- Detail Logs per transaction
-
-
-<img src="images/access-logs.png">
-
->:information_source:
->  The source of information used to create this dashboard is Elasticsearch.
 
 ## How to Demo
 In order to demo the usefullness of the dashboards we are to create traffic through the BIGIP. 
@@ -95,7 +48,7 @@ In order to demo the usefullness of the dashboards we are to create traffic thro
 #### Step 1 - Create multiple Ingress and VS CRDs
 Change the working directory to `bigip-monitoring`.
 ```
-cd ~/oltra/use-cases/bigip-monitoring/
+cd ~/oltra/use-cases/nginx-monitoring/
 ```
 
 Scale the deployment of `echo-svc` to 5 pods
@@ -106,7 +59,8 @@ kubectl scale deployment echo --replicas=5
 Run the following script that will deploy multiple HTTP/HTTPS VirtualServer CRDs so that we prepare the BIGIP to receive traffic. 
 ```
 kubectl apply -f deploy_services.yml
-
+```
+```
 ###############   expected result   ###############
 tlsprofile.cis.f5.com/reencrypt-tls created
 virtualserver.cis.f5.com/reencrypt-tls-vs created
