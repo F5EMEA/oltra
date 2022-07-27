@@ -47,8 +47,8 @@ The demos build for OLTRA can be found below:
 The examples build for OLTRA can be found below:
 
 - [**Ingress capabilities with CIS**](use-cases/cis-examples/README.md)
+- [**Publishing Type LoadBalancer services with CIS**](use-cases/cis-examples/cis-crd/serviceTypeLB/README.md)
 - **DNS Publishing of K8s services with CIS EDNS CRDs** <br>
-- **Publishing Type LoadBalancer services with CIS** <br>
 - **Continuous Deployment with ArgoCD** <br>
 <br>
 <br>
