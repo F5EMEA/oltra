@@ -2,7 +2,7 @@
 This section demonstrates three options on how to configure Service TypeLB (LoadBalancer).
 
 - [Service Type LoadBalancer](#service-type-loadbalancer)
-- [Multiport Type LoadBalancer](#create-multiport-type-loadbalancer)
+- [MultiPort Type LoadBalancer](#multiport-type-loadbalancer)
 - [Service Type LoadBalancer with Health monitor](#service-type-loadbalancer-with-health-monitor)
 
 A service of type LoadBalancer is the simplest and the fastest way to expose a service inside a Kubernetes cluster to the external world. You only need to specify the service type as type=LoadBalancer in the service definition.
