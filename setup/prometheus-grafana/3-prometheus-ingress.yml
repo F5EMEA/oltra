@@ -7,16 +7,6 @@ metadata:
 spec:
   ingressClassName: nginx-infra
   rules:
-  - host: '*.access.udf.f5.com'
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: prometheus-k8s
-            port:
-              number: 9090
   - host: prometheus.f5demo.local
     http:
       paths:
