@@ -4,7 +4,7 @@ metadata:
   labels:
     name: f5-ipam
   name: f5-ipam
-  namespace: kube-system
+  namespace: bigip
 spec:
   replicas: 1
   selector:
@@ -18,7 +18,7 @@ spec:
       containers:
       - args:
         - --orchestration=kubernetes
-        - --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","tenant-1":"10.1.10.190-10.1.10.192","tenant-2":"10.1.10.193-10.1.10.195"}'        
+        - --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","tenant1":"10.1.10.190-10.1.10.192","tenant2":"10.1.10.193-10.1.10.195"}'        
         - --log-level=DEBUG
         command:
         - /app/bin/f5-ipam-controller

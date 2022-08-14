@@ -25,7 +25,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pvc-ipam
-  namespace: kube-system
+  namespace: bigip
 spec:
   storageClassName: local-storage
   accessModes:

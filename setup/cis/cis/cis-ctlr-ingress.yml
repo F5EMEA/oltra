@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: f5-cis-ingress
-  namespace: kube-system
+  namespace: bigip
 spec:
 # DO NOT INCREASE REPLICA COUNT
   replicas: 1
