@@ -1,6 +1,7 @@
 # ExternalDNS
 
-ExternalDNS CRD's allows you to control DNS records dynamically via Kubernetes/OSCP resources in a DNS provider-agnostic way. 
+ExternalDNS is a Kubernetes add-on that configures public DNS servers with information about exposed Kubernetes services to make them discoverable. ExternalDNS in CRD allows you to control DNS records dynamically via Kubernetes/OSCP resources in a DNS provider-agnostic way.
+
 
 Configure health monitor for GSLB pools in DNS.
 Heath monitor is supported for each pool members. 
