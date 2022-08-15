@@ -7,22 +7,22 @@ The high level diagram for OLTRA environment can be found below along with the t
 
 <img src="udf-lab.png">
 
+The technologies used for this environment can be found below along with their credentials.
 
-| Name | Notes |
-|---|---|
-| **BIGIP (15.1)** |  Standalone BIGIP that has the LTM/ASM/DNS/AFM modules provisioned. | 
-| **NGINX KIC** | Runs inside the K8s cluster. There are 2 primarly deployments of NGINX KIC. <br>One deployment with IngressClass `infra` that handles infrastructure components like Prometheus, Grafana and ArgoCD and another deployment with ingressclass `plus` that uis used for demos, use-cases and examples. The NGINX+ Ingress Controller version used is 2.2.2 |
-| **CIS** |  Runs inside the K8s cluster. There are 2 CIS instances running inside the cluster. `cis-crd` instance is used to deploy services based on VirtualServer/TransportServer CRDs and ServiceType LB whereas `cis-ingress` instance is used for Ingress Resources and ConfiMaps |
-| **K8s Cluster** | 3 node Kubernetes cluster (Master, Node01 and Node02) running verion 1.22|
-| **GitLab** | Runs on a dedicated server and provides three main functionalities; source code management, CI/CD and Docker registry. |
-| **ArgoCD** | Runs as a pod in K8s |
-| **Elasticsearch** | Elastic runs as an instance on the "Docker" system and its main purpose is to store the Access, Error and Security logs for NAP, NGINX and BIGIP.   |
-| **Logstash** | Logstash runs as an instance on the "Docker" system and its main purpose is to process the logs, parse them and then forward them to Elastic.   |
-| **VSCode** | Runs VScode through a web interface on the "Client" system. |
-| **Prometheus** | Runs in K8s and provides a time-series storage for monitoring both BIGIP and NGINX+. |
-| **Grafana** | Multiple Dashboards have been developed for displaying metrics/events from both Prometheus and Elastic. Runs in K8s. |
+| Name | Notes | Credentials |
+|---|---|---|
+| **BIGIP (15.1)** |  Standalone BIGIP that has the LTM/ASM/DNS/AFM modules provisioned. | admin / Ingresslab123 |
+| **NGINX KIC** | Runs inside the K8s cluster. There are 2 primarly deployments of NGINX KIC. <br>One deployment with IngressClass `infra` that handles infrastructure components like Prometheus, Grafana and ArgoCD and another deployment with ingressclass `plus` that uis used for demos, use-cases and examples. The NGINX+ Ingress Controller version used is 2.2.2 | - |
+| **CIS** |  Runs inside the K8s cluster. There are 2 CIS instances running inside the cluster. `cis-crd` instance is used to deploy services based on VirtualServer/TransportServer CRDs and ServiceType LB whereas `cis-ingress` instance is used for Ingress Resources and ConfiMaps | - |
+| **K8s Cluster** | 3 node Kubernetes cluster (Master, Node01 and Node02) running verion 1.22|  - |
+| **GitLab** | Runs on a dedicated server and provides three main functionalities: <br> - Source Code Management (gitlab.f5demo.cloud) <br> - CI/CD <br> - Container registry (registry.f5demo.cloud) | root / Ingresslab123 |
+| **ArgoCD** | Argo CD is implemented as a kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo). | admin / Ingresslab123 |
+| **Elasticsearch** | Elastic runs as an instance on the "Docker" system and its main purpose is to store the Access, Error and Security logs for NAP, NGINX and BIGIP.   | - |
+| **Logstash** | Logstash runs as an instance on the "Docker" system and its main purpose is to process the logs, parse them and then forward them to Elastic.   | - |
+| **VSCode** | Runs VScode through a web interface on the "Client" system. | - |
+| **Prometheus** | Runs in K8s and provides a time-series storage for monitoring both BIGIP and NGINX+. | - |
+| **Grafana** | Multiple Dashboards have been developed for displaying metrics/events from both Prometheus and Elastic. Runs in K8s. | admin / Ingresslab123 |
 
-Credentials are documented inside the UDF Summary page.
 
 ## Use-Cases
 The use-case build for OLTRA can be found below:
