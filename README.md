@@ -7,7 +7,7 @@ The high level diagram for OLTRA environment can be found below along with the t
 
 <img src="udf-lab.png">
 
-The technologies used for this environment can be found below along with their credentials.
+The technologies used for this environment along with their credentials are shown on the following table.
 
 | Name | Notes | Credentials |
 |---|---|---|
