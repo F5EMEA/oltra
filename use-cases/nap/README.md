@@ -1,7 +1,7 @@
 # NAP Demo
 
 
-### Step 1 - Create multiple Ingress and VS CRDs
+## Step 1 - Create multiple Ingress and VS CRDs
 Change the working directory to `nap`.
 ```
 cd ~/oltra/use-cases/nap/
@@ -13,41 +13,86 @@ kubectl apply -f apps.yml
 ```
 
 Deploy NAP policies for `coffee`, `tea` and `www`.
-
 ```
 kubectl apply -f nap-policy-coffee.yml
 kubectl apply -f nap-policy-tea.yml
 kubectl apply -f nap-policy-www.yml
 ```
 
-Verify that the VirtualServers have been configured correctly.
+Create the APLogConf CR to define NAP's maximum request size the filter. We have selected 10kbytes for the log size and only log illegal requets
 ```
-kubectl get vs
+kubectl apply -f log.yml
+```
+
+Now that we have all components in place we can create the Ingress resources and define the NAP and Log policies that each ingress should use. On Ingress resources this is achieved through annotations
+```
+  annotations:
+    appprotect.f5.com/app-protect-policy: **<policy name>**
+    appprotect.f5.com/app-protect-enable: **True/False**
+    appprotect.f5.com/app-protect-security-log-enable: **True/False**
+    appprotect.f5.com/app-protect-security-log: **<namespace/log-profile-name>**
+    appprotect.f5.com/app-protect-security-log-destination: **"syslog:server=IP-address:Port"**
+```
+
+Deploy the Ingress resources for the 3 services.
+```
+kubectl apply -f ingress-cafe.yml
+kubectl apply -f ingress-tea.yml
+kubectl apply -f ingress-portal.yml
+```
+
+Verify that you can now reach successfully the Ingress resources
+```
+curl http://tea.f5demo.cloud
+curl http://cafe.f5demo.cloud
+curl http://portal.f5demo.cloud
 ```
 ```
 ###############   expected result   ###############
-NAME                  HOST                       TLSPROFILENAME        HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
-reencrypt-tls-vs      reencrypt.f5demo.local     reencrypt-tls                       10.1.10.69               None            Ok       2d
-vs-test1                                                                             10.1.10.79               None            Ok       2m13s
-vs-test2                                                                             10.1.10.80               None            Ok       2m13s
-vs-test3                                                                             10.1.10.81               None            Ok       2m13s
-vs-test4                                                                             10.1.10.82               None            Ok       2m13s
-readiness-vs                                                                         10.1.10.83               None            Ok       2m13s
-xff-policy-vs         policy.f5demo.local                                            10.1.10.66               None            Ok       2m13s
+Server address: 10.244.140.114:80
+Server name: portal-7c674cffbd-nkzrx
+Date: 15/Aug/2022:06:57:25 +0000
+URI: /
+Request ID: 19ed141c6c09aa8833f86c40b6780308
 ####################################################
 ```
 
 
-#### Step 2 - Send traffic to the BIGIP Virtual Servers** 
-The second script will send traffic to BIGIP's VIPs for about 1-2 minutes in order to populate the graphs with meaningful data.
+## Step 2 - Send violations to Ingress resources
+**Signature Violations**
+Run the following commands that will trigger signature violations that include SQL Injection, Command Injection and Cross Site Scripting among others
+```
+####SQL Injection (encoded)####
+curl "http://tea.f5demo.cloud/index.php?password=0%22%20or%201%3D1%20%22%0A"
+####SQL Injection####
+curl "http://tea.f5demo.cloud/index.php?password==0'%20or%201=1'"
+####SQL Injection####
+curl "http://tea.f5demo.cloud/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
+####Cross Site Scripting####
+curl "http://portal.f5demo.cloud/index.php?username=<script>"
+####Command Injection####
+curl "http://cafe.f5demo.cloud/index.php?id=0;%20ls%20-l"
+```
 
+Verify that the response is now coming from NGINX Ingress Controller that informs you that the transactions has been blocked.
+```html
+<html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 742177367032758723<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
 ```
-./traffic.sh
+
+**Illegal Methods Violations**
+
+Run the following commands that will trigger Illegal Method violation
+curl -X INSERT "http://tea.f5demo.cloud/index.php"
 ```
->**Note:** You might want to run the script multiple times to collect more logs/statistics.
+    methods:
+    - name: INSERT
+```
+
+## Step 3 - Enhance the NAP policy with additional security 
+In this section we will enable additional security controls for the 
 
 #### Step 3 - Review Dashboards in Grafana
-Once the script has been completed we should be able to see statistics/events on the Grafana dasbboards such as:
+Lets review the security events on the Grafana dasbboard:
 - Utilization per virtual server
 - Traffic per pool and pool memebers
 - HTTP Response Code statistics
@@ -80,49 +125,3 @@ Select any Dashboard you want to review under CIS
 <p align="left">
   <img src="images/dashboards.png" style="width:90%">
 </p>
-
-
-## Technologies
-
-#### **Telemetry Streaming**
-
-Telemetry Streaming (TS) enables you to declaratively aggregate, normalize, and forward statistics and events from the BIG-IP to a consumer application. There are multiple consumers supported by Telemetry streaming. You can find more information about Telemetry streaming on the following <a href="https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest"> link </a> <br><br>
-There are 2 types of consumers that we will be using for the BIGIP dashboard; Elasticsearch consumer (Push) and Prometheus consumer (Pull). <br>
-The **Elasticsearch** consumer has been configured is sending all the access logs that are collected via an iRule to ElasticSearch. This is achieved by attaching the **iRule** called *"/Common/Shared/telemetry_log_iRule"* to the desired VirtualServer CRD.<br>
-The **Prometheus** consumer has also been enabled in order to expose a new HTTP API endpoint that will be scraped by Prometheus for metrics. The consumer outputs the telemetry data according to the Prometheus data model specification. <br><br>
-
-You can find more information on how Telemetry Streaming has been configured on the following links:
-- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/prometheus-grafana/7-telemetry-log-irule.txt"> iRule to collect logs </a>
-- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/prometheus-grafana/6-setup-f5-telemetry.txt"> Telemetry streaming declaration </a>
-
-
-#### **Prometheus**
-Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. Since its inception in 2012, many companies and organizations have adopted Prometheus, and the project has a very active developer and user community. It is now a standalone open source project and maintained independently of any company. To emphasize this, and to clarify the project's governance structure, Prometheus joined the Cloud Native Computing Foundation in 2016 as the second hosted project, after Kubernetes.
-
-In our environemnt Prometheus has been configured to scrape BIGIP for all metrics every 30 seconds.
-You can find more information on how Prometheus has been configured to scrape BIGIP can be found on the link below:
-
-- <a href="https://github.com/F5EMEA/oltra/blob/main/setup/prometheus-grafana/1-scraping-bigip.yml"> Scraping BIGIP </a>
-
-#### **Elasticsearch**
-
-Elasticsearch is a distributed, free and open search and analytics engine for all types of data, including textual, numerical, geospatial, structured, and unstructured. Elasticsearch is built on Apache Lucene and was first released in 2010 by Elasticsearch N.V. (now known as Elastic). Known for its simple REST APIs, distributed nature, speed, and scalability, Elasticsearch is the central component of the Elastic Stack, a set of free and open tools for data ingestion, enrichment, storage, analysis, and visualization. Commonly referred to as the ELK Stack (after Elasticsearch, Logstash, and Kibana), the Elastic Stack now includes a rich collection of lightweight shipping agents known as Beats for sending data to Elasticsearch.
-
-In our environment Elasticsearch is been used to store the logs and events that are generated from BIGIP.
-
-
-#### **Grafana**
- 
-Grafana is an open source solution for running data analytics, pulling up metrics that make sense of the massive amount of data & to monitor our apps with the help of cool customizable dashboards.
-Grafana connects with every possible data source, commonly referred to as databases such as Graphite, Prometheus, Influx DB, ElasticSearch, MySQL, PostgreSQL etc.
-
-In our environment we connected Grafana to Elasticsearch and Prometheus. The Dashboards created can be found on Grafana Hub:
-- <a href="https://grafana.com/grafana/dashboards/16176">BIGIP CIS - Dashboard</a>
-- <a href="https://grafana.com/grafana/dashboards/16174">BIGIP CIS - Client SSL Profiles</a>
-- <a href="https://grafana.com/grafana/dashboards/16172">BIGIP CIS - Server SSL Profiles</a>
-- <a href="https://grafana.com/grafana/dashboards/16173">BIGIP CIS - Pools</a>
-- <a href="https://grafana.com/grafana/dashboards/16171">BIGIP CIS - LTM Logs</a>
-
-
-
-
