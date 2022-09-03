@@ -24,13 +24,17 @@ BIGIP can be configured in a kubernetes-native manner though the use of <a href=
 | Service Type LB | Services of type LoadBalancer are natively supported in Kubernetes deployments. When you create a service of type LoadBalancer it spins up service in integration with F5 IPAM Controller which allocates an IP address that will forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> It works only with **IPAM** controller.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |
 | IngressLink | IngressLink CRD is a dedicated CRD for integrating BIGIP with NGINX Ingress Controller. The integration is acheved through a Layer 4 Virtual Server on BIGIP that forwards all traffic to NGINX Ingress Controller. <br> It works with or without **IPAM** controller. <br> Examples on IngressLink CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#ingresslink-examples">here</a> |
 
+<br>
+**IngressLink** and **Service Type LB** are the recommended methods for publishing NGINX Ingress Controller in our use case. Both methods provide Layer 4 Load Balancing from BIGIP to NGINX+ IC instances and therefore do not terminate SSL and both support IPAM so that IPs are not managed by the DevOps teams.<br>
+An intresting feature is that both methods can populate the Ingress Resource Address information with external IP that has been configured on BIGIP. To achieve this we need to enable the correct argument on NGINX Ingress Controller ("-ingresslink" or ")
+- "-ingresslink=<string>" for Ingresslink deployments
+- "-external-service=<string> for Type LB
 
-**IngressLink** and **Service Type LB** are the recommended methods for publishing NGINX Ingress Controller in our use case. Both methods provide Layer 4 Load Balancing from BIGIP to NGINX+ IC instances and therefore do not terminate SSL, both methods support IPAM so that IPs are not managed by the DevOps teams, but also both methods will populate the Ingress Resource information with external IP that has been configured on BIGIP.
+More information can be found here https://docs.nginx.com/nginx-ingress-controller/configuration/global-configuration/command-line-arguments/
 
-******   IMAGE    *******
-******   IMAGE    *******
-******   IMAGE    *******
-******   IMAGE    *******
+<p align="center">
+  <img src="ingresses.png">
+</p>
 
 
 **TransportServer** and **Service Type LB** are recommended methods to publish either TCP or UDP applications, since both provide Layer 4 Load Balancing adn IPAM funcitonality.
@@ -44,7 +48,7 @@ BIGIP can be configured in a kubernetes-native manner though the use of <a href=
 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/cluster-multi-tenancy/multi-tenancy.png" style="width:85%">
+  <img src="layer4-tcp.png" style="width:85%">
 </p>
 
 
@@ -52,6 +56,7 @@ More information on CIS and IPAM can be found on the following links:
 - [CIS](https://clouddocs.f5.com/containers/latest/)
 - [CIS CRDs](https://clouddocs.f5.com/containers/latest/userguide/crd/)
 - [IPAM Controller](https://clouddocs.f5.com/containers/latest/userguide/ipam/)
+
 
 ## Demo 
 In the following section we will demontrate how we can implement the above architecture on the following environment
@@ -65,8 +70,7 @@ We are using ServiceType LB to publishing NGINX+ IC and Transport Server for the
 
 Create the namespace for each tenant (Tenant-1, Tenant-2)
 ```
-kubectl create namespace tenant1
-kubectl create namespace tenant2
+kubectl create namespace layer4
 ```
 
 ### Step 2. Deploy NGINX+ Ingress Controller
@@ -75,11 +79,9 @@ For each tenant we will deploy a seperate NGINX+ Ingress Controller.
 
 1. Copy the NGINX plus deployment from the setup folder
 ```
-cd ~/oltra/use-cases/multi-tenancy
-mkdir nginx_t1
-mkdir nginx_t2
-cp -R ~/oltra/setup/nginx-ic/* nginx_t1
-cp -R ~/oltra/setup/nginx-ic/* nginx_t2
+cd ~/oltra/use-cases/two-tier-designs/layer4
+mkdir layer4
+cp -R ~/oltra/setup/nginx-ic/* .
 ```
 
 2. Replace the namespace `nginx` with `tenant1` and `tenant2` for the required manifests
