@@ -14,6 +14,10 @@ The usual requirements for such an environment are the following:
 
 ## Proposed Architecture
 
+<p align="center">
+  <img src="layer4-tcp.png" style="width:85%">
+</p>
+
 Having a single, standardized approach that runs everywhere Kubernetes runs, ensures that configurations are applied consistently, across all environments. This is one of the many benefits that **Kubernetes-native** configuration provides.
 
 BIGIP can be configured in a kubernetes-native manner though the use of <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">CIS controller</a>. Altough CIS has multiple modes of operation (Ingress, Routes, CRDs, Configmaps) the 3 most relevant for our use case are IngressLink and TransportServer CRDs and Service Type LoadBalancer. 
@@ -21,21 +25,21 @@ BIGIP can be configured in a kubernetes-native manner though the use of <a href=
 | Type | Functionality |
 |---|---|
 | TransportServer CRD |  With TS CRD you can forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence**.<br> It works with and without **IPAM** controller.<br> Examples on TransportServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#transportserver-crd-examples">here</a> |
-| Service Type LB | Services of type LoadBalancer are natively supported in Kubernetes deployments. When you create a service of type LoadBalancer it spins up service in integration with F5 IPAM Controller which allocates an IP address that will forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> It works only with **IPAM** controller.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |
+| Service Type LB | Services of type LoadBalancer are natively supported in Kubernetes deployments. When you create a service of type LoadBalancer it spins up service in integration with F5 IPAM Controller which allocates an IP address that will forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> It works only with **IPAM** controller.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |![image](https://user-images.githubusercontent.com/11005568/188262443-409175d9-77d9-4e32-8838-938ec876cdd7.png)
+
 | IngressLink | IngressLink CRD is a dedicated CRD for integrating BIGIP with NGINX Ingress Controller. The integration is acheved through a Layer 4 Virtual Server on BIGIP that forwards all traffic to NGINX Ingress Controller. <br> It works with or without **IPAM** controller. <br> Examples on IngressLink CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#ingresslink-examples">here</a> |
 
-<br>
-**IngressLink** and **Service Type LB** are the recommended methods for publishing NGINX Ingress Controller in our use case. Both methods provide Layer 4 Load Balancing from BIGIP to NGINX+ IC instances and therefore do not terminate SSL and both support IPAM so that IPs are not managed by the DevOps teams.<br>
-An intresting feature is that both methods can populate the Ingress Resource Address information with external IP that has been configured on BIGIP. To achieve this we need to enable the correct argument on NGINX Ingress Controller ("-ingresslink" or ")
-- "-ingresslink=<string>" for Ingresslink deployments
-- "-external-service=<string> for Type LB
+**IngressLink** and **Service Type LB** are the recommended methods for publishing NGINX Ingress Controller in our use case. Both methods provide Layer 4 Load Balancing from BIGIP to NGINX+ IC instances and therefore do not terminate SSL and both support IPAM so that IPs are not managed by the DevOps teams.
 
-More information can be found here https://docs.nginx.com/nginx-ingress-controller/configuration/global-configuration/command-line-arguments/
+An intresting feature is that both methods can populate the Ingress Resource Address information with external IP that has been configured on BIGIP. To achieve this we need to enable the correct arguments on NGINX Ingress Controller. These are:
+- "-ingresslink" for Ingresslink deployments
+- "-external-service" for Type LB deployments
 
 <p align="center">
   <img src="ingresses.png">
 </p>
 
+More information on how to configure those arguments can be found on the link https://docs.nginx.com/nginx-ingress-controller/configuration/global-configuration/command-line-arguments/
 
 **TransportServer** and **Service Type LB** are recommended methods to publish either TCP or UDP applications, since both provide Layer 4 Load Balancing adn IPAM funcitonality.
 
@@ -45,17 +49,6 @@ More information can be found here https://docs.nginx.com/nginx-ingress-controll
 > **Why select TransportServer (TS) or IngressLink instead of Type LB??**
 > - If you want to use a static IP address on the BIGIP
 > - If, for RBAC purposes, you need to have a separate resource (TS CRD) that will control the publishing of a service.
-
-
-<p align="center">
-  <img src="layer4-tcp.png" style="width:85%">
-</p>
-
-
-More information on CIS and IPAM can be found on the following links:
-- [CIS](https://clouddocs.f5.com/containers/latest/)
-- [CIS CRDs](https://clouddocs.f5.com/containers/latest/userguide/crd/)
-- [IPAM Controller](https://clouddocs.f5.com/containers/latest/userguide/ipam/)
 
 
 ## Demo 
