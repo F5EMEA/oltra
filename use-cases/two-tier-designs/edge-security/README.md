@@ -1,13 +1,12 @@
 # Security on the Edge
 DevOps teams need to integrate security controls like WAF or DDoS authorized by the security team without slowing release velocity or performance. In this use-case we will show how we can deploy multiple applications behind NGINX+ Ingress Controller and publish each one with a seperate WAF Policy
-multiple Kubernetes clusters. 
 
 ## Requirements
 The usual requirements for such an environment are the following:
 1. DevOps team should be able to control the process of publishing resources
 1. The process should happen in a Kubernetes-native way.
 1. DevOps teams shouldn’t have to manage the external IPs on BIGIP
-1. WAF/DDoS Policies needs to be applied on the applications that are getting published.
+1. WAF/DDoS policies need to be applied on the applications that are getting published.
 1. While the main service that should be exposed is the NGINX+ Ingress Controller, the DevOps team might require also to expose TCP/UDP apps without going through the Ingress Controller.
 1. Multiple NGINX+ IC groups running per K8s cluster.
 1. The design should be scalable to multiple Kubernetes clusters
@@ -15,43 +14,31 @@ The usual requirements for such an environment are the following:
 
 ## Proposed Architecture
 
+<p align="center">
+  <img src="layer7-tcp.png" style="width:85%">
+</p>
+
 Having a single, standardized approach that runs everywhere Kubernetes runs, ensures that configurations are applied consistently, across all environments. This is one of the many benefits that **Kubernetes-native** configuration provides.
 
-BIGIP can be configured in a kubernetes-native manner though the use of <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">CIS controller</a>. Altough CIS has multiple modes of operation (Ingress, Routes, CRDs, Configmaps) the 3 most relevant for our use case are IngressLink and TransportServer CRDs and Service Type LoadBalancer. 
+BIGIP can be configured in a kubernetes-native manner though the use of <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">CIS controller</a>. Altough CIS has multiple modes of operation (Ingress, Routes, CRDs, Configmaps) the most relevant for our use case are VirtualServer CRD and TransportServer CRDs and Service Type LoadBalancer. 
 
 | Type | Functionality |
 |---|---|
+| VirtualServer CRD | With VS CRD you can forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**, **DDoS**, **BoT mitigation**, **SSL offloading**, **HTTP/HTTP2 profiles**, **L4/7 iRules**, **WAF policies**, **SNAT pools** , **Cookie/IP Persistence**, **EDNS**. <br> It works with and without **IPAM** controller. <br> Examples on VirtualServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#virtualserver-crd-examples">here</a> |
 | TransportServer CRD |  With TS CRD you can forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence**.<br> It works with and without **IPAM** controller.<br> Examples on TransportServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#transportserver-crd-examples">here</a> |
 | Service Type LB | Services of type LoadBalancer are natively supported in Kubernetes deployments. When you create a service of type LoadBalancer it spins up service in integration with F5 IPAM Controller which allocates an IP address that will forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> It works only with **IPAM** controller.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |
-| IngressLink | IngressLink CRD is a dedicated CRD for integrating BIGIP with NGINX Ingress Controller. The integration is acheved through a Layer 4 Virtual Server on BIGIP that forwards all traffic to NGINX Ingress Controller. <br> It works with or without **IPAM** controller. <br> Examples on IngressLink CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#ingresslink-examples">here</a> |
 
 
-**IngressLink** and **Service Type LB** are the recommended methods for publishing NGINX Ingress Controller in our use case. Both methods provide Layer 4 Load Balancing from BIGIP to NGINX+ IC instances and therefore do not terminate SSL, both methods support IPAM so that IPs are not managed by the DevOps teams, but also both methods will populate the Ingress Resource information with external IP that has been configured on BIGIP.
+Due to the fact that we need to attach WAF and/or DDoS profiles to the BIGIP virtual servers, makes **VirtualServer CRD** the only  option for publishing NGINX Ingress Controller. VS CRD creates a Layer 7 Virtual server on the BIGIP and along with Policy CRD it can attach pre-configured WAF, DDoS profile. 
+If we want to have separate WAF/DDoS profiles per Hostname, then we need to create separate multiple VirtualServer CRDs, each with a different profile attached.  
 
-******   IMAGE    *******
-******   IMAGE    *******
-******   IMAGE    *******
-******   IMAGE    *******
-
-
-**TransportServer** and **Service Type LB** are recommended methods to publish either TCP or UDP applications, since both provide Layer 4 Load Balancing adn IPAM funcitonality.
-
-> **Why select ServiceType LB?**
-> - Easier Deployment. No need for additional resource (TS CRD).
-
-> **Why select TransportServer (TS) or IngressLink instead of Type LB??**
-> - If you want to use a static IP address on the BIGIP
-> - If, for RBAC purposes, you need to have a separate resource (TS CRD) that will control the publishing of a service.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/cluster-multi-tenancy/multi-tenancy.png" style="width:85%">
-</p>
+### SSL Decryption
+In order for BIGIP to be able to apply the WAF/DDoS policies on the traffic going through the Virtual Server, it needs first to decrypt the SSL. Therefore the SSL decoding will take place on BIGIP.
+The SSL certificates can either be configured manually on BIGIP and referenced on VS CRD or they can be configured automatically through CIS from Kubernetes secrets. Examples on how to configure VirtualServer CRD with TLS can be found  <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">here</a>
 
 
-More information on CIS and IPAM can be found on the following links:
-- [CIS](https://clouddocs.f5.com/containers/latest/)
-- [CIS CRDs](https://clouddocs.f5.com/containers/latest/userguide/crd/)
-- [IPAM Controller](https://clouddocs.f5.com/containers/latest/userguide/ipam/)
+**TransportServer** and **Service Type LB** are recommended methods to publish either TCP or UDP applications, since both provide Layer 4 Load Balancing and IPAM funcitonality.
+
 
 ## Demo 
 In the following section we will demontrate how we can implement the above architecture on the following environment

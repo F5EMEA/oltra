@@ -1,18 +1,53 @@
-# 2 Tier Architectures
-In this section we will go through different scenarios for two tier architectures. 
+# Multi-cluster strategies
+Today, organizations are increasingly deploying more Kubernetes clusters and are implementing multi-cluster strategies in an effort to improve availability, scalability and isolation. Multi-cluster strategy is achieved by deploying an application on multiple Kubernetes clusters. This can be architected with two fundamental ways; 
+  - Global Server Load Balancing (DNS) 
+  - Local Load Balancing (LTM) 
 
-Today, organizations are increasingly deploying more Kubernetes clusters and are implementing multi-cluster strategies in an effort to improve availability, scalability and isolation. Multi-cluster strategy is achieved by deploying an application on or across multiple Kubernetes clusters.  
+Although both ways can help an organization implement multi-clustering, they have quite few differences on the capabilities and how the multi-clustering it is achieved. **Global Server Load Balancing** is relying on the DNS protocol to provide the IP address and direct the user to the Kubernetes cluster according to GSLB distribution algorithm. **Local Load Balancing** is based on the typical reverse proxy functionality that the load balancer will terminate the user's connection and distribute the incoming network traffic across a group of backend Kubernetes clusters. 
 
-In this use-case we will focus on same applications running on muliple clusters, which can be architected with two fundamental ways; GSLB or Load Balancing. 
+
+| Requirements | Recommended method |
+|---|---|
+| Load Balancing Kuberentes clusters that are spread across different datacenters | **DNS** |
+| Implementing high availability in a Kubernetes native way | **DNS** | 
+| TTL caching could be an issue with certain providers | **LTM** |
+| Advanced LB conditions/logic is required (.i.e ratio, Http Headers, Geolocation, etc) | **LTM** |
+
 
 ## GSLB
+GSLB is achieved with the use of CIS [**ExternalDNS CRD**](https://clouddocs.f5.com/containers/latest/userguide/crd/externaldns.html). ExternalDNS role is to create WideIPs on F5 BIGIP DNS platform that will load balance the DNS traffic to the Virtual Servers that forward traffic to the Kubernetes resources. 
+
+<p align="center">
+  <img src="multi-cluster-gslb.png" style="width:60%">
+</p>
+
+
+### How does it work
+For the GSLB method to work, there is a two step process. First a custom resource of type VirtualServer, TransportServer or IngressLink needs to be created that will contain the Hostname (FQDN) of the service we want to load balance. An ExternalDNS resource should be created that will refrence the same hostname as with (VS/TS/IL). GSLB method provides the following functionalities: 
+
+- **Wildcard hostnames.** While you can configure EDNS to work with an explicit hostname, you can also configure wildcard hostnames like "*.example.com".   
+
+- **High Availability.** EDNS offers two high availability options so that it covers most type of applications; Active-Active or Active-Standby. 
+
+- **Health Monitoring.** EDNS provides real-time HTTP/HTTPS/TCP health monitoring so that the use is always sent the user to the kubernetes cluster that the application is up and running. Since the application runs behind NGINX+ Ingress Controller, it is recommened to have liveness probes configured on the K8s deployments so that NGINX+ removes the services when they are facing health issues and that the timeout/frequency on the EDNS is bigger than the one on liveness probes.
+
+- **Distributed environments.** Given the fact that EDNS relies on DNS, it can natively accomodates Kuberentes clusters that are distributed across different datacenters.
+
+### Demo
+
+
+
+
+
+## LTM
+
+
 Typical requirements of a multi-cluster GSLB environment cover the following:
 1. Applications should be able to work as Active-Active or Active-Standby
 2. Health monitoring should be provided on both the GSLB and K8s level
 
 
-## Proposed Architecture
-In order to address the above requirements we have designed a 2-tier architecture. The 1st tier is based on NGNIX+ Ingress Controller and will be deployed in each tentant while the 2nd tier is based on BIGIP/CIS that will have the role of the external load balancer.
+### Proposed Architecture
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/cluster-multi-tenancy/multi-tenancy.png" style="width:85%">
