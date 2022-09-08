@@ -142,6 +142,9 @@ In the following section we will demontrate how we can load balance 2 Ingress Co
 Create the namespace for each tenant (Tenant-1, Tenant-2)
 ```
 kubectl create namespace layer4
+
+
+
 ```
 
 ### Step 2. Deploy NGINX+ Ingress Controller
