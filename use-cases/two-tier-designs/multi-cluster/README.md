@@ -6,12 +6,30 @@ Today, organizations are increasingly deploying more Kubernetes clusters and are
 Although both ways can help an organization achieve multi-clustering, they have quite few differences on the capabilities of these two methods. **Global Server Load Balancing** is relying on the DNS protocol to direct the user to the Kubernetes cluster according to the GSLB distribution algorithm by resolving a DNS name to an IP address. **Local Load Balancing** is based on the typical reverse proxy functionality that the load balancer (BIGIP) will terminate the client's connection and distribute the traffic across a group of backend Kubernetes clusters. 
 
 
-| Requirements | Recommended method |
-|---|---|
-| Load Balancing Kuberentes clusters that are spread across different datacenters | **DNS** |
-| Implementing high availability in a Kubernetes native way | **DNS** | 
-| TTL caching could be an issue with certain providers | **LTM** |
-| Advanced LB conditions/logic is required (Ratio, HTTP Headers, Geolocation, etc) | **LTM** |
+## LTM
+For LTM multi-cluster, we rely on GitOps deployment to provide such funcitonality. With GitOps the user needs to create are the parameters of the service they want to publish (YAML format) and save them to the file. An example of such file is shown below.
+```yml
+config: 
+  - name: www.f5demo.cloud
+    vip: 10.1.1.214
+    port: 80
+    template: http 
+    monitor: http
+    cluster:
+    - cluster_name: primary
+      nodeport: 33002
+      ratio: 9
+    - cluster_name: secondary
+      nodeport: 33002
+      ratio: 1
+```
+Once the file is created/modified on a Git repository we are using a CI/CD pipeline to automatically create the Virtual Server on the BIGIP and start load balancing services for multiple Kubernetes clusters. 
+
+Details and demo on this scenario can be found on [**GitOps**](https://github.com/F5EMEA/oltra/blob/main/use-cases/gitops/) use case. 
+
+***LTM*** multi-cluster method is recommended when 
+- Advanced Load Balancing conditions/logic is required (Ratio, HTTP Headers, Geolocation, etc).
+- DNS Load Balancing is not possible due to TTL caching or other application related constrain.  
 
 
 ## DNS
@@ -23,7 +41,7 @@ DNS multi-clustering is achieved with the use of CIS [**ExternalDNS CRD**](https
 
 
 ### How does it work
-The DNS multi-clustering is a two step process. **First** we create a Custom Resource of type VirtualServer, TransportServer or IngressLink that contain the Hostname (FQDN) of the service we want to load balance. 
+DNS multi-clustering is a two step process. **First** we create a Custom Resource of type VirtualServer, TransportServer or IngressLink that contain the Hostname (FQDN) of the service we want to load balance. 
 ```yml
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
@@ -70,9 +88,9 @@ spec:
       timeout: 10
 ```
 
-The Host parameter can be configured to be either explicit or wildcard (*.f5demo.cloud)
+> **Note:** The Host parameter can be configured to be either explicit or wildcard (*.f5demo.cloud)
 
-The DNS multi-cluster provides the following functionalities: 
+DNS multi-cluster provides the following functionalities: 
 
 - **Active-Active Applications.** EDNS can be configured to load balance equally (Round Robin) services running in different clusters.
 
@@ -83,11 +101,7 @@ The DNS multi-cluster provides the following functionalities:
 
 - **Distributed environments.** Given the fact that EDNS relies on DNS, it can accomodates Kuberentes clusters that are deployed across different datacenters.
 
-### Demo
 
+### DNS Demo
 
-
-
-
-## LTM
 
