@@ -1,36 +1,36 @@
 # Layer 4 Deployments
-One of the most common deployment in regards to the external load balancer is the Layer 4. The main requirement in this case is to provide L4 connectivity between the external environment and the Ingress Controller running inside K8s. The typical customer environmnet will contain mutliple ingress controllers for Production, UAT and Test environments and probably multiple Kubernetes clusters. 
+One of the most common deployments in regards to the external load balancer is Layer 4. The main requirement in this case is to provide L4 connectivity between the external environment and the Ingress Controller running inside Kubernetes. The typical customer environmnet will contain mutliple Ingress Controllers for different environments such as Production, UAT and Demo and probably multiple Kubernetes clusters. 
 
 ## Requirements
-The usual requirements for such an environment are the following:
-1. DevOps team should be able to control the process of publishing resources
-1. The process should happen in a Kubernetes-native way.
-1. DevOps teams shouldn’t have to manage the external IPs on BIGIP
-1. SSL termination should take place on Kubernetes Ingress Controller
-1. While the main service that should be exposed is the NGINX+ Ingress Controller, the DevOps team might require also to expose TCP/UDP apps without going through the Ingress Controller.
-1. Multiple NGINX+ IC groups running per K8s cluster.
-1. The design should be scalable to multiple Kubernetes clusters
+The usual requirements for such an environments are the following:
+* DevOps teams should be able to control the process of publishing resources.
+* The process should happen in a Kubernetes-native way.
+* DevOps teams shouldn’t have to manage the external IPs on BIGIP.
+* SSL termination should take place on Kubernetes Ingress Controller.
+* While the main service that should be exposed is the NGINX+ Ingress Controller, DevOps teams might require also to expose TCP/UDP apps without going through the Ingress Controller.
+* Multiple NGINX+ IC running per Kubernetes cluster.
+* The design should be scalable to multiple Kubernetes clusters
 
 
 ## Proposed Architecture
 
 <p align="center">
-  <img src="layer4-tcp.png" style="width:85%">
+  <img src="layer4-tcp.png">
 </p>
 
 Having a single, standardized approach that runs everywhere Kubernetes runs, ensures that configurations are applied consistently, across all environments. This is one of the many benefits that **Kubernetes-native** configuration provides.
 
-BIGIP can be configured in a kubernetes-native manner though the use of <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">CIS controller</a>. Altough CIS has multiple modes of operation (Ingress, Routes, CRDs, Configmaps) the 3 most relevant for our use case are IngressLink and TransportServer CRDs and Service Type LoadBalancer. 
+BIGIP can be configured in a kubernetes-native way though the use of <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">CIS controller</a>. Altough CIS has multiple modes of operation (Ingress, Routes, CRDs, Configmaps) the 3 most relevant for our use case are IngressLink and TransportServer and Service Type LoadBalancer. 
 
 | Type | Functionality |
 |---|---|
-| TransportServer CRD |  With TS CRD you can forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence**.<br> It works with and without **IPAM** controller.<br> Examples on TransportServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#transportserver-crd-examples">here</a> |
-| Service Type LB | Services of type LoadBalancer are natively supported in Kubernetes deployments. When you create a service of type LoadBalancer it spins up service in integration with F5 IPAM Controller which allocates an IP address that will forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> It works only with **IPAM** controller.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |![image](https://user-images.githubusercontent.com/11005568/188262443-409175d9-77d9-4e32-8838-938ec876cdd7.png)
-| IngressLink | IngressLink CRD is a dedicated CRD for integrating BIGIP with NGINX Ingress Controller. The integration is acheved through a Layer 4 Virtual Server on BIGIP that forwards all traffic to NGINX Ingress Controller. <br> It works with or without **IPAM** controller. <br> Examples on IngressLink CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#ingresslink-examples">here</a> |
+| TransportServer |  With TransportServer Custom Resource you can forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence**.<br> It works with and without the **IPAM** controller.<br> Examples on TransportServer can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#transportserver-crd-examples">here</a> |
+| Service Type LB | Services of type LoadBalancer are natively supported in Kubernetes deployments. When you create a service of type LoadBalancer it spins up service in integration with F5 IPAM Controller which allocates an IP address that will forward all traffic to your service through a L4 Virtual Server on BIGIP. It provides functionalities such as **Reverse Proxy**,  **L4 DDoS**, **iRules**, **SNAT**, **IP persistence** and **EDNS**.<br> It works only with **IPAM** controller.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |
+| IngressLink | IngressLink Custom Resource is a dedicated CRD for integrating BIGIP with NGINX Ingress Controller. The integration is acheved through a Layer 4 Virtual Server on BIGIP that forwards all traffic to NGINX Ingress Controller. <br> It works with or without **IPAM** controller. <br> Examples on IngressLink can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#ingresslink-examples">here</a> |
 
 **IngressLink** and **Service Type LB** are the recommended methods for publishing NGINX Ingress Controller in our use case. Both methods provide Layer 4 Load Balancing from BIGIP to NGINX+ IC instances and therefore do not terminate SSL and both support IPAM so that IPs are not managed by the DevOps teams.
 
-An intresting feature is that both methods can populate the Ingress Resource Address information with external IP that has been configured on BIGIP. To achieve this we need to enable the correct arguments on NGINX Ingress Controller. These are:
+An intresting feature is that both methods can populate the Ingress resource Address information with the external IP that has been configured on BIGIP. To achieve this integration we need to enable the correct arguments on NGINX Ingress Controller deployment. These arguments are:
 - "-ingresslink" for Ingresslink deployments
 - "-external-service" for Type LB deployments
 
@@ -40,14 +40,15 @@ An intresting feature is that both methods can populate the Ingress Resource Add
 
 More information on how to configure those arguments can be found on the link https://docs.nginx.com/nginx-ingress-controller/configuration/global-configuration/command-line-arguments/
 
-**TransportServer** and **Service Type LB** are recommended methods to publish either TCP or UDP applications, since both provide Layer 4 Load Balancing adn IPAM funcitonality.
+**TransportServer** and **Service Type LB** are recommended methods to publish either TCP or UDP applications, since both provide Layer 4 Load Balancing and provide IPAM functionality.
 
 > **Why select ServiceType LB?**
-> - Easier Deployment. No need for additional resource (TS CRD).
+> - Easier deployment since it doesn;t require additional resources (TS CRD).
+> - Makes the code portable to cloud environments that support ServiceType LB
 
-> **Why select TransportServer (TS) or IngressLink instead of Type LB??**
+> **Why select TransportServer (TS) or IngressLink instead?**
 > - If you want to use a static IP address on the BIGIP
-> - If, for RBAC purposes, you need to have a separate resource (TS CRD) that will control the publishing of a service.
+> - If, for RBAC purposes, you need to control the publishing of a service, then having a separate resource such as TransportServer or IngressLink can help you apply different clusterroles to them and therefore control who has access to the resource.
 
 
 ## Demo 

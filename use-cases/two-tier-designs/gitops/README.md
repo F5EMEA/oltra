@@ -1,10 +1,11 @@
 # GitOps Deployments
 There are some cases that CIS might not be able to meet the customer requirements. 
+* Load Balancing services that run on mulitple clusters with LTM
+* Doing Canary or ab testing between 2 clusters
+* Doing Canary or ab testing between 2 services on the same cluster
 * Before the deployment, there has to be some sort of a validation plan.
 * After the deployment, there needs to be a post deployment script. For example, registring the IPs to a DNS name or creating a firewall rule. 
 * NetOps want to be in control of the process of deploying services in BIGIP. Possibly through an approval process
-* Doing Canary or ab testing between 2 clusters
-* Doing Canary or ab testing between 2 services on the same cluster
 
 The above use-cases and many more could be addressed with a GitOps deployment of AS3 services.  
 
@@ -83,7 +84,7 @@ Both templates can be found on the following <a href="https://clouddocs.f5.com/c
 
 
 
-### Configuration file
+### Configuration files
 To achieve ease of use, the only thing that a user needs to create are the parameters of the service they want to publish and save them to the file in a YAML format. The YAML format was choosen as its interface is much more friendly and familiar to Devops users.
 
 ```yml
@@ -91,7 +92,7 @@ config:
   - name: Portal
     vip: 10.1.1.214
     port: 80
-    template: http    <------ HTTP Template
+    template: http    <------ using "http" Template
     monitor: http
     cluster:
     - cluster_name: primary
@@ -104,7 +105,7 @@ config:
   - name: App_1
     vip: 10.1.1.215
     port: 8080
-    template: tcp  <------ TCP Template
+    template: tcp  <------ using "tcp" Template
     cluster:
     - cluster_name: primary
       nodeport: 33012
@@ -135,160 +136,51 @@ When there is a commit on the repository we are using the CI/CD pipeline runs au
 
 
 ## Demo 
-In the following section we will demontrate how we can load balance 2 Ingress Controllers with a ratio between them of 9 to 1. This scenario is useful to canary test a new release of NGINX+ Ingress Controller. 
+In the following section we will demontrate how we can load balance 2 Ingress Controllers with a ratio of 9 to 1. This scenario is useful to canary test a new release of NGINX+ Ingress Controller. 
 
-### Step 1. Create 2 NGINX+ IC and publish them with NodePort
+### Step 1. Create two NGINX+ Ingress Controllers
 
 Create the namespace for each tenant (Tenant-1, Tenant-2)
 ```
 kubectl create namespace layer4
-
-
-
 ```
 
-### Step 2. Deploy NGINX+ Ingress Controller
+### Step 2. Deploy applications behind each IC
+Create a test application and publish it behind on both ICs
 
-For each tenant we will deploy a seperate NGINX+ Ingress Controller. 
+```
+kubectl create namespace layer4
+```
 
-1. Copy the NGINX plus deployment from the setup folder
+### Step 3. Publish Ingress Controller 
+
+1. Publish NGINX+ IC with a NodePort service.
 ```
 cd ~/oltra/use-cases/two-tier-designs/layer4
 mkdir layer4
 cp -R ~/oltra/setup/nginx-ic/* .
 ```
 
-2. Replace the namespace `nginx` with `tenant1` and `tenant2` for the required manifests
+2. Verify the Ports used for the NodePort services. 
 ```
-./rename.sh
 ```
 
-3. Apply configurations
-```
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/rbac
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/rbac
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/nginx-plus
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/nginx-plus
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/publish
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
-```
+### Step 3. Create the configruation on Gilab
+1. Login to Gitlab
 
-4. Verify that the NGINX pods are up and running on each tenant
+2. Go to `asfdasdas` Repository
 
-```
-kubectl get pods -n tenant1
-kubectl get pods -n tenant2
-```
-```
-####################################      Expected Output   ######################################
-NAME                            READY   STATUS    RESTARTS   AGE
-nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
-##################################################################################################
-```
+3. Open the file `configuration.yml` 
 
-5. Confirm that CIS TransportServer CRDs have been deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
-```
-kubectl get ts -n tenant1
-kubectl get ts -n tenant2
-```
-```
-####################################      Expected Output   ######################################
-NAME            VIRTUALSERVERADDRESS   VIRTUALSERVERPORT   POOL            POOLPORT   IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
-nginx-tenant1                          80                  nginx-tenant1   80         tenant1     10.1.10.191     Ok       30h
-##################################################################################################
-```
+4. Edit the file and replace the content with the one below
 
-6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
+5. Go to CI/CD
 ```
-IP_tenant1=$(kubectl get ts nginx-tenant1 -n tenant1 --template '{{.status.vsAddress}}')
-IP_tenant2=$(kubectl get ts nginx-tenant2 -n tenant2 --template '{{.status.vsAddress}}')
+asdasd
+asd
+asdsa
 ```
-
-7. Try accessing the service as per the example below. 
-```
-curl http://$IP_tenant1
-curl http://$IP_tenant2
-```
-
-The output should be similar to:
-
-```html
-<html>
-<head><title>404 Not Found</title></head>
-<body>
-<center><h1>404 Not Found</h1></center>
-<hr><center>nginx/1.21.5</center>
-</body>
-</html>
-```
-
-### Step 3. Deploy services for each tenant
-
-1. Deploy demo applications in each tenant
-```
-kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant1
-kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
-```
-
-2. Deploy Ingress services for each tenant
-```yml
-cat <<EOF | kubectl apply -f -
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: apps-tentant1
-  namespace: tenant1
-spec:
-  ingressClassName: nginx-tenant1
-  rules:
-  - host: tenant1.f5demo.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: app1-svc
-            port:
-              number: 80
-      - path: /app2
-        pathType: Prefix
-        backend:
-          service:
-            name: app2-svc
-            port:
-              number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: apps-tentant2
-  namespace: tenant2
-spec:
-  ingressClassName: nginx-tenant2
-  rules:
-  - host: tenant2.f5demo.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: app1-svc
-            port:
-              number: 80
-      - path: /app2
-        pathType: Prefix
-        backend:
-          service:
-            name: app2-svc
-            port:
-              number: 80
-EOF
-```
-
+2. 
 
 3. Access the services for both tenants as per the example below. 
 ```
