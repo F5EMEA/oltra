@@ -28,7 +28,9 @@ The technologies used for this environment along with their credentials are show
 The use-case build for OLTRA can be found below:
 
 - [**Building Multi-tenant Ingress services**](use-cases/multi-tenancy/README.md)
-- **Deploying Active-Active or Active-Standby services in a multicluster K8s with CIS and NGINX** <br>
+- [**Deploying Multi-cluster services K8s with CIS and NGINX**](use-cases/multi-tenancy/README.md)
+- [**Building a 2 Tier Architecture with with CIS and NGINX**](use-cases/multi-tenancy/README.md)
+- [**Using GitOps to publish NGINX Ingress Controller with BIGIP**](use-cases/multi-tenancy/README.md)
 - **Implementing web application security into a DevOps environment** ()
 
 
@@ -37,10 +39,8 @@ The demos build for OLTRA can be found below:
 
 - [**Monitoring BIGIP services with Prometheus, Grafana and Elastic**](use-cases/bigip-monitoring/README.md)
 - [**Monitoring NGINX+ Ingress services with Prometheus, Grafana and Elastic**](use-cases/nginx-monitoring/README.md)
-- **Publishing NGINX+ Ingress with BIGIP** <br>
-- **Securing K8s services against L3/L7 DDoS attacks with BIGIP** <br>
-- **Securing K8s services against L7 DDoS attacks with NGINX+** <br>
-- **Protecting K8s applications against web application attacks with BIGIP** <br>
+- **Securing K8s services with BIGIP and CIS** <br>
+- **Protecting Kubernetes services against web application attacks with NGINX+** <br>
 
 
 ## Examples
