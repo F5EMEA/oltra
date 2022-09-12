@@ -92,8 +92,8 @@ f5-ipam-7cd6975f88-hj9nx          1/1     Running   0             9h
 ```
 kubectl create namespace layer4
 kubectl apply -f  ~/oltra/setup/apps/apps.yml -n layer4
-kubectl apply -f  ~/oltra/setup/apps/my_echo.yml -n layer4
-kubectl apply -f  ~/oltra/setup/apps/dns.yml -n layer4
+kubectl apply -f  ~/oltra/setup/apps/my-echo.yml -n layer4
+kubectl apply -f  ~/oltra/setup/apps/dns.yaml -n layer4
 ```
 
 2. Deploy Ingress services for demo apps.
@@ -144,9 +144,33 @@ curl http://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:80:$IP
 ```
 
 2. Access the applications with HTTPS to verify the SSL decryption takes place on NGINX+ IC.
+```
+curl -kv https://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:443:$IP
 
-curl -kv https://l4-ssl.f5demo.local/ --resolve l4-ssl.f5demo.local:443:$IP
+########################  Expected Output  #########################
 
+...
+...
+...
+* TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: CN=NGINXIngressController         <=========  TLS Termination on Ingress Controller 
+*  start date: Sep 12 18:03:35 2018 GMT
+*  expire date: Sep 11 18:03:35 2023 GMT
+*  issuer: CN=NGINXIngressController
+*  SSL certificate verify result: self signed certificate (18), continuing anyway.
+> GET / HTTP/1.1
+> Host: l4-www.f5demo.local
+> User-Agent: curl/7.58.0
+...
+...
+...
+
+################################################################################################
 
 ### Step 5. Publish a UDP application with TransportServer CRD.
 
