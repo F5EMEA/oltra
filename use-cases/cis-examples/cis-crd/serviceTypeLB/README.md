@@ -50,7 +50,7 @@ Create the K8s service.
 kubectl apply -f serviceTypeLB.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see the Load Balancer IP address on the service that was just created.
+Confirm that the service has been deployed correctly. You should see the Load Balancer IP address on the service that was just created.
 ```
 kubectl get svc svc-lb-ipam
 ```

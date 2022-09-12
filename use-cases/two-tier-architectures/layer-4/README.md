@@ -58,58 +58,159 @@ In the following section we will demontrate how we can implement the above archi
 
 ### Step 1. Verify NGINX+ and CIS are already running
 
-Run the following command to verify NGINX+ is running
+Change the working directory to `Layer4`.
+```
+cd ~/oltra/use-cases/two-tier-architectures/layer-4
+```
+
+Run the following command to verify NGINX+ is running.
+```
+kubectl get po -n nginx 
+
+############  Expected Output  #############
+NAME                           READY   STATUS    RESTARTS      AGE
+nginx-plus-778ff965c9-9kbbr    1/1     Running   3 (35m ago)   2d16h
+nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
+############################################
+```
+
+Run the following command to verify CIS and IPAM are running.
+```
+kubectl get po -n bigip 
+
+############  Expected Output  #############
+NAME                              READY   STATUS    RESTARTS      AGE
+f5-cis-crd-bdb7bb4f4-lx2zp        1/1     Running   3 (9h ago)    12d
+f5-cis-ingress-855fc6d6cc-9jv8l   1/1     Running   8 (37m ago)   2d16h
+f5-ipam-7cd6975f88-hj9nx          1/1     Running   0             9h
+############################################
+```
+
+
+### Step 2. Create Deploy services behind NGINX+ IC.
+1. Create a new namespace `layer4` and deploy demo apps and services.
 ```
 kubectl create namespace layer4
+kubectl apply -f  ~/oltra/setup/apps/apps.yml -n layer4
+kubectl apply -f  ~/oltra/setup/apps/my_echo.yml -n layer4
+kubectl apply -f  ~/oltra/setup/apps/dns.yml -n layer4
 ```
 
-Run the following command to verify CIS is running
+2. Deploy Ingress services for demo apps.
 ```
-kubectl create namespace layer4
-```
-
-
-### Step 2. Deploy services behind NGINX+ IC.
-
-1. Deploy demo applications
-```
-kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
+kubectl apply -f ingress.yml
 ```
 
 
-### Step 3. Publish NGINX+ on with a Service Type LB
-
-
-3. Access the services for both tenants as per the example below. 
+### Step 3. Publish NGINX+ with a Service Type LB
+1. Publish NGINX+ IC with Service Type LB.
 ```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
+kubectl apply -f serviceLB.yml
 ```
 
-
-### Step 4. Publish the UDP application with a TransportServer
-
-
-3. Access the services for both tenants as per the example below. 
+Confirm that the service has been deployed correctly. You should see the Load Balancer IP address on the service that was just created.
 ```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
+kubectl get svc nginx-plus-layer4 -n nginx
 ```
 
-
-### Step 5. Publish the UDP application though NGINX+
-
-
-3. Access the services for both tenants as per the example below. 
+Save the IP adresses that was assigned by the IPAM for this service
 ```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
+IP=$(kubectl get svc nginx-plus-layer4 -n nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
+2. Try accessing the service as per the example below. 
+```
+curl http://$IP
+```
 
+The output should be similar to:
+
+```html
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.21.5</center>
+</body>
+</html>
+```
+
+### Step 4. Access services behind NGINX
+1. Run the following commands to access the services behind NGINX
+```
+curl http://l4-app1.f5demo.local/ --resolve l4-app1.f5demo.local:80:$IP
+curl http://l4-app2.f5demo.local/ --resolve l4-app2.f5demo.local:80:$IP
+curl http://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:80:$IP
+```
+
+2. Access the applications with HTTPS to verify the SSL decryption takes place on NGINX+ IC.
+
+curl -kv https://l4-ssl.f5demo.local/ --resolve l4-ssl.f5demo.local:443:$IP
+
+
+### Step 5. Publish a UDP application with TransportServer CRD.
+
+This step we will publish a UDP application (CoreDNS) with the use of TransportServer CRDs.
+
+Eg: udp-transport-server.yml
+```yml
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: udp-transport-server
+  namespace: layer4
+spec:
+  virtualServerAddress: "10.1.10.125"
+  virtualServerPort: 53
+  virtualServerName: svc-udp-ts
+  type: udp
+  mode: standard
+  snat: auto
+  pool:
+    service: coredns
+    servicePort: 5353
+```
+
+Create the TransportServer resource. 
+```
+kubectl apply -f udp-transport-server.yml
+```
+
+Confirm that TransportServer is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+```
+kubectl get ts udp-transport-server -n layer4
+```
+
+Try accessing any DNS service on the internet like `www.example.com` through the Transport Server VIP (`10.1.10.125`)
+
+```
+dig @10.1.10.125 www.example.com
+```
+
+The output should be similar to:
+
+```cmd
+; <<>> DiG 9.11.3-1ubuntu1.13-Ubuntu <<>> @10.1.10.125 www.example.com
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 62205
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.example.com.               IN      A
+
+;; ANSWER SECTION:
+www.example.com.        14244   IN      A       93.184.216.34
+
+;; Query time: 4 msec
+;; SERVER: 10.1.10.75#53(10.1.10.125)        <================ DNS Server
+;; WHEN: Thu Jul 14 06:38:20 UTC 2022
+;; MSG SIZE  rcvd: 75
+```
+
+> Note that the response comes from 10.1.10.125 which is the Transport Server IP
