@@ -44,61 +44,202 @@ In the following section we will demontrate how we can implement the above archi
 - app1.f5demo.local **(WAF and DDOS)**
 - app2.f5demo.local **(No WAF and No DDoS)**
 
-
 ### Step 1. Verify NGINX+ and CIS are already running
 
-Run the following command to verify NGINX+ is running
+Change the working directory to `edge-security`.
 ```
-kubectl create namespace layer4
-```
-
-Run the following command to verify CIS is running
-```
-kubectl create namespace layer4
+cd ~/oltra/use-cases/two-tier-architectures/edge-security
 ```
 
-
-### Step 2. Deploy services behind NGINX+ IC.
-
-1. Deploy demo applications
+Run the following command to verify NGINX+ is running.
 ```
-kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
-```
+kubectl get po -n nginx 
 
-
-### Step 3. Publish NGINX+ on with a Service Type LB
-
-
-3. Access the services for both tenants as per the example below. 
-```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
+############  Expected Output  #############
+NAME                           READY   STATUS    RESTARTS      AGE
+nginx-plus-778ff965c9-9kbbr    1/1     Running   3 (35m ago)   2d16h
+nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
+############################################
 ```
 
-
-### Step 4. Publish the UDP application with a TransportServer
-
-
-3. Access the services for both tenants as per the example below. 
+Run the following command to verify CIS and IPAM are running.
 ```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
+kubectl get po -n bigip 
+
+############  Expected Output  #############
+NAME                              READY   STATUS    RESTARTS      AGE
+f5-cis-crd-bdb7bb4f4-lx2zp        1/1     Running   3 (9h ago)    12d
+f5-cis-ingress-855fc6d6cc-9jv8l   1/1     Running   8 (37m ago)   2d16h
+f5-ipam-7cd6975f88-hj9nx          1/1     Running   0             9h
+############################################
 ```
 
-
-### Step 5. Publish the UDP application though NGINX+
-
-
-3. Access the services for both tenants as per the example below. 
+### Step 2. Create Deploy services behind NGINX+ IC.
+Create a new namespace `layer7` and deploy demo apps and services.
 ```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
+kubectl create namespace layer7
+kubectl apply -f  ~/oltra/setup/apps/apps.yml -n layer7
+kubectl apply -f  ~/oltra/setup/apps/my-echo.yml -n layer7
+kubectl apply -f  ~/oltra/setup/apps/dns.yaml -n layer7
+```
+
+Deploy Ingress services for demo apps.
+```
+kubectl apply -f ingress.yml
 ```
 
 
+### Step 3. Publish NGINX+ with a VirtualServer CRD
+Publish port 80 of the NGINX+ IC service with VirtualServer CRD.
+```
+kubectl apply -f vs-http.yml
+```
+Publish port 443 of the NGINX+ IC service with VirtualServer CRD.
+```
+kubectl apply -f tls.yml
+kubectl apply -f vs-tls.yml
+```
+
+> Note: For certificate on the VirtualServer you can also use Kubernetes secrets. Examples for this can be found on the following <a href="<a href="https://github.com/F5EMEA/oltra/tree/multi-cluster/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination#certificate-as-k8s-secret">here</a>">link</a>
+
+
+Confirm that the service has been deployed correctly. You should see the Load Balancer IP address on the service that was just created.
+```
+kubectl get vs -n nginx
+```
+
+Save the IP adresses that was assigned by the IPAM for this service
+```
+IP=$(kubectl get svc nginx-plus-layer7 -n nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
+Try accessing the service as per the example below. 
+```
+curl http://$IP
+```
+
+The output should be similar to:
+
+```html
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.21.5</center>
+</body>
+</html>
+```
+
+### Step 4. Access services behind NGINX
+
+Run the following commands to access the services behind NGINX and verify their responses
+```
+curl http://l4-app1.f5demo.local/ --resolve l4-app1.f5demo.local:80:$IP
+curl http://l4-app2.f5demo.local/ --resolve l4-app2.f5demo.local:80:$IP
+curl http://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:80:$IP
+```
+
+Access an application with HTTPS to verify the SSL decryption takes place on NGINX+ IC.
+```cmd
+curl -kv https://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:443:$IP
+
+########################  Expected Output  #########################
+
+...
+...
+...
+* TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: CN=NGINXIngressController         <=========  TLS Termination on Ingress Controller 
+*  start date: Sep 12 18:03:35 2018 GMT
+*  expire date: Sep 11 18:03:35 2023 GMT
+*  issuer: CN=NGINXIngressController
+*  SSL certificate verify result: self signed certificate (18), continuing anyway.
+> GET / HTTP/1.1
+> Host: l4-www.f5demo.local
+> User-Agent: curl/7.58.0
+...
+...
+...
+
+################################################################################################
+```
+
+### Step 5. Publish a UDP application with TransportServer CRD.
+
+This step we will publish a UDP application (CoreDNS) with the use of TransportServer CRDs.
+
+Eg: udp-transport-server.yml
+```yml
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: udp-transport-server
+  namespace: layer4
+spec:
+  virtualServerAddress: "10.1.10.125"
+  virtualServerPort: 53
+  virtualServerName: svc-udp-ts
+  type: udp
+  mode: standard
+  snat: auto
+  pool:
+    service: coredns
+    servicePort: 5353
+```
+
+Create the TransportServer resource. 
+```
+kubectl apply -f udp-transport-server.yml
+```
+
+Confirm that TransportServer is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+```
+kubectl get ts udp-transport-server -n layer4
+```
+
+Try accessing any DNS service on the internet like `www.example.com` through the Transport Server VIP (`10.1.10.125`)
+
+```
+dig @10.1.10.125 www.example.com
+```
+
+The output should be similar to:
+
+```cmd
+; <<>> DiG 9.11.3-1ubuntu1.13-Ubuntu <<>> @10.1.10.125 www.example.com
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 62205
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.example.com.               IN      A
+
+;; ANSWER SECTION:
+www.example.com.        14244   IN      A       93.184.216.34
+
+;; Query time: 4 msec
+;; SERVER: 10.1.10.75#53(10.1.10.125)        <================ DNS Server
+;; WHEN: Thu Jul 14 06:38:20 UTC 2022
+;; MSG SIZE  rcvd: 75
+```
+
+> Note that the response comes from 10.1.10.125 which is the Transport Server IP
+
+
+### Step 6. Clean up the environment
+
+Delete the namespace `layer4`
+```
+kubectl delete ns layer4
+```

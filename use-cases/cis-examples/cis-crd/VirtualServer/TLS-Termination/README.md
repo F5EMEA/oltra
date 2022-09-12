@@ -3,6 +3,7 @@ This section demonstrates the three option to configure VirtualServer TLS termin
  - [Edge TLS](#edge-tls-termination)
  - [Re-Encrypt TLS](#re-encrypt-tls-termination)
  - [Passthrough TLS](#passthrough-tls-termination)
+ - [Certificate as K8s secret](#certificate-as-k8s-secret)
 
 
 ## Edge TLS Termination 
@@ -184,8 +185,7 @@ Access the `echo-svc` service using the following example.
 curl -vk https://passthrough.f5demo.local/ --resolve passthrough.f5demo.local:443:10.1.10.70
 ```
 
-
-## Secure Virtual Server with Edge TLS Termination (Certificate as K8s secret)
+## Certificate as K8s secret
 This section demonstrates how to configure VirtualServer with edge TLS termination and the certificate stored as K8s secret.
 For this configuration we will need 1 secret to hold the TLS certificate and 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
 

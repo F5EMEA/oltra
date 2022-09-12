@@ -88,7 +88,7 @@ f5-ipam-7cd6975f88-hj9nx          1/1     Running   0             9h
 
 
 ### Step 2. Create Deploy services behind NGINX+ IC.
-1. Create a new namespace `layer4` and deploy demo apps and services.
+Create a new namespace `layer4` and deploy demo apps and services.
 ```
 kubectl create namespace layer4
 kubectl apply -f  ~/oltra/setup/apps/apps.yml -n layer4
@@ -96,14 +96,14 @@ kubectl apply -f  ~/oltra/setup/apps/my-echo.yml -n layer4
 kubectl apply -f  ~/oltra/setup/apps/dns.yaml -n layer4
 ```
 
-2. Deploy Ingress services for demo apps.
+Deploy Ingress services for demo apps.
 ```
 kubectl apply -f ingress.yml
 ```
 
 
 ### Step 3. Publish NGINX+ with a Service Type LB
-1. Publish NGINX+ IC with Service Type LB.
+Publish NGINX+ IC with Service Type LB.
 ```
 kubectl apply -f serviceLB.yml
 ```
@@ -118,7 +118,7 @@ Save the IP adresses that was assigned by the IPAM for this service
 IP=$(kubectl get svc nginx-plus-layer4 -n nginx --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
-2. Try accessing the service as per the example below. 
+Try accessing the service as per the example below. 
 ```
 curl http://$IP
 ```
@@ -136,15 +136,16 @@ The output should be similar to:
 ```
 
 ### Step 4. Access services behind NGINX
-1. Run the following commands to access the services behind NGINX
+
+Run the following commands to access the services behind NGINX and verify their responses
 ```
 curl http://l4-app1.f5demo.local/ --resolve l4-app1.f5demo.local:80:$IP
 curl http://l4-app2.f5demo.local/ --resolve l4-app2.f5demo.local:80:$IP
 curl http://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:80:$IP
 ```
 
-2. Access the applications with HTTPS to verify the SSL decryption takes place on NGINX+ IC.
-```
+Access an application with HTTPS to verify the SSL decryption takes place on NGINX+ IC.
+```cmd
 curl -kv https://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:443:$IP
 
 ########################  Expected Output  #########################
@@ -171,6 +172,7 @@ curl -kv https://l4-www.f5demo.local/ --resolve l4-www.f5demo.local:443:$IP
 ...
 
 ################################################################################################
+```
 
 ### Step 5. Publish a UDP application with TransportServer CRD.
 
@@ -238,3 +240,11 @@ www.example.com.        14244   IN      A       93.184.216.34
 ```
 
 > Note that the response comes from 10.1.10.125 which is the Transport Server IP
+
+
+### Step 6. Clean up the environment
+
+Delete the namespace `layer4`
+```
+kubectl delete ns layer4
+```
