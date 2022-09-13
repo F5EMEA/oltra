@@ -5,7 +5,7 @@ In this use-case we go through how we can build a multi-tenant kubernetes cluste
 A multi-tenant cluster is shared by multiple users and/or workloads which are referred to as "tenants". The operators of multi-tenant clusters must isolate tenants from each other to minimize the damage that a compromised or malicious tenant can do to the cluster and other tenants.
 
 ## Ingress multi-tenancy requirements
-Typically the requirement of a multi-tenat K8s environments in terms of Ingress/Load-Balancing are the following:
+The typical requirements of a multi-tenat K8s environments in terms of Ingress/Load-Balancing are:
 1. Each tenant should be able to manage their own Ingress Resources.
 2. Ingress Resources of one tenant shouldn't not affect/interfere with another tenant's even if they are using the same FQDNs.
 3. Performance degradation of the Ingress Controller (IC) on one tenant (due to usage/attacks/misconfiguration) shouldn't affect the performance of the IC on another tenant.
@@ -93,7 +93,7 @@ cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 ./rename.sh
 ```
 
-3. Apply configurations
+3. Deploy NGNINX+ IC for each tenant.
 ```
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/rbac
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/rbac
@@ -101,8 +101,6 @@ kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/resources
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/resources
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/nginx-plus
 kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/nginx-plus
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/publish
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/publish
 ```
 
 4. Verify that the NGINX pods are up and running on each tenant
@@ -118,12 +116,17 @@ nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
 ##################################################################################################
 ```
 
-5. Confirm that CIS TransportServer CRDs have been deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+
+5. Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
+```cmd
+kubectl apply -f svc.yml
 ```
-kubectl get ts -n tenant1
-kubectl get ts -n tenant2
+
+6. Confirm that Service Type LB has received and IP from F5 IPAM and being deployed on BIGIP.
 ```
-```
+kubectl get svc -n tenant1
+kubectl get svc -n tenant2
+
 ####################################      Expected Output   ######################################
 NAME            VIRTUALSERVERADDRESS   VIRTUALSERVERPORT   POOL            POOLPORT   IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
 nginx-tenant1                          80                  nginx-tenant1   80         tenant1     10.1.10.191     Ok       30h
@@ -163,60 +166,8 @@ kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
 ```
 
 2. Deploy Ingress services for each tenant
-```yml
-cat <<EOF | kubectl apply -f -
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: apps-tentant1
-  namespace: tenant1
-spec:
-  ingressClassName: nginx-tenant1
-  rules:
-  - host: tenant1.f5demo.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: app1-svc
-            port:
-              number: 80
-      - path: /app2
-        pathType: Prefix
-        backend:
-          service:
-            name: app2-svc
-            port:
-              number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: apps-tentant2
-  namespace: tenant2
-spec:
-  ingressClassName: nginx-tenant2
-  rules:
-  - host: tenant2.f5demo.local
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: app1-svc
-            port:
-              number: 80
-      - path: /app2
-        pathType: Prefix
-        backend:
-          service:
-            name: app2-svc
-            port:
-              number: 80
-EOF
+```
+kubectl apply -f ingress.yml
 ```
 
 
