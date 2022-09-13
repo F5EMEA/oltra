@@ -7,7 +7,7 @@ metadata:
     f5cr: "true"
 spec:
   host: "*.f5demo.local"
-  hostgroup: "nginx"
+  policyName: waf-policy
   ipamLabel: "prod"
   virtualServerName: "nginx-plus-layer7"
   pools:

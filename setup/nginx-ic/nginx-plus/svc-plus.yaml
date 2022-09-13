@@ -18,25 +18,3 @@ spec:
     name: https
   selector:
     app: nginx-plus
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-infra
-  namespace: nginx
-spec:
-  type: NodePort 
-  ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 30088
-    protocol: TCP
-    name: http
-  - port: 443
-    targetPort: 443
-    nodePort: 30444
-    protocol: TCP
-    name: https
-  selector:
-    app: nginx-infra

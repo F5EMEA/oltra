@@ -87,7 +87,7 @@ f5-ipam-7cd6975f88-hj9nx          1/1     Running   0             9h
 ```
 
 
-### Step 2. Create Deploy services behind NGINX+ IC.
+### Step 2. Deploy services behind NGINX+ IC.
 Create a new namespace `layer4` and deploy demo apps and services.
 ```
 kubectl create namespace layer4

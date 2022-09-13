@@ -136,13 +136,39 @@ When there is a commit on the repository we are using the CI/CD pipeline runs au
 
 
 ## Demo 
-In the following section we will demontrate how we can load balance 2 Ingress Controllers with a ratio of 9 to 1. This scenario is useful to canary test a new release of NGINX+ Ingress Controller. 
+In the following section we will demontrate how we can load balance 2 Ingress Controllers with a ratio of 10 to 1. This scenario is useful to test a new release of NGINX+ Ingress Controller or an application. 
 
 ### Step 1. Create two NGINX+ Ingress Controllers
 
-Create the namespace for each tenant (Tenant-1, Tenant-2)
+Create the namespace (ngnix1, nginx2) for each NGINX+ Ingress Controller that we are planning to deploy
 ```
-kubectl create namespace layer4
+kubectl create namespace nginx1
+kubectl create namespace nginx2
+```
+
+Copy the NGINX plus deployment from the setup folder to 
+```
+cd ~/oltra/use-cases/two-tier-architectures/gitops
+mkdir nginx1
+mkdir nginx2
+cp -R ~/oltra/setup/nginx-ic/* nginx1
+cp -R ~/oltra/setup/nginx-ic/* nginx2
+```
+
+Replace the namespace `nginx` with `nginx1` and `nginx2` for the required manifests
+```
+./rename.sh
+```
+
+Apply configurations
+```
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx1/rbac
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx2/rbac
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx1/resources
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx2/resources
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx1/nginx-plus
+kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx2/nginx-plus
+
 ```
 
 ### Step 2. Deploy applications behind each IC

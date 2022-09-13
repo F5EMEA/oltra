@@ -39,10 +39,10 @@ The SSL certificates can either be configured manually on BIGIP and referenced o
 
 
 ## Demo 
-In the following section we will demontrate how we can implement the above architecture. We will be using VirtualServer to publish both NGINX+ IC and Service Type LB for a UDP application (CoreDNS). Behind NGINX+ we will be deploying 3 different applications with different WAF/DDoS setting on each:
-- www.f5demo.local **(WAF only)**
-- app1.f5demo.local **(WAF and DDOS)**
-- app2.f5demo.local **(No WAF and No DDoS)**
+In the following section we will demontrate how we can implement the above architecture. We will be using VirtualServer to publish both NGINX+ IC and Service Type LB for a UDP application (CoreDNS). Behind NGINX+ we will be deploying 3 different applications all protected with a WAF policy:
+- www.f5demo.local
+- app1.f5demo.local
+- app2.f5demo.local
 
 ### Step 1. Verify NGINX+ and CIS are already running
 
@@ -74,7 +74,7 @@ f5-ipam-7cd6975f88-hj9nx          1/1     Running   0             9h
 ############################################
 ```
 
-### Step 2. Create Deploy services behind NGINX+ IC.
+### Step 2. Deploy services behind NGINX+ IC.
 Create a new namespace `layer7` and deploy demo apps and services.
 ```
 kubectl create namespace layer7
@@ -88,19 +88,68 @@ Deploy Ingress services for demo apps.
 kubectl apply -f ingress.yml
 ```
 
-
 ### Step 3. Publish NGINX+ with a VirtualServer CRD
-Publish port 80 of the NGINX+ IC service with VirtualServer CRD.
+Create the PolicyCRD and VirtualServerCRD resource to publish NGINX+.
 ```
+kubectl apply -f waf-policy.yml
 kubectl apply -f vs-http.yml
 ```
-Publish port 443 of the NGINX+ IC service with VirtualServer CRD.
+> Note: For certificate on the VirtualServer you can also use Kubernetes secrets. Examples for this can be found on the following <a href="<a href="https://github.com/F5EMEA/oltra/tree/multi-cluster/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination#certificate-as-k8s-secret">here</a>">link</a>
+
+Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl apply -f tls.yml
-kubectl apply -f vs-tls.yml
+kubectl get vs 
 ```
 
-> Note: For certificate on the VirtualServer you can also use Kubernetes secrets. Examples for this can be found on the following <a href="<a href="https://github.com/F5EMEA/oltra/tree/multi-cluster/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination#certificate-as-k8s-secret">here</a>">link</a>
+Save the IP adresses that was assigned by the IPAM for this service
+```
+IP=$(kubectl get vs nginx-plus-layer7 -n nginx --output=jsonpath='{.status.vsAddress}')
+```
+
+Try accessing the service as per the example below. 
+```
+curl "http://l7-www.f5demo.local/index.php?parameter=<script/>" --resolve l7-www.f5demo.local:80:$IP
+```
+
+The output should be similar to:
+
+```html
+{
+  "Server Name": "l7-www.f5demo.local",
+  "Server Address": "10.244.140.110",
+  "Server Port": "80",
+  "Request Method": "GET",
+  "Request URI": "/index.php?parameter=<script/>",
+  "Query String": "parameter=<script/>",
+  "Headers": [{"host":"l7-www.f5demo.local","x-real-ip":"10.1.20.5","x-forwarded-for":"10.1.10.4, 10.1.20.5","x-forwarded-host":"l7-www.f5demo.local","x-forwarded-port":"80","x-forwarded-proto":"http","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Remote Address": "10.244.140.122",
+  "Remote Port": "35896",
+  "Timestamp": "1662967688",
+  "Data": "0"
+}
+```
+
+On the BIGIP we created a WAF policy **basic_waf_policy** to block HTTP attacks, so we expect BIGIP to mitigate any L7 attack (according to the WAF policy) that is executed to the services running in K8S. This WAF policy has been reference on the PolicyCRD.
+
+Access the service using the following example that contains a XSS violations. 
+```
+curl -v "http://l7-www.f5demo.local/index.php?parameter=<script/>" --resolve l7-www.f5demo.local:80:$IP
+```
+
+Verify that the  transaction that contains the attack gets blocked by BIGIP WAF.
+```html
+<html>
+  <head>
+    <title>Request Rejected</title>
+  </head>
+  <body>
+    The requested URL was rejected. Please consult with your administrator.<br><br>
+    Your support ID is: 4045204596866416688<br><br>
+    <a href='javascript:history.back();'>[Go Back]</a>
+  </body>
+</html>
+```
+
 
 
 Confirm that the service has been deployed correctly. You should see the Load Balancer IP address on the service that was just created.
