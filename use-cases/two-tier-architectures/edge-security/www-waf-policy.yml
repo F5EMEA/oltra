@@ -3,12 +3,11 @@ kind: Policy
 metadata:
   labels:
     f5cr: "true"
-  name: waf-policy
-  namespace: nginx
+  name: www-waf-policy
+  namespace: layer7
 spec:
   l7Policies:
-    waf: /Common/basic_waf_policy
+    waf: /Common/www_policy
   profiles:
-    http: /Common/http-xff
     logProfiles:
       - /Common/Log all requests
