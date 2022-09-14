@@ -9,7 +9,7 @@ spec:
   host: "l7-app1.f5demo.local"
   policyName: app1-waf-policy
   ipamLabel: "prod"
-  virtualServerName: "l7-www"
+  virtualServerName: "l7-app1"
   pools:
   - path: /
     service: app1-svc

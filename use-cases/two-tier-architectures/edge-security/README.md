@@ -101,7 +101,7 @@ kubectl get ingress -n layer7
 kubectl apply -f www-waf-policy.yml
 kubectl apply -f www-vs.yml
 kubectl apply -f app1-waf-policy.yml
-kubectl apply -f app2-vs.yml
+kubectl apply -f app1-vs.yml
 kubectl apply -f app2-waf-policy.yml
 kubectl apply -f app2-vs.yml
 ```
@@ -114,9 +114,9 @@ kubectl get vs -n layer7
 
 3. Save the IP adresses that was assigned by the IPAM for this service
 ```
-IP_www=$(kubectl get vs www-vs -n layer7 --output=jsonpath='{.status.vsAddress}')
-IP_app1=$(kubectl get vs app1-vs -n layer7 --output=jsonpath='{.status.vsAddress}')
-IP_app2=$(kubectl get vs app2-vs -n layer7 --output=jsonpath='{.status.vsAddress}')
+IP_www=$(kubectl get vs l7-www -n layer7 --output=jsonpath='{.status.vsAddress}')
+IP_app1=$(kubectl get vs l7-app1 -n layer7 --output=jsonpath='{.status.vsAddress}')
+IP_app2=$(kubectl get vs l7-app2 -n layer7 --output=jsonpath='{.status.vsAddress}')
 
 ```
 
@@ -129,7 +129,7 @@ curl "http://l7-app2.f5demo.local/index.php" --resolve l7-app2.f5demo.local:80:$
 ```
 
 
-On the BIGIP we created 3 WAF policies **www_policy**,  **app1_policy** and  **app2_policy** to block HTTP attacks, so we expect BIGIP to mitigate any L7 attack (according to the WAF policy) that is executed to the services running in K8S. The WAF policies have been referenced on the PolicyCRDs.
+5. On the BIGIP we created 3 WAF policies **www_policy**,  **app1_policy** and  **app2_policy** to block HTTP attacks, so we expect BIGIP to mitigate any L7 attack (according to the WAF policy) that is executed to the services running in K8S. The WAF policies have been referenced on the PolicyCRDs.
 
 Access the service using the following example that contains a XSS violations. 
 ```
@@ -139,7 +139,7 @@ curl "http://l7-app2.f5demo.local/index.php?parameter=<script/>" --resolve l7-ap
 
 ```
 
-Verify that the transactions that contain XSS attack gets blocked by BIGIP WAF.
+6. Verify that the transactions that contain XSS attack gets blocked by BIGIP WAF.
 ```html
 <html>
   <head>
@@ -153,7 +153,7 @@ Verify that the transactions that contain XSS attack gets blocked by BIGIP WAF.
 </html>
 ```
 
-Login to BIGIP and review the logs for all the policies.
+7. Login to BIGIP and review the logs for all the policies.
 
 
 
