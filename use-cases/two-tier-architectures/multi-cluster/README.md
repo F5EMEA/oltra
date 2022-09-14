@@ -104,4 +104,131 @@ DNS multi-cluster provides the following functionalities:
 
 ### DNS Demo
 
+Ideally for the multi-cluster demo we would need 2 K8s clusters and 2 BIGIP, one BIGIP for each cluster. Due to the fact that we have 1 BIGIP and 1 K8s cluster in our environment we will simulate mutli-cluster environment by deployhing the same application on 2 Namespaces, deploy 2 CIS instances that monitor these namespaces and both CIS instances will update the same BIGIP DNS.
+
+IMAGE
+
+
+
+### Step 1. Create Tentants
+
+Create the 2 namespaces. Each namespace will represent a different cluster
+```
+kubectl create namespace cluster1
+kubectl create namespace cluster2
+```
+
+### Step 2. Deploy NGINX+ Ingress Controller
+
+For each namespace (cluster) we will deploy a seperate NGINX+ Ingress Controller. 
+
+1. Change the working directory to `multi-cluster`.
+```
+cd ~/oltra/use-cases/two-tier-architectures/multi-cluster
+```
+
+2. Copy the NGINX plus deployment from the setup folder
+```
+cd ~/oltra/use-cases/two-tier-architectures/multi-cluster
+mkdir nginx_t1
+mkdir nginx_t2
+cp -R ~/oltra/setup/nginx-ic/* nginx_t1
+cp -R ~/oltra/setup/nginx-ic/* nginx_t2
+```
+
+3. Replace the namespace `nginx` with `cluster1` and `cluster2` for the required manifests
+```
+./rename.sh
+```
+
+4. Deploy NGNINX+ IC for each namespace (cluster).
+```
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t1/rbac
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t2/rbac
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t1/resources
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t2/resources
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t1/nginx-plus
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t2/nginx-plus
+```
+
+5. Verify that the NGINX pods are up and running on both namespaces
+
+```
+kubectl get pods -n cluster1
+kubectl get pods -n cluster2
+```
+```
+####################################      Expected Output   ######################################
+NAME                            READY   STATUS    RESTARTS   AGE
+nginx-cluster1-74fd9b786-hqm6k   1/1     Running   0          22s
+##################################################################################################
+```
+
+6. Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
+```cmd
+kubectl apply -f svc.yml
+```
+
+6. Confirm that Service Type LB has received and IP from F5 IPAM and being deployed on BIGIP.
+```
+kubectl get svc -n cluster1
+kubectl get svc -n cluster2
+
+####################################      Expected Output   ######################################
+NAME            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+nginx-cluster1   LoadBalancer   10.105.30.253   10.1.10.200   80:32151/TCP,443:32062/TCP   33m
+
+NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+nginx-cluster2   LoadBalancer   10.105.188.239   10.1.10.207   80:32658/TCP,443:31926/TCP   34m
+##################################################################################################
+```
+
+7. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
+```
+IP_tenant1=$(kubectl get svc nginx-tenant1 -n tenant1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+IP_tenant2=$(kubectl get svc nginx-tenant2 -n tenant2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+8. Try accessing the service as per the example below. 
+```
+curl http://$IP_tenant1
+curl http://$IP_tenant2
+```
+
+The output should be similar to:
+
+```html
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.21.5</center>
+</body>
+</html>
+```
+
+### Step 3. Deploy services for each tenant
+
+1. Deploy demo applications in each tenant
+```
+kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant1
+kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
+```
+
+2. Deploy Ingress services for each tenant
+```
+kubectl apply -f ingress.yml
+```
+
+
+3. Access the services for both tenants as per the example below. 
+```
+curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
+curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
+curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
+curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
+```
+
+
 
