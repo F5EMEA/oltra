@@ -164,36 +164,57 @@ nginx-cluster1-74fd9b786-hqm6k   1/1     Running   0          22s
 ##################################################################################################
 ```
 
-6. Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
-```cmd
-kubectl apply -f svc.yml
+6. Scale down to 0 the existing CIS instance. 
+```
+```
+> Note: We do that since the existing CIS listens across all Namespace. In this case we will create a conflict of multiple CIS configuring BIGP for the same CRD but on different partitions. 
+ 
+7. Deploy 2 new CIS instances. One will manage namespace `cluster1` and the other will manage namespace `cluster2` 
+```
+cp /Users/K.Skenderidis/Documents/GitHub/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster1.yml
+cp /Users/K.Skenderidis/Documents/GitHub/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster2.yml
+sed '3 i New Line with sed' File1
+sed '3 i New Line with sed' File1
+sed '3 i New Line with sed' File1
+sed '3 i New Line with sed' File1
+sed '3 i New Line with sed' File1
+sed '3 i New Line with sed' File1
+kubectl apply -f cis-cluster1.yml
+kubectl apply -f cis-cluster2.yml
+
 ```
 
-6. Confirm that Service Type LB has received and IP from F5 IPAM and being deployed on BIGIP.
+8. Deploy
+
+
+5. Deploy TS 
+
 ```
-kubectl get svc -n cluster1
-kubectl get svc -n cluster2
-
-####################################      Expected Output   ######################################
-NAME            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-nginx-cluster1   LoadBalancer   10.105.30.253   10.1.10.200   80:32151/TCP,443:32062/TCP   33m
-
-NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
-nginx-cluster2   LoadBalancer   10.105.188.239   10.1.10.207   80:32658/TCP,443:31926/TCP   34m
-##################################################################################################
+kubectl xxxxxxx
+kubectl xxxxxx
 ```
 
-7. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
+6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
 ```
-IP_tenant1=$(kubectl get svc nginx-tenant1 -n tenant1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-IP_tenant2=$(kubectl get svc nginx-tenant2 -n tenant2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+IP_cluster1=$(kubectl get svc nginx-cluster1 -n cluster1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+IP_cluster2=$(kubectl get svc nginx-cluster2 -n cluster2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
+
+7. Create EDNS for cluster1 and cluster2
+```
+
+```
+
+8. DIG commands
+
+
+
 8. Try accessing the service as per the example below. 
 ```
-curl http://$IP_tenant1
-curl http://$IP_tenant2
+curl http://$IP_cluster1
+curl http://$IP_cluster2
 ```
 
 The output should be similar to:

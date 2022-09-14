@@ -27,7 +27,7 @@ The technologies used for this environment along with their credentials are show
 ## Use-Cases
 The use-case build for OLTRA can be found below:
 
-- [**Building Multi-tenant Ingress services**](use-cases/multi-tenancy/README.md)
+- [**Building Multi-tenant Ingress services**](use-cases/two-tier-architectures/multi-tenancy/README.md)
 - [**Deploying Multi-cluster services K8s with CIS and NGINX**](use-cases/two-tier-architectures/multi-tenancy/README.md)
 - [**Building a 2 Tier Architecture with with CIS and NGINX**](use-cases/two-tier-architectures/README.md)
 - [**Using GitOps to publish NGINX Ingress Controller with BIGIP**](use-cases/two-tier-architectures/gitops/README.md)

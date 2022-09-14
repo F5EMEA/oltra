@@ -45,14 +45,17 @@ sed -i '4s/name: nginx/name: nginx-cluster2/' nginx_t2/nginx-plus/ingress-class-
 sed -i 's/nginx-plus/nginx-cluster1/' nginx_t1/nginx-plus/ingress-class-plus.yaml
 sed -i 's/nginx-plus/nginx-cluster2/' nginx_t2/nginx-plus/ingress-class-plus.yaml
 
-sed -i '16, 16d' nginx1/nginx-plus/svc-plus.yaml
-sed -i '11, 11d' nginx1/nginx-plus/svc-plus.yaml
-sed -i '16, 16d' nginx2/nginx-plus/svc-plus.yaml
-sed -i '11, 11d' nginx2/nginx-plus/svc-plus.yaml
-sed -i 's/nginx-plus/nginx1-plus/' nginx1/nginx-plus/svc-plus.yaml
-sed -i 's/nginx-plus/nginx2-plus/' nginx2/nginx-plus/svc-plus.yaml
-sed -i 's/namespace: nginx/namespace: cluster1/' nginx1/nginx-plus/svc-plus.yaml
-sed -i 's/namespace: nginx/namespace: cluster2/' nginx2/nginx-plus/svc-plus.yaml
+sed -i '16, 16d' nginx_t1/nginx-plus/svc-plus.yaml
+sed -i '11, 11d' nginx_t1/nginx-plus/svc-plus.yaml
+sed -i '16, 16d' nginx_t2/nginx-plus/svc-plus.yaml
+sed -i '11, 11d' nginx_t2/nginx-plus/svc-plus.yaml
+sed -i 's/nginx-plus/nginx-cluster1/' nginx_t1/nginx-plus/svc-plus.yaml
+sed -i 's/nginx-plus/nginx-cluster2/' nginx_t2/nginx-plus/svc-plus.yaml
+sed -i 's/namespace: nginx/namespace: cluster1/' nginx_t1/nginx-plus/svc-plus.yaml
+sed -i 's/namespace: nginx/namespace: cluster2/' nginx_t2/nginx-plus/svc-plus.yaml
+
+
+
 
 
 rm -R nginx_t1/crds
