@@ -1,5 +1,4 @@
 # Multi-tenant Ingress services
-
 In this use-case we go through how we can build a multi-tenant kubernetes cluster from the ingress and load balancing perpective. This includes clusters shared by different users at a single organization or clusters that are shared by different orginizations.
 
 A multi-tenant cluster is shared by multiple users and/or workloads which are referred to as "tenants". The operators of multi-tenant clusters must isolate tenants from each other to minimize the damage that a compromised or malicious tenant can do to the cluster and other tenants.
@@ -18,7 +17,7 @@ The typical requirements of a multi-tenat K8s environments in terms of Ingress/L
 In order to address the above requirements we have designed a 2-tier architecture. The 1st tier is based on NGNIX+ Ingress Controller and will be deployed in each tentant while the 2nd tier is based on BIGIP/CIS that will have the role of the external load balancer.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/skenderidis/f5-ingress-lab/main/use-cases/cluster-multi-tenancy/multi-tenancy.png" style="width:85%">
+  <img src="multi-tenancy.png" style="width:85%">
 </p>
 
 ### Tier 1 - NGINX+ Ingress Controller
@@ -81,7 +80,7 @@ For each tenant we will deploy a seperate NGINX+ Ingress Controller.
 
 1. Copy the NGINX plus deployment from the setup folder
 ```
-cd ~/oltra/use-cases/multi-tenancy
+cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
 mkdir nginx_t1
 mkdir nginx_t2
 cp -R ~/oltra/setup/nginx-ic/* nginx_t1
@@ -95,12 +94,12 @@ cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 
 3. Deploy NGNINX+ IC for each tenant.
 ```
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/rbac
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/rbac
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t1/nginx-plus
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx_t2/nginx-plus
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1/rbac
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/rbac
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1/resources
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/resources
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1/nginx-plus
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/nginx-plus
 ```
 
 4. Verify that the NGINX pods are up and running on each tenant
@@ -128,16 +127,20 @@ kubectl get svc -n tenant1
 kubectl get svc -n tenant2
 
 ####################################      Expected Output   ######################################
-NAME            VIRTUALSERVERADDRESS   VIRTUALSERVERPORT   POOL            POOLPORT   IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
-nginx-tenant1                          80                  nginx-tenant1   80         tenant1     10.1.10.191     Ok       30h
+NAME            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+nginx-tenant1   LoadBalancer   10.105.30.253   10.1.10.190   80:32151/TCP,443:32062/TCP   33m
+
+NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+nginx-tenant2   LoadBalancer   10.105.188.239   10.1.10.193   80:32658/TCP,443:31926/TCP   34m
 ##################################################################################################
 ```
 
 6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
 ```
-IP_tenant1=$(kubectl get ts nginx-tenant1 -n tenant1 --template '{{.status.vsAddress}}')
-IP_tenant2=$(kubectl get ts nginx-tenant2 -n tenant2 --template '{{.status.vsAddress}}')
+IP_tenant1=$(kubectl get svc nginx-tenant1 -n tenant1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+IP_tenant2=$(kubectl get svc nginx-tenant2 -n tenant2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
+IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
 7. Try accessing the service as per the example below. 
 ```

@@ -6,7 +6,7 @@ metadata:
   annotations:
     cis.f5.com/ipamLabel: tenant1  
 spec:
-  type: ClusterIP 
+  type: LoadBalancer 
   ports:
   - port: 80
     targetPort: 80
@@ -28,7 +28,7 @@ metadata:
   annotations:
     cis.f5.com/ipamLabel: tenant2
 spec:
-  type: ClusterIP 
+  type: LoadBalancer 
   ports:
   - port: 80
     targetPort: 80

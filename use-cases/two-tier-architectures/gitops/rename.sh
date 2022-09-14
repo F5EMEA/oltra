@@ -29,23 +29,34 @@ sed -i 's/namespace: nginx/namespace: nginx2/' nginx2/resources/default-server-s
 sed -i 's/namespace: nginx/namespace: nginx1/' nginx1/resources/nginx-config.yaml
 sed -i 's/namespace: nginx/namespace: nginx2/' nginx2/resources/nginx-config.yaml
 
-sed -i 's/namespace: nginx/namespace: nginx1/' nginx1/nginx-plus/nginx-infra.yaml
-sed -i 's/namespace: nginx/namespace: nginx2/' nginx2/nginx-plus/nginx-infra.yaml
-sed -i 's/nginx-infra/nginx-nginx1/' nginx1/nginx-plus/nginx-infra.yaml
-sed -i 's/nginx-infra/nginx-nginx2/' nginx2/nginx-plus/nginx-infra.yaml
-sed -i 's/nginx-infra/nginx-nginx1/' nginx1/nginx-plus/ingress-class-infra.yaml
-sed -i 's/nginx-infra/nginx-nginx2/' nginx2/nginx-plus/ingress-class-infra.yaml
+sed -i 's/namespace: nginx/namespace: nginx1/' nginx1/nginx-plus/nginx-plus.yaml
+sed -i 's/namespace: nginx/namespace: nginx2/' nginx2/nginx-plus/nginx-plus.yaml
+sed -i 's/name: nginx-plus/name: nginx-nginx1/' nginx1/nginx-plus/nginx-plus.yaml
+sed -i 's/name: nginx-plus/name: nginx-nginx2/' nginx2/nginx-plus/nginx-plus.yaml
+sed -i 's/app: nginx-plus/app: nginx-nginx1/' nginx1/nginx-plus/nginx-plus.yaml
+sed -i 's/app: nginx-plus/app: nginx-nginx2/' nginx2/nginx-plus/nginx-plus.yaml
+sed -i 's/app: nginx-plus/app: nginx-nginx1/' nginx1/nginx-plus/nginx-plus.yaml
+sed -i 's/ingress-class=nginx-plus/ingress-class=nginx1/' nginx1/nginx-plus/nginx-plus.yaml
+sed -i 's/ingress-class=nginx-plus/ingress-class=nginx2/' nginx2/nginx-plus/nginx-plus.yaml
+
+sed -i '4s/name: nginx/name: nginx1/' nginx1/nginx-plus/ingress-class-plus.yaml
+sed -i '4s/name: nginx/name: nginx2/' nginx2/nginx-plus/ingress-class-plus.yaml
+
+sed -i 's/nginx-plus/nginx-nginx1/' nginx1/nginx-plus/ingress-class-plus.yaml
+sed -i 's/nginx-plus/nginx-nginx2/' nginx2/nginx-plus/ingress-class-plus.yaml
 
 
-mv nginx1/nginx-plus/nginx-infra.yaml nginx1/nginx-plus/nginx.yaml
-mv nginx2/nginx-plus/nginx-infra.yaml nginx2/nginx-plus/nginx.yaml
-mv nginx1/nginx-plus/ingress-class-infra.yaml nginx1/nginx-plus/ingress-class.yaml
-mv nginx2/nginx-plus/ingress-class-infra.yaml nginx2/nginx-plus/ingress-class.yaml
-rm nginx1/nginx-plus/nginx-plus.yaml
-rm nginx2/nginx-plus/nginx-plus.yaml
+sed -i '16, 16d' nginx1/nginx-plus/svc-plus.yaml
+sed -i '11, 11d' nginx1/nginx-plus/svc-plus.yaml
+sed -i '16, 16d' nginx2/nginx-plus/svc-plus.yaml
+sed -i '11, 11d' nginx2/nginx-plus/svc-plus.yaml
+sed -i 's/nginx-plus/nginx-nginx1/' nginx1/nginx-plus/svc-plus.yaml
+sed -i 's/nginx-plus/nginx-nginx2/' nginx2/nginx-plus/svc-plus.yaml
+sed -i 's/namespace: nginx/namespace: nginx1/' nginx1/nginx-plus/svc-plus.yaml
+sed -i 's/namespace: nginx/namespace: nginx2/' nginx2/nginx-plus/svc-plus.yaml
+
+
 rm -R nginx1/crds
 rm -R nginx2/crds
-rm nginx1/nginx-plus/ingress-class-plus.yaml
-rm nginx2/nginx-plus/ingress-class-plus.yaml
-rm nginx1/nginx-plus/svc-plus.yaml
-rm nginx2/nginx-plus/svc-plus.yaml
+rm -R nginx1/publish
+rm -R nginx2/publish

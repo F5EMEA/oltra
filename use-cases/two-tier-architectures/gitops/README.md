@@ -22,7 +22,7 @@ In order to have a successful solution, the most important part for such deploym
 ### Templates
 For the purposes of this demo we have created 2 different templates with JINJA2; **HTTP** and a **TCP**. Below you can find the TCP template:
 
-```json
+```
 ########################################################################
 ########################  JINJA2 TCP Template   ########################
 ########################################################################
@@ -69,7 +69,7 @@ For the purposes of this demo we have created 2 different templates with JINJA2;
     }
 }
 ```
-Both templates can be found on the following <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">link</a> and require the following parameters.
+Both templates can be found on the following <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">link</a> and require the following parameters. Of course you can modify the templates to include any functionality supproted by AS3
 
 | Parameter name | Description | Requirement | Default value | TCP |  HTTP |
 |:-|:-|:-:|:-:|:-:|:-:|
@@ -124,9 +124,9 @@ To make the process simple from converting YAML to AS3 JSON we are using the JIN
   <img src="process.png" style="width:85%">
 </p>
 
-### Step 3. Using CI/CD
+### Using CI/CD
 When there is a commit on the repository we are using the CI/CD pipeline runs automatically. The is split into 3 stages. 
-- The ***first stage*** is the verfication. In this stage we can review and validate from the VirtualServer IPs that are being used to the rights that ,asxasxasxasxasasx
+- The ***first stage*** is the verfication. In this stage we can review and validate multiple aspects. We can validate the YAML file format, we can verify that the VirtualServer IPs that are being used are correct and many more.
 - The ***second stage*** is the deployment. In this stage we construct the AS3 with the help of JINJA2 templates and a python script <a href="https://clouddocs.f5.com/containers/latest/userguide/what-is.html">`build-as.py`</a> and deploy the AS3 configuraiton on the intented BIGIP platform. The Logs and the AS3 json file are saved as artifacts to be accessed if needed later. 
 - The ***third stage*** is the validation. In this stage we validate the configuration that has been applied but we can also run a number of supporting post-deployment tasks. Things like DNS publishing, firewall policy configuration, email/slack notifactions and many others.
 
@@ -140,6 +140,11 @@ In the following section we will demontrate how we can load balance 2 Ingress Co
 
 ### Step 1. Create two NGINX+ Ingress Controllers
 
+Change the working directory to `gitops`.
+```
+cd ~/oltra/use-cases/two-tier-architectures/gitops
+```
+
 Create the namespace (ngnix1, nginx2) for each NGINX+ Ingress Controller that we are planning to deploy
 ```
 kubectl create namespace nginx1
@@ -148,14 +153,13 @@ kubectl create namespace nginx2
 
 Copy the NGINX plus deployment from the setup folder to 
 ```
-cd ~/oltra/use-cases/two-tier-architectures/gitops
 mkdir nginx1
 mkdir nginx2
 cp -R ~/oltra/setup/nginx-ic/* nginx1
 cp -R ~/oltra/setup/nginx-ic/* nginx2
 ```
 
-Replace the namespace `nginx` with `nginx1` and `nginx2` for the required manifests
+Run the following command that will make all the necessary changes on the NGINX config files according to the new namespaces.
 ```
 ./rename.sh
 ```
@@ -173,7 +177,6 @@ kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx2/nginx-plus
 
 ### Step 2. Deploy applications behind each IC
 Create a test application and publish it behind on both ICs
-
 ```
 kubectl create namespace layer4
 ```

@@ -50,7 +50,7 @@ metadata:
     f5cr: "true"
   name: sample-virtual
 spec:
-  host: www.f5demo.cloud      <==== Hostname (FQDN)
+  host: www.f5demo.cloud       <==== Hostname (FQDN)
   virtualServerAddress: 10.1.10.240
   pools:
   - monitor:
@@ -72,7 +72,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  domainName: www.f5demo.cloud  <==== Hostname matches with pervious CR
+  domainName: www.f5demo.cloud     <==== Hostname matches with pervious CR
   dnsRecordType: A
   loadBalanceMethod: round-robin
   pools:
