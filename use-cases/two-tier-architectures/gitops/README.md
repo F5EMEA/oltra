@@ -140,18 +140,18 @@ In the following section we will demontrate how we can load balance 2 Ingress Co
 
 ### Step 1. Create two NGINX+ Ingress Controllers
 
-Change the working directory to `gitops`.
+1. Change the working directory to `gitops`.
 ```
 cd ~/oltra/use-cases/two-tier-architectures/gitops
 ```
 
-Create the namespace (ngnix1, nginx2) for each NGINX+ Ingress Controller that we are planning to deploy
+2. Create the namespace (ngnix1, nginx2) for each NGINX+ Ingress Controller that we are planning to deploy.
 ```
 kubectl create namespace nginx1
 kubectl create namespace nginx2
 ```
 
-Copy the NGINX plus deployment from the setup folder to 
+3. Copy the NGINX plus deployment from the setup folder.
 ```
 mkdir nginx1
 mkdir nginx2
@@ -159,65 +159,138 @@ cp -R ~/oltra/setup/nginx-ic/* nginx1
 cp -R ~/oltra/setup/nginx-ic/* nginx2
 ```
 
-Run the following command that will make all the necessary changes on the NGINX config files according to the new namespaces.
+4. Replace the namespace `nginx` with `nginx1` and `nginx2` for the required manifests
 ```
 ./rename.sh
 ```
 
-Apply configurations
+4. Deploy NGNINX+ IC for each tenant.
 ```
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx1/rbac
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx2/rbac
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx1/resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx2/resources
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx1/nginx-plus
-kubectl apply -f ~/oltra/use-cases/multi-tenancy/nginx2/nginx-plus
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx1/rbac
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx2/rbac
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx1/resources
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx2/resources
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx1/nginx-plus
+kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx2/nginx-plus
 
 ```
 
-### Step 2. Deploy applications behind each IC
-Create a test application and publish it behind on both ICs
+6. Verify that the NGINX pods are up and running on each tenant
+
 ```
-kubectl create namespace layer4
+kubectl get pods -n nginx1
+kubectl get pods -n nginx2
+```
+```
+####################################      Expected Output   ######################################
+NAME                           READY   STATUS    RESTARTS   AGE
+nginx2-plus-75974b54f9-wp5bt   1/1     Running   0          6m12s
+##################################################################################################
 ```
 
-### Step 3. Publish Ingress Controller 
 
-1. Publish NGINX+ IC with a NodePort service.
+6. Confirm that Port that the NGINX+ IC has been published.
 ```
-cd ~/oltra/use-cases/two-tier-designs/layer4
-mkdir layer4
-cp -R ~/oltra/setup/nginx-ic/* .
+kubectl get svc -n nginx1
+kubectl get svc -n nginx2
+
+####################################      Expected Output   ######################################
+NAME          TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+nginx1-plus   NodePort   10.103.176.236   <none>        80:32187/TCP,443:31530/TCP   7m39s
+
+NAME          TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+nginx2-plus   NodePort   10.102.49.93     <none>        80:30976/TCP,443:31129/TCP   7m37s
+##################################################################################################
 ```
 
-2. Verify the Ports used for the NodePort services. 
+
+### Step 2. Deploy applications
+
+1. Create a new namespace that will contain the applications that should be published with the IC.
 ```
+kubectl create namespace gitops
+```
+
+2. Deploy demo applications.
+```
+kubectl apply -f  ~/oltra/setup/apps/apps.yml -n gitops
+```
+
+3. Deploy the Ingress resources. Because both IC use the same IngressClass, both IC will pick up the Ingress resource and configure the routing rules.
+```
+kubectl apply -f ingress.yml
 ```
 
 ### Step 3. Create the configruation on Gilab
-1. Login to Gitlab
+1. Login to Gitlab.
 
-2. Go to `asfdasdas` Repository
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
 
-3. Open the file `configuration.yml` 
 
-4. Edit the file and replace the content with the one below
+2. Go to `two-tier / Multi Cluster` Repository.
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
 
-5. Go to CI/CD
+
+3. Select the `input.yml` file.
+
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
+
+4. Change from `Open in Web IDE` to `Edit`.
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
+
+5. Edit the file and replace it with the following content.
 ```
-asdasd
-asd
-asdsa
+config: 
+  - name: app-gitops
+    vip: 10.1.10.211
+    port: 80
+    template: tcp
+    monitor: tcp
+    cluster:
+    - cluster_name: primary
+      nodeport: 32187
+      ratio: 10
+    - cluster_name: primary
+      nodeport: 30976
+      ratio: 1
 ```
-2. 
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
 
-3. Access the services for both tenants as per the example below. 
+2. Commit the changes and go to the CI/CD -> Pipelines panel.
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
+
+3. Select the pipeline that is actively running and review the process.
+
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
+
+4. Once the pipeline has completed successfully, login to BIGIP and review the Virtual Server and Pool members to verify that Load Balancing takes place for the 2 NodePorts and the ratio is 10 to 1.
+
+<p align="center">
+  <img src="process.png" style="width:85%">
+</p>
+
+
+
+3. Make 100 requests to the Virtual Server and review the statistics on the BIGIP.
+```cmd
+for i in {1..100} ; do curl http://gitops.f5demo.local/ --resolve gitops.f5demo.local:80:10.1.10.211; \
+done
 ```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
-```
+
 
 
 ### Step 4. (Optional) Grafana Dashboards 
@@ -228,8 +301,8 @@ cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-metrics-tenant1
-  namespace: tenant1
+  name: nginx-metrics-nginx1
+  namespace: nginx1
   labels:
     type: nginx-metrics
 spec:
@@ -239,13 +312,13 @@ spec:
     targetPort: 9113
     name: prometheus
   selector:
-    app: nginx-tenant1
+    app: nginx1-plus
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-metrics-tenant2
-  namespace: tenant2
+  name: nginx-metrics-nginx2
+  namespace: nginx2
   labels:
     type: nginx-metrics
 spec:
@@ -255,7 +328,7 @@ spec:
     targetPort: 9113
     name: prometheus
   selector:
-    app: nginx-tenant2
+    app: nginx2-plus
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -271,8 +344,8 @@ spec:
   namespaceSelector:
     matchNames:
     - nginx
-    - tenant1
-    - tenant2
+    - nginx1
+    - nginx2
   endpoints:
   - interval: 30s
     path: /metrics
@@ -309,10 +382,7 @@ Select any of the 2 Ingress Dashboards (NGINX Ingress / NGINX Ingress Details) w
 
 2. Run the following script to generate traffic and review the Grafana Dashboards per tenant
 ```cmd
-for i in {1..500} ; do curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1; \
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2;  \
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1; \
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2; \
+for i in {1..100} ; do curl http://gitops.f5demo.local/ --resolve gitops.f5demo.local:80:10.1.10.211; \
 done
 ```
 

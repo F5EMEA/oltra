@@ -78,7 +78,13 @@ kubectl create namespace tenant2
 
 For each tenant we will deploy a seperate NGINX+ Ingress Controller. 
 
-1. Copy the NGINX plus deployment from the setup folder
+1. Change the working directory to `multi-tenancy`.
+```
+cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
+```
+
+
+2. Copy the NGINX plus deployment from the setup folder
 ```
 cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
 mkdir nginx_t1
@@ -87,12 +93,12 @@ cp -R ~/oltra/setup/nginx-ic/* nginx_t1
 cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 ```
 
-2. Replace the namespace `nginx` with `tenant1` and `tenant2` for the required manifests
+3. Replace the namespace `nginx` with `tenant1` and `tenant2` for the required manifests
 ```
 ./rename.sh
 ```
 
-3. Deploy NGNINX+ IC for each tenant.
+4. Deploy NGNINX+ IC for each tenant.
 ```
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1/rbac
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/rbac
@@ -102,7 +108,7 @@ kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/nginx-plus
 ```
 
-4. Verify that the NGINX pods are up and running on each tenant
+5. Verify that the NGINX pods are up and running on each tenant
 
 ```
 kubectl get pods -n tenant1
@@ -115,8 +121,7 @@ nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
 ##################################################################################################
 ```
 
-
-5. Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
+6. Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
 ```cmd
 kubectl apply -f svc.yml
 ```
@@ -135,14 +140,14 @@ nginx-tenant2   LoadBalancer   10.105.188.239   10.1.10.193   80:32658/TCP,443:3
 ##################################################################################################
 ```
 
-6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
+7. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
 ```
 IP_tenant1=$(kubectl get svc nginx-tenant1 -n tenant1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 IP_tenant2=$(kubectl get svc nginx-tenant2 -n tenant2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
-7. Try accessing the service as per the example below. 
+8. Try accessing the service as per the example below. 
 ```
 curl http://$IP_tenant1
 curl http://$IP_tenant2
