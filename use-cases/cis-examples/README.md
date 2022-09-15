@@ -5,8 +5,8 @@ In this section we will be exploring the most common use-cases for the four ways
 - [VirtualServer CRDs](#virtualserver-crd-examples)
 - [TransportServer CRDs](#transportserver-crd-examples)
 - [Service Type LoadBalancer](#service-type-loadbalancer-examples)
-- IngressLink (to be completed)
-- EDNS (to be completed)
+- [IngressLink](#ingresslink-examples)
+- [EDNS](#edns-examples)
 
 <p align="center">
   <img src="cis.png" style="width:100%">

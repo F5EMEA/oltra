@@ -1,6 +1,6 @@
 # ExternalDNS
 In this section we provide examples for the most common use-cases of ExternalDNS with F5 CIS:
-- [Publish FQDN](cis-crd/ExternalDNS/#publish-FQDN)
+- [Publish FQDN](#publish-fqdn)
 
 ExternalDNS is a Kubernetes add-on that allows you to control DNS records of F5 DNS servers with information about exposed Kubernetes services through VirtualServer, TransportServer or IngressLink CRDs.
 
@@ -82,32 +82,39 @@ spec:
       interval: 3
       timeout: 10
 ```
+1. Access the VS Code on the UDF
 
-Change the working directory to `TransportServer`.
+<p align="center">
+  <img src="cicd.png" style="width:85%">
+</p>
+
+
+1. Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/ExternalDNS
 ```
 
-Deploy TransportServer for `app1-svc` with host vaule of `edns.f5demo.local`.
+2. Deploy TransportServer for `app1-svc` with host vaule of `edns.f5demo.local`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/ExternalDNS/ts-fqdn.yml
 ```
 
-Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+3. Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
 kubectl get ts edns-app1
 ```
 
-Save the IP adresses that was assigned by the IPAM for this TS
+4. Save the IP adresses that was assigned by the IPAM for this TS
 ```
 IP=$(kubectl get ts edns-app1 --output=jsonpath='{.status.vsAddress}')
 ```
-Try accessing the service as per the example below. 
+
+5. Try accessing the service as per the example below. 
 ```
 curl http://$IP/
 ```
 
-The output should be similar to:
+6. The output should be similar to:
 ```cmd
 Server address: 10.244.140.103:8080
 Server name: app1-6cc75dfc85-qhk5d

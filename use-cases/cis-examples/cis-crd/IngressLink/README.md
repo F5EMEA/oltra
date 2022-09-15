@@ -1,7 +1,7 @@
 # Integration with Nginx Ingress Controller
 In this section we provide examples for the most common use-cases of IngressLink with F5 CIS
-- [IngressLink with static IP](cis-crd/IngressLink/#ingressLink-with-static-ip)
-- [IngressLink with dynamic IP](cis-crd/IngressLink/#dynamic-ip)
+- [IngressLink with dynamic IP](#ingresslink-with-dynamic-ip)
+- [IngressLink with static IP](#ingressLink-with-static-ip)
 
 
 F5 IngressLink is the first true integration between BIG-IP and NGINX technologies. F5 IngressLink was built to support customers with modern, container application workloads that use both BIG-IP Container Ingress Services and NGINX Ingress Controller for Kubernetes. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of BIG-IP and NGINX and fostering better collaboration across NetOps and DevOps teams. The diagram below demonstrates this use-case.

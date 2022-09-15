@@ -4,8 +4,8 @@ In this section we will be exploring the different CRDs provided by CIS. These i
 - [VirtualServer CRDs](#virtualserver-crd-examples)
 - [TransportServer CRDs](#transportserver-crd-examples)
 - [Service Type LoadBalancer](#service-type-loadbalancer-examples)
-- IngressLink (to be completed)
-- [EDNS](#service-type-loadbalancer-examples)
+- [IngressLink](#ingresslink-examples)
+- [EDNS](#edns-examples)
 
 
 ## VirtualServer CRD examples
