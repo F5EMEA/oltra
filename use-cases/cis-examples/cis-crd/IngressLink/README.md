@@ -52,12 +52,16 @@ spec:
 ## IngressLink with dynamic IP
 This section demonstrates how deploy an IngressLink with a dynamic IP.
 
-1. Change the working directory to `IngressLink`.
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `IngressLink`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/IngressLink
 ```
 
-2. Verify that the NGINX+ IC is running 
+Verify that the NGINX+ IC is running 
 ```
 kubectl get po -n nginx
 
@@ -68,40 +72,44 @@ nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
 ####################################################################
 ```
 
-3. Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
+Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
 ```
 kubectl apply -f svc_nginx.yml
 ```
 
-4. Deploy the IngressLink resource.
+Deploy the IngressLink resource.
 ```
 kubectl apply -f ingresslink.yml
 ```
 
-5. Deploy the Ingress resources behind NGINX+ IC.
+Deploy the Ingress resources behind NGINX+ IC.
 ```
 kubectl apply -f ingress.yml
 ```
 
-6. Review that the Ingress has been deployed
-NAME           HOSTS                      ADDRESS   PORTS   AGE
-ingresslink    ingresslink.f5demo.local             80      115s
+Review that the Ingress has been deployed
+```
+kubectl get ingress ingresslink
 
+########################  Expected Output  #########################
+NAME                  HOSTS                      ADDRESS   PORTS   AGE
+ingresslink-static    ingresslink.f5demo.local             80      115s
+####################################################################
+```
 
-7. Save the IP adresses that was assigned by the IPAM for this TS
+Save the IP adresses that was assigned by the IPAM for this TS
 ```
 IP=$(kubectl get ingresslink nginx-ingress -n nginx --output=jsonpath='{.status.vsAddress}')
 ```
 
-8. Try accessing the service as per the example below. 
+Try accessing the service as per the example below. 
 ```
 curl http://ingresslink.f5demo.local --resolve ingresslink.f5demo.local:80:$IP 
 curl http://ingresslink.f5demo.local/app2 --resolve ingresslink.f5demo.local:80:$IP 
 ```
 
-
 The output should be similar to:
-```cmd
+```
 Server address: 10.244.140.103:8080
 Server name: app1-6cc75dfc85-qhk5d
 Date: 14/Jul/2022:06:17:19 +0000
@@ -109,16 +117,26 @@ URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
 ```
 
+Clean up the environment
+```
+kubectl delete -f ingress.yml
+kubectl delete -f svc_nginx.yml
+kubectl delete -f ingresslink.yml
+```
 
 ## IngressLink with static IP
-This section demonstrates how deploy an IngressLink with a dynamic IP.
+This section demonstrates how deploy an IngressLink with a static IP.
 
-1. Change the working directory to `IngressLink`.
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `IngressLink`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/IngressLink
 ```
 
-2. Verify that the NGINX+ IC is running 
+Verify that the NGINX+ IC is running 
 ```
 kubectl get po -n nginx
 
@@ -129,37 +147,49 @@ nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
 ####################################################################
 ```
 
-3. Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
+Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
 ```
 kubectl apply -f svc_nginx.yml
 ```
 
-4. Deploy the IngressLink resource.
+Deploy the IngressLink resource.
 ```
 kubectl apply -f ingresslink-static.yml
 ```
 
-5. Deploy the Ingress resources behind NGINX+ IC.
+Deploy the Ingress resources behind NGINX+ IC.
 ```
 kubectl apply -f ingress.yml
 ```
 
-6. Review that the Ingress has been deployed
+Review that the Ingress has been deployed
+```
+kubectl get ingress ingresslink
+
+########################  Expected Output  #########################
 NAME                  HOSTS                      ADDRESS   PORTS   AGE
 ingresslink-static    ingresslink.f5demo.local             80      115s
+####################################################################
+```
 
-
-8. Try accessing the service as per the example below. 
+Try accessing the service as per the example below. 
 ```
 curl http://ingresslink.f5demo.local --resolve ingresslink.f5demo.local:80:10.1.10.112 
 curl http://ingresslink.f5demo.local/app2 --resolve ingresslink.f5demo.local:80:10.1.10.112 
 ```
 
 The output should be similar to:
-```cmd
+```
 Server address: 10.244.140.103:8080
 Server name: app1-6cc75dfc85-qhk5d
 Date: 14/Jul/2022:06:17:19 +0000
 URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
+```
+
+Clean up the environment
+```
+kubectl delete -f ingress.yml
+kubectl delete -f svc_nginx.yml
+kubectl delete -f ingresslink-static.yml
 ```

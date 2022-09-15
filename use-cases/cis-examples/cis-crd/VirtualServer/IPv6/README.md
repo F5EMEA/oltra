@@ -20,6 +20,14 @@ spec:
     servicePort: 80
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `IPv6`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/IPv6
+```
+
 Create the VS CRD resource. 
 ```
 kubectl apply -f ipv6-virtual-server.yml

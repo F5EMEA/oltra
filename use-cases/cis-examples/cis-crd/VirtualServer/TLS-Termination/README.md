@@ -25,9 +25,7 @@ spec:
     termination: edge
     clientSSL: /Common/clientssl
     reference: bigip
-
 ---
-
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
 metadata:
@@ -44,6 +42,9 @@ spec:
       service: echo-svc
       servicePort: 80
 ```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Change the working directory to `TLS-Termination`.
 ```
@@ -69,7 +70,6 @@ curl -vk https://edge.f5demo.local/ --resolve edge.f5demo.local:443:10.1.10.68
 ## Re-Encrypt TLS Termination
 This section demonstrates how to configure VirtualServer with re-encrypt TLS termination.
 For this configuration we will need 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
-
 
 Eg: re-encrypt-tls.yml / re-encrypt-vs.yml
 ```yml
@@ -105,6 +105,9 @@ spec:
       servicePort: 80
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `TLS-Termination`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination
@@ -126,12 +129,9 @@ Access the `secure-app` service using the following example.
 curl -vk https://reencrypt.f5demo.local/ --resolve reencrypt.f5demo.local:443:10.1.10.69
 ```
 
-
-
 ## Passthrough TLS Termination
 This section demonstrates how to configure VirtualServer with passthrough TLS termination.
 For this configuration we will need 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
-
 
 Eg: passthrough-tls.yml / passthrough-vs.yml
 ```yml
@@ -164,6 +164,9 @@ spec:
       servicePort: 80
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `TLS-Termination`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination
@@ -188,7 +191,6 @@ curl -vk https://passthrough.f5demo.local/ --resolve passthrough.f5demo.local:44
 ## Certificate as K8s secret
 This section demonstrates how to configure VirtualServer with edge TLS termination and the certificate stored as K8s secret.
 For this configuration we will need 1 secret to hold the TLS certificate and 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
-
 
 Eg: reference-secret.yml / reference-tls.yml / reference-vs.yml
 ```yml
@@ -233,6 +235,9 @@ spec:
       service: echo-svc
       servicePort: 80
 ```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Create the K8s secret, TLSProfile and VirtualServer resources.
 ```

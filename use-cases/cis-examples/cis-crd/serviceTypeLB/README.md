@@ -39,6 +39,8 @@ spec:
     app: echo
   type: LoadBalancer
 ```
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Change the working directory to `serviceTypeLB`.
 ```
@@ -67,7 +69,7 @@ curl http://$IP
 ```
 
 The output should be similar to:
-```cmd
+```json
 {
     "Server Name": "10.1.10.171",
     "Server Address": "10.244.140.88",
@@ -84,7 +86,6 @@ The output should be similar to:
 ```
 
 
-
 ## Service Type LoadBalancer with Health Monitor
 
 This section demonstrates the deployment of a service as Type LoadBalancer with a Health Monitor on the BIGIP pool. Options which can be used to configure health monitor:
@@ -95,7 +96,6 @@ monitor:
 ```
 
 Eg: service-type-lb.yml
-
 ```yml
 apiVersion: v1
 kind: Service
@@ -116,6 +116,14 @@ spec:
   selector:
     app: echo
   type: LoadBalancer
+```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `serviceTypeLB`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/serviceTypeLB
 ```
 
 Create the K8s service. 

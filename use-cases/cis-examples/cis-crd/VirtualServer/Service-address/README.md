@@ -23,8 +23,11 @@ spec:
   - icmpEcho: "enable"
     arpEnabled: true
     routeAdvertisement: "all"
-
 ```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `Service-address`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Service-address

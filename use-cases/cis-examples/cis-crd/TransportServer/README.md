@@ -30,6 +30,9 @@ spec:
       interval: 3
       timeout: 10
 ```
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/TransportServer
@@ -39,8 +42,7 @@ Create the TS CRD resource.
 ```
 kubectl apply -f tcp-transport-server.yml
 ```
-
-CIS will create a L4 Virtual Server on BIG-IP with VIP "10.1.10.74" and the service `myapp-svc` as the pool
+>Note: CIS will create a L4 Virtual Server on BIG-IP with VIP "10.1.10.74" and the service `myapp-svc` as the pool. 
 
 Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
@@ -48,14 +50,12 @@ kubectl get ts tcp-ts
 ```
 
 Access the service as per the examples below. 
-
 ```
 curl http://10.1.10.74
 ```
 
 The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.140.103:8080
 Server name: myapp-6cc75dfc85-qhk5d
 Date: 14/Jul/2022:06:17:19 +0000
@@ -90,6 +90,9 @@ spec:
       timeout: 10
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/TransportServer
@@ -104,18 +107,19 @@ Confirm that TS CRD is deployed correctly. You should see `Ok` under the Status 
 ```
 kubectl get ts tcp-ipam-ts
 ```
+
 Save the IP adresses that was assigned by the IPAM for this TS
 ```
 IP=$(kubectl get ts tcp-ipam-ts --template '{{.status.vsAddress}}')
 ```
+
 Try accessing the service as per the example below. 
 ```
 curl http://$IP/
 ```
 
 The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.196.189:8080
 Server name: myapp-6cc75dfc85-msntl
 Date: 14/Jul/2022:06:22:38 +0000
@@ -148,6 +152,8 @@ spec:
     servicePort: 5353
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Change the working directory to `TransportServer`.
 ```
@@ -165,14 +171,12 @@ kubectl get ts udp-transport-server
 ```
 
 Try accessing any DNS service on the internet like `www.example.com` through the Transport Server VIP (`10.1.10.75`)
-
 ```
 dig @10.1.10.75 www.example.com
 ```
 
 The output should be similar to:
-
-```cmd
+```
 ; <<>> DiG 9.11.3-1ubuntu1.13-Ubuntu <<>> @10.1.10.75 www.example.com
 ; (1 server found)
 ;; global options: +cmd

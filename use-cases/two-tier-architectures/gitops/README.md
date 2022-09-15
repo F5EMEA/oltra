@@ -23,10 +23,7 @@ In order to have a successful solution, the most important part for such deploym
 For the purposes of this demo we have created 2 different templates with JINJA2; **HTTP** and a **TCP**. Below you can find the TCP template:
 
 ```
-########################################################################
 ########################  JINJA2 TCP Template   ########################
-########################################################################
-
 "{{name}}": {
     "class": "Application",
     "{{name}}": {
@@ -140,18 +137,22 @@ In the following section we will demontrate how we can load balance 2 Ingress Co
 
 ### Step 1. Create two NGINX+ Ingress Controllers
 
-1. Change the working directory to `gitops`.
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `gitops`.
 ```
 cd ~/oltra/use-cases/two-tier-architectures/gitops
 ```
 
-2. Create the namespace (ngnix1, nginx2) for each NGINX+ Ingress Controller that we are planning to deploy.
+Create the namespace (ngnix1, nginx2) for each NGINX+ Ingress Controller that we are planning to deploy.
 ```
 kubectl create namespace nginx1
 kubectl create namespace nginx2
 ```
 
-3. Copy the NGINX plus deployment from the setup folder.
+Copy the NGINX plus deployment from the setup folder.
 ```
 mkdir nginx1
 mkdir nginx2
@@ -159,12 +160,12 @@ cp -R ~/oltra/setup/nginx-ic/* nginx1
 cp -R ~/oltra/setup/nginx-ic/* nginx2
 ```
 
-4. Replace the namespace `nginx` with `nginx1` and `nginx2` for the required manifests
+Replace the namespace `nginx` with `nginx1` and `nginx2` for the required manifests
 ```
 ./rename.sh
 ```
 
-4. Deploy NGNINX+ IC for each tenant.
+Deploy NGNINX+ IC for each tenant.
 ```
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx1/rbac
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx2/rbac
@@ -172,16 +173,13 @@ kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx1/resource
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx2/resources
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx1/nginx-plus
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/gitops/nginx2/nginx-plus
-
 ```
 
-6. Verify that the NGINX pods are up and running on each tenant
-
+Verify that the NGINX pods are up and running on each tenant
 ```
 kubectl get pods -n nginx1
 kubectl get pods -n nginx2
-```
-```
+
 ####################################      Expected Output   ######################################
 NAME                           READY   STATUS    RESTARTS   AGE
 nginx2-plus-75974b54f9-wp5bt   1/1     Running   0          6m12s
@@ -189,7 +187,7 @@ nginx2-plus-75974b54f9-wp5bt   1/1     Running   0          6m12s
 ```
 
 
-6. Confirm that Port that the NGINX+ IC has been published.
+Confirm that Port that the NGINX+ IC has been published.
 ```
 kubectl get svc -n nginx1
 kubectl get svc -n nginx2
@@ -206,47 +204,46 @@ nginx2-plus   NodePort   10.102.49.93     <none>        80:30976/TCP,443:31129/T
 
 ### Step 2. Deploy applications
 
-1. Create a new namespace that will contain the applications that should be published with the IC.
+Create a new namespace that will contain the applications that should be published with the IC.
 ```
 kubectl create namespace gitops
 ```
 
-2. Deploy demo applications.
+Deploy demo applications.
 ```
 kubectl apply -f  ~/oltra/setup/apps/apps.yml -n gitops
 ```
 
-3. Deploy the Ingress resources. Because both IC use the same IngressClass, both IC will pick up the Ingress resource and configure the routing rules.
+Deploy the Ingress resources. Because both IC use the same IngressClass, both IC will pick up the Ingress resource and configure the routing rules.
 ```
 kubectl apply -f ingress.yml
 ```
 
 ### Step 3. Create the configruation on Gilab
-1. Login to Gitlab.
+Open and Login to Gitlab.
 
-<p align="center">
-  <img src="process.png" style="width:85%">
+<p align="left">
+  <img src="images/login-gitlab.png" style="width:50%">
 </p>
 
 
-2. Go to `two-tier / Multi Cluster` Repository.
-<p align="center">
-  <img src="process.png" style="width:85%">
+Go to `two-tier / Multi Cluster` Repository.
+<p align="left">
+  <img src="images/repo.png" style="width:50%">
 </p>
 
 
-3. Select the `input.yml` file.
-
+Select the `input.yml` file.
 <p align="center">
-  <img src="process.png" style="width:85%">
+  <img src="images/input-file.png" style="width:50%">
 </p>
 
-4. Change from `Open in Web IDE` to `Edit`.
+Change from `Open in Web IDE` to `Edit`.
 <p align="center">
-  <img src="process.png" style="width:85%">
+  <img src="edit.png" style="width:50%">
 </p>
 
-5. Edit the file and replace it with the following content.
+Edit the `input.yml` file and replace it with the following content.
 ```
 config: 
   - name: app-gitops
@@ -263,39 +260,34 @@ config:
       ratio: 1
 ```
 <p align="center">
-  <img src="process.png" style="width:85%">
+  <img src="images/file.png" style="width:50%">
 </p>
 
-2. Commit the changes and go to the CI/CD -> Pipelines panel.
+Commit the changes and go to the CI/CD -> Pipelines panel.
+<p align="center">
+  <img src="images/pipeline.png" style="width:50%">
+</p>
+
+Select the pipeline that is actively running and review the process.
+<p align="center">
+  <img src="images/stages.png" style="width:50%">
+</p>
+
+Once the pipeline has completed successfully, login to BIGIP and review the Virtual Server and Pool members to verify that Load Balancing takes place for the 2 NodePorts and the ratio is 10 to 1.
+
 <p align="center">
   <img src="process.png" style="width:85%">
 </p>
 
-3. Select the pipeline that is actively running and review the process.
 
-<p align="center">
-  <img src="process.png" style="width:85%">
-</p>
-
-4. Once the pipeline has completed successfully, login to BIGIP and review the Virtual Server and Pool members to verify that Load Balancing takes place for the 2 NodePorts and the ratio is 10 to 1.
-
-<p align="center">
-  <img src="process.png" style="width:85%">
-</p>
-
-
-
-3. Make 100 requests to the Virtual Server and review the statistics on the BIGIP.
+Make 100 requests to the Virtual Server and review the statistics on the BIGIP.
 ```cmd
 for i in {1..100} ; do curl http://gitops.f5demo.local/ --resolve gitops.f5demo.local:80:10.1.10.211; \
 done
 ```
 
-
-
 ### Step 4. (Optional) Grafana Dashboards 
-
-1. Setup scraping for the new NGINX instances
+Setup scraping for the new NGINX instances
 ```yml
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -353,7 +345,7 @@ spec:
 EOF
 ```
 
-2. Login to Grafana. On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
+Login to Grafana. On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
 
 <p align="left">
   <img src="images/grafana.png" style="width:35%">
@@ -379,8 +371,7 @@ Select any of the 2 Ingress Dashboards (NGINX Ingress / NGINX Ingress Details) w
 </p>
 
 
-
-2. Run the following script to generate traffic and review the Grafana Dashboards per tenant
+Run the following script to generate traffic and review the Grafana Dashboards per tenant
 ```cmd
 for i in {1..100} ; do curl http://gitops.f5demo.local/ --resolve gitops.f5demo.local:80:10.1.10.211; \
 done

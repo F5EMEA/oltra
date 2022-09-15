@@ -23,6 +23,8 @@ spec:
 ```
 > **Note:** for HTTPS VirtualServer the parameter name is `virtualServerHTTPSPort`
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Change the working directory to `CustomPort`.
 ```
@@ -47,8 +49,7 @@ curl http://custom.f5demo.local:8080 --resolve custom.f5demo.local:8080:10.1.10.
 ```
 
 You should be able to access the service running in K8s. The output should be similar to:
-
-```cmd
+```
 {
     "Server Name": "custom.f5demo.local",
     "Server Address": "10.244.140.93",

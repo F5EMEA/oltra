@@ -9,7 +9,6 @@ In this section we provide 2 rewrite examples. One for AppRoot rewrite and anoth
 ## AppRoot rewrite
 Redirecting the application to specific path when request made with root path "/".
 
-
 Eg: approot.yml
 ```yml
 apiVersion: "cis.f5.com/v1"
@@ -27,6 +26,9 @@ spec:
       service: app1-svc
       servicePort: 8080
 ```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Change the working directory to `Rewrite`.
 ```
@@ -49,8 +51,7 @@ curl -v http://approot.f5demo.local/ --resolve approot.f5demo.local:80:10.1.10.6
 ```
 
 You should receive a 302 redirect from BIGIP with Location Header set as `/home`. The output should be similar to:
-
-```cmd
+```
 * Added approot.f5demo.local:80:10.1.10.61 to DNS cache
 * Hostname approot.f5demo.local was found in DNS cache
 *   Trying 10.1.10.61...
@@ -94,6 +95,10 @@ spec:
       servicePort: 8080
       rewrite: /library
 ```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `Rewrite`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Rewrite
@@ -116,8 +121,7 @@ curl http://rewrite.f5demo.local/lib --resolve rewrite.f5demo.local:80:10.1.10.6
 ```
 
 Note that the paths are rewritten from `/lib` to `/library` and from `/lab` to `/laboratory`.  The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.140.109:8080
 Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:14:12:25 +0000

@@ -2,7 +2,15 @@
 
 This section demonstrates the F5 IPAM functionality, where teh VirtualServer IP Address is dynamically provieded by the IPAM Controller. 
 
-First lets verify that the IPAM is running.
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `IpamLabel`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/IpamLabel
+```
+
+Verify that the IPAM is running.
 
 ```
 kubectl get po -n kube-system | grep f5-ipam
@@ -30,10 +38,6 @@ kubectl -n kube-system describe deployment f5-ipam
 ...
 ```
 
-Change the working directory to `IpamLabel`.
-```
-cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/IpamLabel
-```
 
 Create the VS CRD resources. 
 ```
@@ -44,6 +48,7 @@ Confirm that the VS CRDs is deployed correctly. You should see `Ok` under the St
 ```
 kubectl get vs 
 ```
+
 Save the IP adresses that was assigned by the IPAM for this VirtualServer
 ```
 IP=$(kubectl get vs ipam-vs --template '{{.status.vsAddress}}')
@@ -55,8 +60,7 @@ curl http://ipam.f5demo.local/ --resolve ipam.f5demo.local:80:$IP
 ```
 
 The output should be similar to:
-
-```cmd
+```
 {
     "Server Name": "ipam.f5demo.local",
     "Server Address": "10.244.196.135",

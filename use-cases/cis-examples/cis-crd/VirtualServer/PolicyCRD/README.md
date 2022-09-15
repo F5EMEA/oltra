@@ -41,6 +41,14 @@ spec:
     servicePort: 80
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
+
 Create the PolicyCRD and VirtualServerCRD resources.
 ```
 kubectl apply -f xff-policy.yml
@@ -94,6 +102,14 @@ spec:
     servicePort: 80
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
+
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
 kubectl apply -f persistence-policy.yml
@@ -113,8 +129,6 @@ curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:1
 ```
 
 Verify that the transactions are actually going to multiple backend pods and they dont persist on a single one.
-
-
 
 ## iRules
 This section demonstrates the deployment of a Virtual Server with a iRules to provide a **Sorry Page**.
@@ -148,6 +162,14 @@ spec:
     servicePort: 80
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
+
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
 kubectl apply -f irule-policy.yml
@@ -167,7 +189,6 @@ curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.63
 ```
 
 Verify that the sorry page is sent back from BIGIP.
-
 
 
 ## WAF Policies
@@ -204,6 +225,14 @@ spec:
     path: /
     service: echo-svc
     servicePort: 80
+```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
 ```
 
 Create the PolicyCRD and VirtualServerCRD resource.

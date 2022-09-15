@@ -45,15 +45,16 @@ In the following section we will demontrate how we can implement the above archi
 - app2.f5demo.local **app2_policy_www**
 
 ### Step 1. Verify NGINX+ and CIS are already running
-1. Log in to VSCode
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
-2. From the terminal change the working directory to `edge-security`.
+Change the working directory to `edge-security`.
 ```
 cd ~/oltra/use-cases/two-tier-architectures/edge-security
 ```
 
-3. Run the following command to verify NGINX+ is running.
+Run the following command to verify NGINX+ is running.
 ```
 kubectl get po -n nginx 
 
@@ -64,7 +65,7 @@ nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
 ############################################
 ```
 
-4. Run the following command to verify CIS and IPAM are running.
+Run the following command to verify CIS and IPAM are running.
 ```
 kubectl get po -n bigip 
 
@@ -77,7 +78,7 @@ f5-ipam-7cd6975f88-hj9nx          1/1     Running   0             9h
 ```
 
 ### Step 2. Deploy services behind NGINX+ IC.
-1. Create a new namespace `layer7` and deploy the demo apps and services.
+Create a new namespace `layer7` and deploy the demo apps and services.
 ```
 kubectl create namespace layer7
 kubectl apply -f  ~/oltra/setup/apps/apps.yml -n layer7
@@ -85,18 +86,18 @@ kubectl apply -f  ~/oltra/setup/apps/my-echo.yml -n layer7
 kubectl apply -f  ~/oltra/setup/apps/dns.yaml -n layer7
 ```
 
-2. Deploy Ingress resources for the demo apps.
+Deploy Ingress resources for the demo apps.
 ```
 kubectl apply -f ingress.yml
 ```
 
-2. Review the Ingress resources created.
+Review the Ingress resources created.
 ```
 kubectl get ingress -n layer7
 ```
 
 ### Step 3. Publish NGINX+ with a VirtualServer CRD
-1. Create the PolicyCRD and VirtualServerCRD resources to publish the applications behind NGINX+.
+Create the PolicyCRD and VirtualServerCRD resources to publish the applications behind NGINX+.
 ```
 kubectl apply -f www-waf-policy.yml
 kubectl apply -f www-vs.yml
@@ -107,12 +108,12 @@ kubectl apply -f app2-vs.yml
 ```
 > Note: For certificate on the VirtualServer you can also use Kubernetes secrets. Examples for this can be found on the following <a href="<a href="https://github.com/F5EMEA/oltra/tree/multi-cluster/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination#certificate-as-k8s-secret">here</a>">link</a>
 
-2. Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServers that was just deployed.
+Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServers that was just deployed.
 ```
 kubectl get vs -n layer7
 ```
 
-3. Save the IP adresses that was assigned by the IPAM for this service
+Save the IP adresses that was assigned by the IPAM for this service
 ```
 IP_www=$(kubectl get vs l7-www -n layer7 --output=jsonpath='{.status.vsAddress}')
 IP_app1=$(kubectl get vs l7-app1 -n layer7 --output=jsonpath='{.status.vsAddress}')
@@ -120,7 +121,7 @@ IP_app2=$(kubectl get vs l7-app2 -n layer7 --output=jsonpath='{.status.vsAddress
 
 ```
 
-4. Try accessing the applications as per the examples below. 
+Try accessing the applications as per the examples below. 
 ```
 curl "http://l7-www.f5demo.local/index.php" --resolve l7-www.f5demo.local:80:$IP_www
 curl "http://l7-app1.f5demo.local/index.php" --resolve l7-app1.f5demo.local:80:$IP_app1
@@ -129,7 +130,7 @@ curl "http://l7-app2.f5demo.local/index.php" --resolve l7-app2.f5demo.local:80:$
 ```
 
 
-5. On the BIGIP we created 3 WAF policies **www_policy**,  **app1_policy** and  **app2_policy** to block HTTP attacks, so we expect BIGIP to mitigate any L7 attack (according to the WAF policy) that is executed to the services running in K8S. The WAF policies have been referenced on the PolicyCRDs.
+On the BIGIP we created 3 WAF policies **www_policy**,  **app1_policy** and  **app2_policy** to block HTTP attacks, so we expect BIGIP to mitigate any L7 attack (according to the WAF policy) that is executed to the services running in K8S. The WAF policies have been referenced on the PolicyCRDs.
 
 Access the service using the following example that contains a XSS violations. 
 ```
@@ -139,7 +140,7 @@ curl "http://l7-app2.f5demo.local/index.php?parameter=<script/>" --resolve l7-ap
 
 ```
 
-6. Verify that the transactions that contain XSS attack gets blocked by BIGIP WAF.
+Verify that the transactions that contain XSS attack gets blocked by BIGIP WAF.
 ```html
 <html>
   <head>
@@ -153,7 +154,7 @@ curl "http://l7-app2.f5demo.local/index.php?parameter=<script/>" --resolve l7-ap
 </html>
 ```
 
-7. Login to BIGIP and review the logs for all the policies.
+Login to BIGIP and review the logs for all the policies.
 
 
 
@@ -199,8 +200,7 @@ dig @10.1.10.125 www.example.com
 ```
 
 The output should be similar to:
-
-```cmd
+```
 ; <<>> DiG 9.11.3-1ubuntu1.13-Ubuntu <<>> @10.1.10.125 www.example.com
 ; (1 server found)
 ;; global options: +cmd
@@ -227,7 +227,7 @@ www.example.com.        14244   IN      A       93.184.216.34
 
 ### Step 6. Clean up the environment
 
-1. Delete the namespace `layer7`
+Delete the namespace `layer7`
 ```
 kubectl delete ns layer7
 ```

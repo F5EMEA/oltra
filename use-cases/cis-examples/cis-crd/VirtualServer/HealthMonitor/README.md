@@ -34,6 +34,11 @@ spec:
       interval: 3
       timeout: 10
 ```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+
 Change the working directory to `HealthMonitor`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HealthMonitor

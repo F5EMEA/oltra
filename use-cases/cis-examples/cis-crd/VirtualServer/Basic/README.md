@@ -28,6 +28,9 @@ spec:
     servicePort: 80
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `basic`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Basic
@@ -37,7 +40,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f noHost.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP "10.1.10.54" and attaches a policy which forwards all traffic to service echo-svc.   
+> Note: CIS will create a Virtual Server on BIG-IP with VIP "10.1.10.54" and attaches a policy which forwards all traffic to service echo-svc.   
 
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
@@ -53,8 +56,7 @@ curl http://test.f5demo.local --resolve test.f5demo.local:80:10.1.10.54
 ```
 
 In all cases you should be able to access the service running in K8s. The output should be similar to:
-
-```cmd
+```json
 {
     "Server Name": "test.f5demo.local",
     "Server Address": "10.244.140.93",
@@ -91,6 +93,9 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 
 Change the working directory to `basic`.
 ```
@@ -101,7 +106,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f virtual-single-pool.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
+> Note: CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
@@ -124,8 +129,7 @@ curl http://app1.f5demo.local/test --resolve app1.f5demo.local:80:10.1.10.55
 ```
 
 In both cases you should be able to access the service running in K8s. The output should be similar to:
-
-```cmd
+```json
 {
     "Server Name": "app1.f5demo.local",
     "Server Address": "10.244.196.135",
@@ -166,6 +170,8 @@ spec:
     service: app2-svc
     servicePort: 8080    
 ```
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Change the working directory to `basic`.
 ```
@@ -176,7 +182,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f virtual-two-pools.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and will attach a policy that forwards traffic to service app1-svc or app2-svc based on the URI path.   
+> Note: CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and will attach a policy that forwards traffic to service app1-svc or app2-svc based on the URI path.   
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
@@ -198,8 +204,7 @@ curl http://pools.f5demo.local/svc2 --resolve pools.f5demo.local:80:10.1.10.56
 ```
 
 Verify that the traffic was forwarded to the right service depending on the path that was entered. The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.140.116:8080
 Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:07:21:49 +0000

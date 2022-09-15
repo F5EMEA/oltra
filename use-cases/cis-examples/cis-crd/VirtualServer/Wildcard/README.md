@@ -27,6 +27,10 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
+
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `Wildcard`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Wildcard
@@ -64,7 +68,7 @@ curl http://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.72
 ```
 
 Verify that you traffic was forwarded to the `echo-svc` service on both tests. The output should be similar to:
-```cmd
+```json
 {
     "Server Name": "test1.f5demo.local",
     "Server Address": "10.244.140.78",
@@ -85,7 +89,6 @@ Verify that you traffic was forwarded to the `echo-svc` service on both tests. T
 This section demonstrates the deployment of a **HTTPS** Virtual Server with wildcard Host parameter.
 The virtual server should send traffic to the backend service if the Host Header matches the wildcard value configured on the Host parameter.
 For this example we need to use 2 custom resources; TLSProfile and VirtualServer
-
 
 Eg: wildcardhost-tls.yml / wildcardhost-tls-vs.yml
 
@@ -125,6 +128,8 @@ spec:
   snat: auto
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 Create the VS CRD resource. 
 ```

@@ -67,58 +67,92 @@ kind: TransportServer
 metadata:
   labels:
     f5cr: "true"
-  name: tcp-ts
+  name: edns-app1
 spec:
-  virtualServerAddress: "10.1.10.74"
+  ipamLabel: "prod"
+  host: edns.f5demo.local       <===== Hostname
   virtualServerPort: 80
-  virtualServerName: tcp-ts
+  virtualServerName: edns-app1
   mode: standard
   snat: auto
   pool:
-    service: myapp-svc
+    service: app1-svc
     servicePort: 8080
     monitor:
       type: tcp
       interval: 3
       timeout: 10
+
 ```
-1. Access the VS Code on the UDF
+1. Access the terminal on the VS Code.
 
-<p align="center">
-  <img src="cicd.png" style="width:85%">
-</p>
-
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
 
 1. Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/ExternalDNS
 ```
 
-2. Deploy TransportServer for `app1-svc` with host vaule of `edns.f5demo.local`.
+1. Deploy TransportServer for `app1-svc` with host vaule of `edns.f5demo.local`.
 ```
-cd ~/oltra/use-cases/cis-examples/cis-crd/ExternalDNS/ts-fqdn.yml
+kubectl apply -f ts-fqdn.yml
 ```
 
-3. Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+1. Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
 kubectl get ts edns-app1
 ```
 
-4. Save the IP adresses that was assigned by the IPAM for this TS
+1. Save the IP adresses that was assigned by the IPAM for this TS
 ```
 IP=$(kubectl get ts edns-app1 --output=jsonpath='{.status.vsAddress}')
 ```
 
-5. Try accessing the service as per the example below. 
+1. Try accessing the service as per the example below. 
 ```
 curl http://$IP/
 ```
 
-6. The output should be similar to:
-```cmd
+1. The output should be similar to:
+```
 Server address: 10.244.140.103:8080
 Server name: app1-6cc75dfc85-qhk5d
 Date: 14/Jul/2022:06:17:19 +0000
 URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
+```
+
+1. Create the EDNS resource to publish `edns.f5demo.local` on F5 DNS
+```
+kubectl apply -f edns-fqdn.yml
+```
+
+1. Resolve the IP address through DNS 
+```
+dig @10.1.10.200 gslb.f5demo.local +short
+```
+
+1. Save the IP adresses that was resolved through DNS
+```
+DNS_IP=$(dig @10.1.10.200 gslb.f5demo.local +short)
+```
+
+1. Try accessing the service as per the example below. 
+```
+curl http://$DNS_IP/
+```
+
+1. The output should be similar to:
+```
+Server address: 10.244.140.103:8080
+Server name: app1-6cc75dfc85-qhk5d
+Date: 14/Jul/2022:06:17:19 +0000
+URI: /
+Request ID: 18c2b70bcca18c590a0125db04be5661
+```
+
+1. Clean up the environment
+```
+kubectl delete -f ts-fqdn.yml
+kubectl delete -f edns-fqdn.yml
 ```

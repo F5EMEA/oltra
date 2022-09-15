@@ -51,6 +51,9 @@ spec:
 
 ```
 
+Access the terminal on the VS Code.
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
 Change the working directory to `httpTaffic`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/httpTaffic
@@ -73,8 +76,7 @@ curl -v http://coffee.f5demo.local/mocha --resolve coffee.f5demo.local:80:10.1.1
 ```
 
 Verify that BIGIP redirected the traffic to the HTTPS Server (port 443). The output should be similar to:
-
-```cmd
+```
 * Added coffee.f5demo.local:80:10.1.10.60 to DNS cache
 * Hostname coffee.f5demo.local was found in DNS cache
 *   Trying 10.1.10.60...
