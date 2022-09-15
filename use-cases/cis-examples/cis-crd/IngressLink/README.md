@@ -1,13 +1,12 @@
 # Integration with Nginx Ingress Controller
 In this section we provide examples for the most common use-cases of IngressLink with F5 CIS
-- [IngressLink with static IP](cis-crd/IngressLink/#staticip)
-- [IngressLink with dynamic IP](cis-crd/IngressLink/#dynamicip)
+- [IngressLink with static IP](cis-crd/IngressLink/#ingressLink-with-static-ip)
+- [IngressLink with dynamic IP](cis-crd/IngressLink/#dynamic-ip)
 
 
 F5 IngressLink is the first true integration between BIG-IP and NGINX technologies. F5 IngressLink was built to support customers with modern, container application workloads that use both BIG-IP Container Ingress Services and NGINX Ingress Controller for Kubernetes. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of BIG-IP and NGINX and fostering better collaboration across NetOps and DevOps teams. The diagram below demonstrates this use-case.
 
 <img src="ingresslink.png">
-
 
 
 ### How does it work
@@ -50,56 +49,117 @@ spec:
 ```
 
 
-## Configuration
+## IngressLink with dynamic IP
+This section demonstrates how deploy an IngressLink with a dynamic IP.
 
-Verify that the NGINX+ IC is running 
-
-
-Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
+1. Change the working directory to `IngressLink`.
 ```
-kubectl apply -f svc_nginx.yaml
+cd ~/oltra/use-cases/cis-examples/cis-crd/IngressLink
 ```
 
-Deploy the IngressLink resource.
+2. Verify that the NGINX+ IC is running 
 ```
-kubectl apply -f ingresslink.yaml
+kubectl get po -n nginx
+
+########################  Expected Output  #########################
+NAME                           READY   STATUS    RESTARTS      AGE
+nginx-plus-778ff965c9-9kbbr    1/1     Running   3 (35m ago)   2d16h
+nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
+####################################################################
+```
+
+3. Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
+```
+kubectl apply -f svc_nginx.yml
+```
+
+4. Deploy the IngressLink resource.
+```
+kubectl apply -f ingresslink.yml
+```
+
+5. Deploy the Ingress resources behind NGINX+ IC.
+```
+kubectl apply -f ingress.yml
+```
+
+6. Review that the Ingress has been deployed
+NAME           HOSTS                      ADDRESS   PORTS   AGE
+ingresslink    ingresslink.f5demo.local             80      115s
+
+
+7. Save the IP adresses that was assigned by the IPAM for this TS
+```
+IP=$(kubectl get ingresslink nginx-ingress -n nginx --output=jsonpath='{.status.vsAddress}')
+```
+
+8. Try accessing the service as per the example below. 
+```
+curl http://ingresslink.f5demo.local --resolve ingresslink.f5demo.local:80:$IP 
+curl http://ingresslink.f5demo.local/app2 --resolve ingresslink.f5demo.local:80:$IP 
 ```
 
 
-### 5. Create an IngressLink Resource
-
-* Download the sample IngressLink Resource:
-
-  ```curl -OL https://raw.githubusercontent.com/F5Networks/k8s-bigip-ctlr/doc/docs/config_examples/crd/IngressLink/ingresslink.yaml```
-
-* Update the "virtualServerAddress" parameter in the ingresslink.yaml resource. This IP address will be used to configure the BIG-IP device. It will be used to accept traffic and load balance it among the NGINX Ingress Controller pods.
-
-  ```kubectl apply -f ingresslink.yaml```
-
-##### Note:
-1. The name of the app label selector in IngressLink resource should match the labels of the service which exposes the NGINX Ingress Controller.
-2. The service which exposes the NGINX Ingress Controller should be of type nodeport.
-
-### 6. Test the Integration
-
-Now to test the integration let's deploy a sample application.
-
-    kubectl apply -f https://raw.githubusercontent.com/F5Networks/k8s-bigip-ctlr/doc/docs/config_examples/crd/IngressLink/ingress-example/cafe.yaml
-    kubectl apply -f https://raw.githubusercontent.com/F5Networks/k8s-bigip-ctlr/doc/docs/config_examples/crd/IngressLink/ingress-example/cafe-secret.yaml
-    kubectl apply -f https://raw.githubusercontent.com/F5Networks/k8s-bigip-ctlr/doc/docs/config_examples/crd/IngressLink/ingress-example/cafe-ingress.yaml
-
-The Ingress Controller pods are behind the IP configured in Step 5 (virtualServerAddress parameter).
-
-Let's test the traffic (in this example we used 192.168.10.5 as our VirtualServerAddress):
-
-    $ curl --resolve cafe.example.com:443:192.168.10.5 https://cafe.example.com:443/coffee --insecure
-    Server address: 10.12.0.18:80
-    Server name: coffee-7586895968-r26zn
-    ...
-
-Also, if you check the status of the cafe-ingress, you will see the IP of the VirtualServerAddress (in this example we used 192.168.10.5 as our VirtualServerAddress):
+The output should be similar to:
+```cmd
+Server address: 10.244.140.103:8080
+Server name: app1-6cc75dfc85-qhk5d
+Date: 14/Jul/2022:06:17:19 +0000
+URI: /
+Request ID: 18c2b70bcca18c590a0125db04be5661
 ```
-$ kubectl get ing cafe-ingress
-NAME           HOSTS              ADDRESS         PORTS     AGE
-cafe-ingress   cafe.example.com   192.168.10.5    80, 443   115s
+
+
+## IngressLink with static IP
+This section demonstrates how deploy an IngressLink with a dynamic IP.
+
+1. Change the working directory to `IngressLink`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/IngressLink
+```
+
+2. Verify that the NGINX+ IC is running 
+```
+kubectl get po -n nginx
+
+########################  Expected Output  #########################
+NAME                           READY   STATUS    RESTARTS      AGE
+nginx-plus-778ff965c9-9kbbr    1/1     Running   3 (35m ago)   2d16h
+nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
+####################################################################
+```
+
+3. Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
+```
+kubectl apply -f svc_nginx.yml
+```
+
+4. Deploy the IngressLink resource.
+```
+kubectl apply -f ingresslink-static.yml
+```
+
+5. Deploy the Ingress resources behind NGINX+ IC.
+```
+kubectl apply -f ingress.yml
+```
+
+6. Review that the Ingress has been deployed
+NAME                  HOSTS                      ADDRESS   PORTS   AGE
+ingresslink-static    ingresslink.f5demo.local             80      115s
+
+
+8. Try accessing the service as per the example below. 
+```
+curl http://ingresslink.f5demo.local --resolve ingresslink.f5demo.local:80:10.1.10.112 
+curl http://ingresslink.f5demo.local/app2 --resolve ingresslink.f5demo.local:80:10.1.10.112 
+```
+
+The output should be similar to:
+```cmd
+Server address: 10.244.140.103:8080
+Server name: app1-6cc75dfc85-qhk5d
+Date: 14/Jul/2022:06:17:19 +0000
+URI: /
+Request ID: 18c2b70bcca18c590a0125db04be5661
 ```

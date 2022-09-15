@@ -1,6 +1,6 @@
 # ExternalDNS
 In this section we provide examples for the most common use-cases of ExternalDNS with F5 CIS:
-- [Publish application hostname to external users ](cis-crd/ExternalDNS/#publish-FQDN)
+- [Publish FQDN](cis-crd/ExternalDNS/#publish-FQDN)
 
 ExternalDNS is a Kubernetes add-on that allows you to control DNS records of F5 DNS servers with information about exposed Kubernetes services through VirtualServer, TransportServer or IngressLink CRDs.
 

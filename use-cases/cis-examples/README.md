@@ -61,4 +61,4 @@ In this section we provide examples for the most common use-cases of IngressLink
 
 ## EDNS examples
 In this section we provide examples for the most common use-cases of ExternalDNS with F5 CIS
-- [Publish Application Hostname to Externally ](cis-crd/ExternalDNS/#publish-FQDN)
+- [Publish FQDN](cis-crd/ExternalDNS/#publish-FQDN)
