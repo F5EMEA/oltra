@@ -55,7 +55,10 @@ In this section we provide examples for the most common use-cases of service typ
 - [Service Type LoadBalancer with Health monitor](cis-crd/serviceTypeLB/#service-type-loadbalancer-with-health-monitor)
 
 ## IngressLink examples
-**(pending)**
+In this section we provide examples for the most common use-cases of IngressLink with F5 CIS
+- [IngressLink with static IP](cis-crd/IngressLink/#staticip)
+- [IngressLink with dynamic IP](cis-crd/IngressLink/#dynamicip)
 
 ## EDNS examples
-**(pending)**
+In this section we provide examples for the most common use-cases of ExternalDNS with F5 CIS
+- [Publish Application Hostname to Externally ](cis-crd/ExternalDNS/#publish-FQDN)

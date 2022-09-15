@@ -1,19 +1,21 @@
 # Ingress Examples
 In this section we provide examples for the most common use-cases of VirtualServer CRDs with F5 CIS
 
-* [Basic VirtualServer ](cis-crd/VirtualServer/Basic/)
-* [Host based routing](cis-crd/VirtualServer/HostGroup)
-* [Rewrite](cis-crd/VirtualServer/Rewrite/)
-* [HTTP Redirect](cis-crd/VirtualServer/httpTraffic/)
-* [Dynamic IP Allocation (IPAM)](cis-crd/VirtualServer/IpamLabel)
-* [Health Monitors](cis-crd/VirtualServer/HealthMonitor)
-* [Wildcard Hostname](cis-crd/VirtualServer/Wildcard)
-* [TLS VirtualServer](cis-crd/VirtualServer/TLS-Termination/)
-* [Using iRules ](cis-crd/VirtualServer/PolicyCRD/#iRules)
-* [Managing Persistence](cis-crd/VirtualServer/PolicyCRD/#Persistence)
-* [Custom HTTP Profile](cis-crd/VirtualServer/PolicyCRD/#custom-http-profile)
-* [Enable WAF Policies](cis-crd/VirtualServer/PolicyCRD/#waf-policies)
-* [VirtualServer with custom Port](cis-crd/VirtualServer/CustomPort/)
+* [Basic VirtualServer ](Basic)
+* [Wildcard VirtualServer ](Wildcard)
+* [Host based routing](HostGroup)
+* [Rewrite](Rewrite)
+* [HTTP Redirect](httpTraffic)
+* [Dynamic IP Allocation (IPAM)](IpamLabel)
+* [Health Monitors](HealthMonitor)
+* [Wildcard Hostname](Wildcard)
+* [TLS VirtualServer](TLS-Termination)
+* [Using iRules ](PolicyCRD/README.md#iRules)
+* [Managing Persistence](PolicyCRD/README.md#Persistence)
+* [Custom HTTP Profile](PolicyCRD/README.md#custom-http-profile)
+* [Enable WAF Policies](PolicyCRD/README.md#waf-policies)
+* [VirtualServer with custom Port](CustomPort)
+* [VirtualServer with IPv6 Address](IPv6)
 
 
 Before starting with the examples below, please make sure of the following:
@@ -39,7 +41,6 @@ myapp-6cc75dfc85-qhk5d       1/1     Running   2 (39m ago)   5d
 secure-app-8cb576989-b42zc   1/1     Running   2 (59m ago)   5d
 tea-6fb46d899f-qsg6k         1/1     Running   2 (39m ago)   5d
 tea-post-648dfcdd6c-gmt9v    1/1     Running   2 (39m ago)   5d
-
 ```
 
 -- CIS is running --

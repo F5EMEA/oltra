@@ -4,9 +4,10 @@ metadata:
   name: nginx-ingress
   namespace: nginx
 spec:
-  virtualServerAddress: "10.1.10.5"
+#  virtualServerAddress: "10.1.10.112"
 #  iRules:
 #    - /Common/Proxy_Protocol_iRule
+  ipamLabel: "dev"
   selector:
     matchLabels:
       app: ingresslink

@@ -7,14 +7,14 @@ metadata:
   namespace: cluster1
 spec:
   ipamLabel: "tenant1"
-  host: www.test.com
+  host: gslb.f5demo.local
   virtualServerPort: 80
   virtualServerName: app1-cluster1
   mode: standard
   snat: auto
   pool:
     service: nginx-cluster1
-    servicePort: 8080
+    servicePort: 80
     monitor:
       type: tcp
       interval: 3
@@ -32,14 +32,14 @@ metadata:
   namespace: cluster2
 spec:
   ipamLabel: "tenant2"
-  host: www.test.com  
+  host: gslb.f5demo.local  
   virtualServerPort: 80
   virtualServerName: app1-cluster2
   mode: standard
   snat: auto
   pool:
     service: nginx-cluster2
-    servicePort: 8080
+    servicePort: 80
     monitor:
       type: tcp
       interval: 3

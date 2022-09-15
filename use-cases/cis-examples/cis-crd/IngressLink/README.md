@@ -1,43 +1,70 @@
 # Integration with Nginx Ingress Controller
+In this section we provide examples for the most common use-cases of IngressLink with F5 CIS
+- [IngressLink with static IP](cis-crd/IngressLink/#staticip)
+- [IngressLink with dynamic IP](cis-crd/IngressLink/#dynamicip)
 
-Using this integration CIS can be used to configure The F5 BIG-IP device as a load balancer for  [Nginx Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/) pods.
 
-> **Feature Status**: The integration b/w CIS and Nginx Controller is available as a preview feature. It is suitable for experimenting and testing; however, it must be used with caution in production environments. Additionally, while the feature is in the preview, we might introduce some backward-incompatible changes in the next releases.*The preview of the IngressLink solution requires a dedicated Container Ingress Services instance*
+F5 IngressLink is the first true integration between BIG-IP and NGINX technologies. F5 IngressLink was built to support customers with modern, container application workloads that use both BIG-IP Container Ingress Services and NGINX Ingress Controller for Kubernetes. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of BIG-IP and NGINX and fostering better collaboration across NetOps and DevOps teams. The diagram below demonstrates this use-case.
 
-## IngressLink Compatibility Matrix
-Minimum version to use IngressLink:
+<img src="ingresslink.png">
 
-| CIS | BIGIP | NGINX+ IC | AS3 |
-| ------ | ------ | ------ | ------ |
-| 2.3+ | v13.1+ | 1.10+ | 3.18+ | 
+
+
+### How does it work
+IngressLink specification contains a label selector. The same label needs to exist on the service that is publishing the NGINX+ Ingress Controller. Only when there is a match, CIS will create a Layer 4 VirtualServer on the BIGP either with a staic or a dynamic IP address.
+
+In the following manifests you can see the matchLabels selector on the IngressLink matching the label set on the NGINX+ service.
+Eg: ingresslink.yml / nginx-svc.yml
+```yml
+apiVersion: "cis.f5.com/v1"
+kind: IngressLink
+metadata:
+  name: nginx-ingress
+  namespace: nginx
+spec:
+  ipamLabel: "dev"
+  selector:
+    matchLabels:
+      app: ingresslink    <==== Label to match
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-plus
+  namespace: nginx
+  labels:
+    app: ingresslink     <==== Label on NGINX+ svc
+spec:
+  type: ClusterIP 
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: https
+  selector:
+    app: nginx-plus
+```
 
 
 ## Configuration
 
-### 1.  Create IngressLink Custom Resource Definition
-
-Create IngressLink Custom Resource definition as follows:
-
-    kubectl apply -f https://raw.githubusercontent.com/F5Networks/k8s-bigip-ctlr/master/docs/config_examples/crd/Install/customresourcedefinitions.yml
+Verify that the NGINX+ IC is running 
 
 
-### 2. Create the Proxy iRule on Bigip
+Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
+```
+kubectl apply -f svc_nginx.yaml
+```
 
-* Login to BigIp GUI
-* On the Main tab, click Local Traffic > iRules.
-* Click Create.
-* In the Name field, type name as "Proxy_Protocol_iRule".
-* In the Definition field, Copy the definition from [Proxy_Protocol_iRule](https://raw.githubusercontent.com/F5Networks/k8s-bigip-ctlr/master/docs/config_examples/customResource/IngressLink/Proxy_Protocol_iRule) file.
-* Click Finished.
+Deploy the IngressLink resource.
+```
+kubectl apply -f ingresslink.yaml
+```
 
-### 3. Install the CIS Controller
-
-* Refer to [CIS Installation guide](https://clouddocs.f5.com/containers/latest/userguide/cis-helm.html) to install Container Ingress Services on Kubernetes or Openshift
-* Make sure that you deployed CIS in CRD mode (use "--custom-resource-mode=true" in your CIS Configuration.)
-
-### 4. Install the Nginx Ingress Controller
-
-* Refer to [Integration with F5 Container Ingress Services](https://docs.nginx.com/nginx-ingress-controller/f5-ingresslink/) to deploy NGINX Ingress Controller
 
 ### 5. Create an IngressLink Resource
 

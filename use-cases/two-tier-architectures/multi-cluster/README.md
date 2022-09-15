@@ -109,7 +109,6 @@ Ideally for the multi-cluster demo we would need 2 K8s clusters and 2 BIGIP, one
 IMAGE
 
 
-
 ### Step 1. Create Tentants
 
 Create the 2 namespaces. Each namespace will represent a different cluster
@@ -163,93 +162,56 @@ NAME                            READY   STATUS    RESTARTS   AGE
 nginx-cluster1-74fd9b786-hqm6k   1/1     Running   0          22s
 ##################################################################################################
 ```
+### Step 3. Create 2 CIS instances
 
-6. Scale down to 0 the existing CIS instance. 
+1. Before creating 2 CIS instances (one for each namespace), we need to scale down to 0 the existing CIS instance. 
 ```
+kubectl scale deployment f5-cis-crd -n bigip --replicas=0
 ```
-> Note: We do that since the existing CIS listens across all Namespace. In this case we will create a conflict of multiple CIS configuring BIGP for the same CRD but on different partitions. 
+> Note: We scale down to zero the existing CIS since it listens across all Namespaces. In this case we will create a conflict of multiple CIS configuring BIGP for the same CRD but on different partitions. 
  
-7. Deploy 2 new CIS instances. One will manage namespace `cluster1` and the other will manage namespace `cluster2` 
+2. Deploy 2 new CIS instances. One will manage namespace `cluster1` and the other will manage namespace `cluster2` 
 ```
-cp /Users/K.Skenderidis/Documents/GitHub/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster1.yml
-cp /Users/K.Skenderidis/Documents/GitHub/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster2.yml
-sed '3 i New Line with sed' File1
-sed '3 i New Line with sed' File1
-sed '3 i New Line with sed' File1
-sed '3 i New Line with sed' File1
-sed '3 i New Line with sed' File1
-sed '3 i New Line with sed' File1
+cp ~/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster1.yml
+cp ~/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster2.yml
+
+sed -i  '42i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-username=$(BIGIP_USERNAME)",' cis-cluster1.yml
+sed -i  '43i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-password=$(BIGIP_PASSWORD)",' cis-cluster1.yml
+sed -i  '44i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-url=10.1.1.5",' cis-cluster1.yml
+sed -i  '50i \ \ \ \ \ \ \ \ \ \ \  "--namespace=cluster1",' cis-cluster1.yml
+sed -i 's/f5-cis-crd/f5-cis-crd1/' cis-cluster1.yml
+sed -i 's/bigip-partition=cis-crd/bigip-partition=cis-crd1/' cis-cluster1.yml
+
+sed -i  '44i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-url=10.1.1.5",' cis-cluster1.yml
+sed -i  '42i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-username=$(BIGIP_USERNAME)",' cis-cluster2.yml
+sed -i  '43i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-password=$(BIGIP_PASSWORD)",' cis-cluster2.yml
+sed -i  '44i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-url=10.1.1.5",' cis-cluster2.yml
+sed -i  '50i \ \ \ \ \ \ \ \ \ \ \  "--namespace=cluster2",' cis-cluster2.yml
+sed -i 's/f5-cis-crd/f5-cis-crd2/' cis-cluster2.yml
+sed -i 's/bigip-partition=cis-crd/bigip-partition=cis-crd2/' cis-cluster2.yml
+
 kubectl apply -f cis-cluster1.yml
 kubectl apply -f cis-cluster2.yml
 
 ```
+### Step 3. Create Transportserver and ExternalDNS resources
 
-8. Deploy
-
-
-5. Deploy TS 
-
+1. Create TransportServer resrouce for cluster1 and cluster2
 ```
-kubectl xxxxxxx
-kubectl xxxxxx
+kubectl apply -f transport.yml
 ```
 
-6. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
+2. Create EDNS resource for cluster1 and cluster2
 ```
-IP_cluster1=$(kubectl get svc nginx-cluster1 -n cluster1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-IP_cluster2=$(kubectl get svc nginx-cluster2 -n cluster2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-```
-IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-
-
-7. Create EDNS for cluster1 and cluster2
+kubectl apply -f edns.yml
 ```
 
+3. Try accessing the services with DNS
 ```
-
-8. DIG commands
-
-
-
-8. Try accessing the service as per the example below. 
-```
-curl http://$IP_cluster1
-curl http://$IP_cluster2
-```
-
-The output should be similar to:
-
-```html
-<html>
-<head><title>404 Not Found</title></head>
-<body>
-<center><h1>404 Not Found</h1></center>
-<hr><center>nginx/1.21.5</center>
-</body>
-</html>
-```
-
-### Step 3. Deploy services for each tenant
-
-1. Deploy demo applications in each tenant
-```
-kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant1
-kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
-```
-
-2. Deploy Ingress services for each tenant
-```
-kubectl apply -f ingress.yml
+for i in {1..50} ; do dig @10.1.10.200 gslb.f5demo.local +short; done
 ```
 
 
-3. Access the services for both tenants as per the example below. 
-```
-curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
-curl http://tenant1.f5demo.local/app2 --resolve tenant1.f5demo.local:80:$IP_tenant1
-curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tenant2
-```
-
+### Step 4 (Optional). Review Grafana Dashboards for GSLB
 
 

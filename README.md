@@ -46,7 +46,7 @@ The examples build for OLTRA can be found below:
 
 - [**Ingress capabilities with CIS**](use-cases/cis-examples/README.md)
 - [**Publishing Type LoadBalancer services with CIS**](use-cases/cis-examples/cis-crd/serviceTypeLB/README.md)
-- **DNS Publishing of K8s services with CIS** <br>
+- [**DNS Publishing of K8s services with CIS**](use-cases/cis-examples/cis-crd/ExternalDNS/README.md)
 
 <br>
 <br>
