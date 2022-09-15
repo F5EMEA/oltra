@@ -36,7 +36,7 @@ The collected metrics include the following:
 - Failed transactions
 - Bytes In/Out
 
-<img src="images/ingress-details-dashboard.png">
+<img src="images/Ingress-details-dashboard.png">
 
 >:information_source:
 >  The data source for this dashboard is Prometheus.
