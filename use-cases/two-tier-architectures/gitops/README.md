@@ -139,7 +139,7 @@ In the following section we will demontrate how we can load balance 2 Ingress Co
 
 Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `gitops`.
 ```
@@ -223,24 +223,24 @@ kubectl apply -f ingress.yml
 Open and Login to Gitlab.
 
 <p align="left">
-  <img src="images/login-gitlab.png" style="width:50%">
+  <img src="images/login-gitlab.png" style="width:80%">
 </p>
 
 
 Go to `two-tier / Multi Cluster` Repository.
 <p align="left">
-  <img src="images/repo.png" style="width:50%">
+  <img src="images/repo.png" style="width:80%">
 </p>
 
 
 Select the `input.yml` file.
-<p align="center">
+<p align="left">
   <img src="images/input-file.png" style="width:50%">
 </p>
 
 Change from `Open in Web IDE` to `Edit`.
-<p align="center">
-  <img src="edit.png" style="width:50%">
+<p align="left">
+  <img src="images/edit.png" style="width:80%">
 </p>
 
 Edit the `input.yml` file and replace it with the following content.
@@ -259,24 +259,23 @@ config:
       nodeport: 30976
       ratio: 1
 ```
-<p align="center">
-  <img src="images/file.png" style="width:50%">
+<p align="left">
+  <img src="images/file.png" style="width:80%">
 </p>
 
 Commit the changes and go to the CI/CD -> Pipelines panel.
-<p align="center">
-  <img src="images/pipeline.png" style="width:50%">
+<p align="left">
+  <img src="images/pipeline.png" style="width:80%">
 </p>
 
 Select the pipeline that is actively running and review the process.
-<p align="center">
-  <img src="images/stages.png" style="width:50%">
+<p align="left">
+  <img src="images/stages.png" style="width:80%">
 </p>
 
 Once the pipeline has completed successfully, login to BIGIP and review the Virtual Server and Pool members to verify that Load Balancing takes place for the 2 NodePorts and the ratio is 10 to 1.
-
-<p align="center">
-  <img src="process.png" style="width:85%">
+<p align="left">
+  <img src="process.png" style="width:80%">
 </p>
 
 
@@ -388,3 +387,15 @@ done
 <p align="left">
   <img src="images/ingress-details.png" style="width:90%">
 </p>
+
+
+### Step 5. Clean up the environment
+
+Delete the namespaces that were created during this demo to remove all configuration
+```
+kubectl delete ns gitops
+kubectl delete ns nginx1
+kubectl delete ns nginx2
+rm -R nginx_1
+rm -R nginx_2
+```

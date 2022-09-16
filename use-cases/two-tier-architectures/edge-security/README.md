@@ -47,7 +47,8 @@ In the following section we will demontrate how we can implement the above archi
 ### Step 1. Verify NGINX+ and CIS are already running
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `edge-security`.
 ```
@@ -170,7 +171,7 @@ metadata:
   labels:
     f5cr: "true"
   name: udp-transport-server
-  namespace: layer4
+  namespace: layer7
 spec:
   virtualServerAddress: "10.1.10.125"
   virtualServerPort: 53
@@ -227,7 +228,7 @@ www.example.com.        14244   IN      A       93.184.216.34
 
 ### Step 6. Clean up the environment
 
-Delete the namespace `layer7`
+Delete the namespace `layer7` to remove all configuration
 ```
 kubectl delete ns layer7
 ```

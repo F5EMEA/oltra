@@ -106,10 +106,13 @@ DNS multi-cluster provides the following functionalities:
 
 Ideally for the multi-cluster demo we would need 2 K8s clusters and 2 BIGIP, one BIGIP for each cluster. Due to the fact that we have 1 BIGIP and 1 K8s cluster in our environment we will simulate mutli-cluster environment by deployhing the same application on 2 Namespaces, deploy 2 CIS instances that monitor these namespaces and both CIS instances will update the same BIGIP DNS.
 
-IMAGE
-
 
 ### Step 1. Create Tentants
+
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
 
 Create the 2 namespaces. Each namespace will represent a different cluster
 ```
@@ -121,12 +124,12 @@ kubectl create namespace cluster2
 
 For each namespace (cluster) we will deploy a seperate NGINX+ Ingress Controller. 
 
-1. Change the working directory to `multi-cluster`.
+Change the working directory to `multi-cluster`.
 ```
 cd ~/oltra/use-cases/two-tier-architectures/multi-cluster
 ```
 
-2. Copy the NGINX plus deployment from the setup folder
+Copy the NGINX plus deployment from the setup folder
 ```
 cd ~/oltra/use-cases/two-tier-architectures/multi-cluster
 mkdir nginx_t1
@@ -135,12 +138,12 @@ cp -R ~/oltra/setup/nginx-ic/* nginx_t1
 cp -R ~/oltra/setup/nginx-ic/* nginx_t2
 ```
 
-3. Replace the namespace `nginx` with `cluster1` and `cluster2` for the required manifests
+Replace the namespace `nginx` with `cluster1` and `cluster2` for the required manifests
 ```
 ./rename.sh
 ```
 
-4. Deploy NGNINX+ IC for each namespace (cluster).
+Deploy NGNINX+ IC for each namespace (cluster).
 ```
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t1/rbac
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t2/rbac
@@ -150,27 +153,27 @@ kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t1
 kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-cluster/nginx_t2/nginx-plus
 ```
 
-5. Verify that the NGINX pods are up and running on both namespaces
+Verify that the NGINX pods are up and running on both namespaces
 
 ```
 kubectl get pods -n cluster1
 kubectl get pods -n cluster2
-```
-```
+
 ####################################      Expected Output   ######################################
 NAME                            READY   STATUS    RESTARTS   AGE
 nginx-cluster1-74fd9b786-hqm6k   1/1     Running   0          22s
 ##################################################################################################
 ```
+
 ### Step 3. Create 2 CIS instances
 
-1. Before creating 2 CIS instances (one for each namespace), we need to scale down to 0 the existing CIS instance. 
+Before creating 2 CIS instances (one for each namespace), we need to scale down to 0 the existing CIS instance. 
 ```
 kubectl scale deployment f5-cis-crd -n bigip --replicas=0
 ```
 > Note: We scale down to zero the existing CIS since it listens across all Namespaces. In this case we will create a conflict of multiple CIS configuring BIGP for the same CRD but on different partitions. 
  
-2. Deploy 2 new CIS instances. One will manage namespace `cluster1` and the other will manage namespace `cluster2` 
+Deploy 2 new CIS instances. One will manage namespace `cluster1` and the other will manage namespace `cluster2` 
 ```
 cp ~/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster1.yml
 cp ~/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster2.yml
@@ -194,24 +197,38 @@ kubectl apply -f cis-cluster1.yml
 kubectl apply -f cis-cluster2.yml
 
 ```
-### Step 3. Create Transportserver and ExternalDNS resources
+### Step 4. Create Transportserver and ExternalDNS resources
 
-1. Create TransportServer resrouce for cluster1 and cluster2
+Create TransportServer resrouce for cluster1 and cluster2
 ```
 kubectl apply -f transport.yml
 ```
 
-2. Create EDNS resource for cluster1 and cluster2
+Create EDNS resource for cluster1 and cluster2
 ```
 kubectl apply -f edns.yml
 ```
 
-3. Try accessing the services with DNS
+Try accessing the services with DNS
 ```
 for i in {1..50} ; do dig @10.1.10.200 gslb.f5demo.local +short; done
 ```
 
 
-### Step 4 (Optional). Review Grafana Dashboards for GSLB
+### Step 5. Clean up the environment
 
-
+Delete the namespaces that were created during this demo to remove all configuration
+```
+kubectl delete -f transport.yml
+kubectl delete -f edns.yml
+sleep 15
+kubectl delete -f cis-cluster1.yml
+kubectl delete -f cis-cluster2.yml
+kubectl delete ns cluster1
+kubectl delete ns cluster2
+kubectl scale deployment f5-cis-crd -n bigip --replicas=1
+rm -R nginx_t1
+rm -R nginx_t2
+rm cis-cluster1.yml
+rm cis-cluster2.yml
+```

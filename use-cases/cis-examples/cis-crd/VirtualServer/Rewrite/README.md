@@ -28,7 +28,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `Rewrite`.
 ```
@@ -97,7 +98,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `Rewrite`.
 ```
@@ -127,4 +129,9 @@ Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:14:12:25 +0000
 URI: /library
 Request ID: 0495d6a17797ea9776120d5f4af10c1a
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f rewrite.yml
 ```

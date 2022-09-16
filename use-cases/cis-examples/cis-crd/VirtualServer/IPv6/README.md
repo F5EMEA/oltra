@@ -21,7 +21,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `IPv6`.
 ```
@@ -38,4 +39,10 @@ CIS will create a Virtual Server on BIG-IP with VIP "2002:0:0:0:10:0:0:".
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
 kubectl get vs 
+```
+
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f ipv6-virtual-server.yml
 ```

@@ -51,6 +51,11 @@ spec:
                 number: 80
 ```
 
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
+
 Change the working directory to `tls`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/tls
@@ -108,6 +113,10 @@ Verify that on BIGIP a new certificate has been created under `cis-ingress` part
 
 ![tls-ingress-k8s-bigipui](images/tls-ingress-k8s-bigipui.png)
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f basic-ingress.yml
+```
 
 ## TLS Ingress (certificate on BIGIP)
 In the following example we deploy a TLS Ingress resource that has the certificate stored on BIGIP as a SSL Client Profile.
@@ -147,6 +156,12 @@ Verify that the SSL Client Profile exists and is assigned the above certificate 
 | SSL Client Profile       |  Profile Details |
 :-------------------------:|:-------------------------:
 ![ssl-profiles](images/ssl-profiles.png) | ![tls1](images/tls1.png) 
+
+
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
 
 Create the Ingress resource.
 ```
@@ -190,6 +205,11 @@ You should see the following output. Please notice the `CN` value configured on 
 
 ![tls-ingress-bigip](images/tls-ingress-bigip.png)
 
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f tls-cert-bigip.yml
+```
 
 ## Multi-TLS Ingress (certificate on BIGIP)
 In the following example we deploy an Ingress resource with 2 FQDNs that require different TLS certificates (stored on BIGIP).
@@ -239,6 +259,11 @@ Verify that the SSL Client Profile exists for both certificates and that at leas
 | SSL Client Profiles      |  Profile SNI Details for TLS1 |
 :-------------------------:|:-------------------------:
 ![ssl-profiles](images/ssl-profiles-2.png) | ![sni-configured](images/sni-configured.png)
+
+
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `tls`.
 ```
@@ -292,3 +317,8 @@ curl -vk https://tls2.f5demo.local --resolve tls2.f5demo.local:443:10.1.10.53
 You should see the following output. Notice that the `CN` value change based on the FQDN as a different certificate gets presented to the client.
 
 ![multi-tls-ingress-bigip](images/multi-tls-ingress-bigip.png)
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f multi-tls-cert-bigip.yml
+```

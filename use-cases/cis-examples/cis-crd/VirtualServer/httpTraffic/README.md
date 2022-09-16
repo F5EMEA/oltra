@@ -52,7 +52,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `httpTaffic`.
 ```
@@ -97,3 +98,10 @@ Verify that BIGIP redirected the traffic to the HTTPS Server (port 443). The out
 < 
 * Connection #0 to host coffee.f5demo.local left intact
 ```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f redirect-tls.yml
+kubectl delete -f redirect-vs.yml
+```
+

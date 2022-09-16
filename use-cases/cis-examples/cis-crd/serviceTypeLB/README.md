@@ -13,6 +13,37 @@ For services of the type LoadBalancer, the controller deployed inside the Kubern
 
 The mandatory parameter for service type LoadBalancer to work alongside CIS is to add the annotation `cis.f5.com/ipamLabel` on the service you want to publish.
 
+
+### Verify IPAM status
+To verify that IPAM is running, run the following command.
+
+```
+kubectl get po -n kube-system | grep f5-ipam
+
+**************** Expected Result ****************
+NAME                                      READY   STATUS    RESTARTS       AGE
+f5-ipam-5bf9fbdb5-dzqwd                    1/1     Running   12 (39h ago)   18d
+```
+
+Review the IPAM configured IP ranges.
+
+```
+kubectl -n kube-system describe deployment f5-ipam
+
+**************** Expected Result ****************
+...
+...
+    Command:
+      /app/bin/f5-ipam-controller
+    Args:
+      --orchestration=kubernetes
+      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","customer1":"10.1.10.190-10.1.10.192","customer2":"10.1.10.193-10.1.10.195","customer3":"10.1.10.196-10.1.10.199"}'
+      --log-level=DEBUG
+...
+...
+```
+
+
 ## Service Type LoadBalancer
 
 This section demonstrates the deployment of a service as Type LoadBalancer. 
@@ -40,7 +71,8 @@ spec:
   type: LoadBalancer
 ```
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `serviceTypeLB`.
 ```
@@ -61,7 +93,6 @@ Save the IP adresses that was assigned by the IPAM for this service
 ```
 IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
-
 
 Try accessing the service with curl as per the examples below. 
 ```
@@ -85,6 +116,10 @@ The output should be similar to:
 }
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f serviceTypeLB.yml
+```
 
 ## Service Type LoadBalancer with Health Monitor
 
@@ -119,7 +154,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `serviceTypeLB`.
 ```
@@ -144,6 +180,10 @@ curl http://<IP address provided from IPAM>
 Go to the F5 GUI and make sure that the pool created is now marked as Green by the monitor.
 
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f healthMonitor-serviceTypeLB.yml
+```
 
 ## MultiPort Type LoadBalancer
 
@@ -192,34 +232,7 @@ curl http://<IP address provided from IPAM>
 curl -k https://<IP address provided from IPAM>
 ```
 
-
-
-
-### Verify IPAM
-Verify that IPAM is running.
-
+***Clean up the environment (Optional)***
 ```
-kubectl get po -n kube-system | grep f5-ipam
-
-**************** Expected Result ****************
-NAME                                      READY   STATUS    RESTARTS       AGE
-f5-ipam-5bf9fbdb5-dzqwd                    1/1     Running   12 (39h ago)   18d
-```
-
-Review the IPAM configured IP ranges.
-
-```
-kubectl -n kube-system describe deployment f5-ipam
-
-**************** Expected Result ****************
-...
-...
-    Command:
-      /app/bin/f5-ipam-controller
-    Args:
-      --orchestration=kubernetes
-      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","customer1":"10.1.10.190-10.1.10.192","customer2":"10.1.10.193-10.1.10.195","customer3":"10.1.10.196-10.1.10.199"}'
-      --log-level=DEBUG
-...
-...
+kubectl delete -f multiport-serviceTypeLB.yml
 ```

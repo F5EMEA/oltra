@@ -42,6 +42,10 @@ spec:
             pathType: Prefix
 ```
 
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
 Change the working directory to `rewrite`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/rewrite
@@ -115,9 +119,17 @@ The output should be similar to the following:
 >Similarly if accessing the service `rewrite2.f5demo.local` the location will be set to `approot2`
 
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f basic-ingress.yml
+```
 
 ## URL-Rewrite
 In the following example we deploy an Ingress resource that rewrites the URL from `lab.f5demo.local/mylab` to `laboratory.f5demo.local/mylaboratory`.
+
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `rewrite`.
 ```
@@ -178,3 +190,8 @@ The output should be similar to the following:
 ```
 > Note that the Hostname and Path that was send on the backend application has been changed as per the rewrite annotation.
 
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f url-rewrite-ingress.yml
+```

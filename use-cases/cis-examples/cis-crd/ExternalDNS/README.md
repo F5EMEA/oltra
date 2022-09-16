@@ -84,36 +84,36 @@ spec:
       timeout: 10
 
 ```
-1. Access the terminal on the VS Code.
+Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
-1. Change the working directory to `TransportServer`.
+Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/ExternalDNS
 ```
 
-1. Deploy TransportServer for `app1-svc` with host vaule of `edns.f5demo.local`.
+Deploy TransportServer for `app1-svc` with host vaule of `edns.f5demo.local`.
 ```
 kubectl apply -f ts-fqdn.yml
 ```
 
-1. Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
 kubectl get ts edns-app1
 ```
 
-1. Save the IP adresses that was assigned by the IPAM for this TS
+Save the IP adresses that was assigned by the IPAM for this TS
 ```
 IP=$(kubectl get ts edns-app1 --output=jsonpath='{.status.vsAddress}')
 ```
 
-1. Try accessing the service as per the example below. 
+Try accessing the service as per the example below. 
 ```
 curl http://$IP/
 ```
 
-1. The output should be similar to:
+The output should be similar to:
 ```
 Server address: 10.244.140.103:8080
 Server name: app1-6cc75dfc85-qhk5d
@@ -122,27 +122,27 @@ URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
 ```
 
-1. Create the EDNS resource to publish `edns.f5demo.local` on F5 DNS
+Create the EDNS resource to publish `edns.f5demo.local` on F5 DNS
 ```
 kubectl apply -f edns-fqdn.yml
 ```
 
-1. Resolve the IP address through DNS 
+Resolve the IP address through DNS 
 ```
 dig @10.1.10.200 gslb.f5demo.local +short
 ```
 
-1. Save the IP adresses that was resolved through DNS
+Save the IP adresses that was resolved through DNS
 ```
 DNS_IP=$(dig @10.1.10.200 gslb.f5demo.local +short)
 ```
 
-1. Try accessing the service as per the example below. 
+Try accessing the service as per the example below. 
 ```
 curl http://$DNS_IP/
 ```
 
-1. The output should be similar to:
+The output should be similar to:
 ```
 Server address: 10.244.140.103:8080
 Server name: app1-6cc75dfc85-qhk5d
@@ -151,7 +151,7 @@ URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
 ```
 
-1. Clean up the environment
+***Clean up the environment (Optional)***
 ```
 kubectl delete -f ts-fqdn.yml
 kubectl delete -f edns-fqdn.yml

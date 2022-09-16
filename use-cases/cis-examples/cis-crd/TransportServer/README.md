@@ -31,7 +31,8 @@ spec:
       timeout: 10
 ```
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `TransportServer`.
 ```
@@ -63,6 +64,11 @@ URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f tcp-transport-server.yml
+```
+
 ## TCP Transport Server with IPAM
 
 This section demonstrates the deployment of a TCP Transport Server with ipamLabel
@@ -91,7 +97,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `TransportServer`.
 ```
@@ -127,6 +134,10 @@ URI: /
 Request ID: 705dca97504efb7adba9c6fbd4309605
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f tcp-transport-server-ipamLabel.yml
+```
 ## UDP Transport Server
 
 This section demonstrates the deployment of a UDP Transport Server (Deploying coreDNS server)
@@ -153,7 +164,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `TransportServer`.
 ```
@@ -199,3 +211,8 @@ www.example.com.        14244   IN      A       93.184.216.34
 ```
 
 > Note that the response comes from 10.1.10.75 which is the Transport Server IP
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f udp-transport-server.yml
+```

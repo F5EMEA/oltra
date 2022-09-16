@@ -6,7 +6,7 @@ metadata:
   name: udp-transport-server
   namespace: layer4
 spec:
-  virtualServerAddress: "10.1.10.125"
+  virtualServerAddress: "10.1.10.124"
   virtualServerPort: 53
   virtualServerName: svc-udp-ts
   type: udp

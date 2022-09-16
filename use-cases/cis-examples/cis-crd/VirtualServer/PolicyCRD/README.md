@@ -42,7 +42,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `PolicyCRD`.
 ```
@@ -69,6 +70,11 @@ curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.66
 
 Verify that the `x-forwarded-for` Header exists and contains the client's actual IP
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f xff-policy.yml
+kubectl delete -f vs-with-policy-xff.yml
+```
 
 ## Persistence
 The default persistence that is configured with CIS is **/Common/cookie**. In this section we will demonstrate the deployment of a Virtual Server with persistence profile set to **None**.
@@ -103,7 +109,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `PolicyCRD`.
 ```
@@ -129,6 +136,12 @@ curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:1
 ```
 
 Verify that the transactions are actually going to multiple backend pods and they dont persist on a single one.
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f persistence-policy.yml
+kubectl delete -f vs-with-policy-persistence.yml
+```
 
 ## iRules
 This section demonstrates the deployment of a Virtual Server with a iRules to provide a **Sorry Page**.
@@ -163,7 +176,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `PolicyCRD`.
 ```
@@ -190,6 +204,11 @@ curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.63
 
 Verify that the sorry page is sent back from BIGIP.
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f irule-policy.yml
+kubectl delete -f vs-with-policy-irule.yml
+```
 
 ## WAF Policies
 This section demonstrates the deployment of a Virtual Server with a WAF policy to protect against Layer 7 threats.
@@ -228,7 +247,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `PolicyCRD`.
 ```
@@ -267,3 +287,8 @@ Verify that the  transaction that contains the attack gets blocked by BIGIP WAF.
 </html>
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f waf-policy.yml
+kubectl delete -f vs-with-policy-waf.yml
+```

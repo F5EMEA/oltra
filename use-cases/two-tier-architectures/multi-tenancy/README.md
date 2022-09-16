@@ -68,6 +68,10 @@ More information on CIS and IPAM can be found on the following links:
 
 ### Step 1. Create Tentants
 
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
 Create the namespace for each tenant (Tenant-1, Tenant-2)
 ```
 kubectl create namespace tenant1
@@ -78,13 +82,13 @@ kubectl create namespace tenant2
 
 For each tenant we will deploy a seperate NGINX+ Ingress Controller. 
 
-1. Change the working directory to `multi-tenancy`.
+Change the working directory to `multi-tenancy`.
 ```
 cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
 ```
 
 
-2. Copy the NGINX plus deployment from the setup folder
+Copy the NGINX plus deployment from the setup folder
 ```
 cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
 mkdir nginx_t1
@@ -121,12 +125,12 @@ nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
 ##################################################################################################
 ```
 
-6. Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
+Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
 ```cmd
 kubectl apply -f svc.yml
 ```
 
-6. Confirm that Service Type LB has received and IP from F5 IPAM and being deployed on BIGIP.
+Confirm that Service Type LB has received and IP from F5 IPAM and being deployed on BIGIP.
 ```
 kubectl get svc -n tenant1
 kubectl get svc -n tenant2
@@ -140,14 +144,13 @@ nginx-tenant2   LoadBalancer   10.105.188.239   10.1.10.193   80:32658/TCP,443:3
 ##################################################################################################
 ```
 
-7. Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
+Save the IP adresses that was assigned by the IPAM for each tenant NGINX services
 ```
 IP_tenant1=$(kubectl get svc nginx-tenant1 -n tenant1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 IP_tenant2=$(kubectl get svc nginx-tenant2 -n tenant2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
-IP=$(kubectl get svc svc-lb-ipam --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 
-8. Try accessing the service as per the example below. 
+Try accessing the service as per the example below. 
 ```
 curl http://$IP_tenant1
 curl http://$IP_tenant2
@@ -167,19 +170,19 @@ The output should be similar to:
 
 ### Step 3. Deploy services for each tenant
 
-1. Deploy demo applications in each tenant
+Deploy demo applications in each tenant
 ```
 kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant1
 kubectl apply -f  ~/oltra/setup/apps/apps.yml -n tenant2
 ```
 
-2. Deploy Ingress services for each tenant
+Deploy Ingress services for each tenant
 ```
 kubectl apply -f ingress.yml
 ```
 
 
-3. Access the services for both tenants as per the example below. 
+Access the services for both tenants as per the example below. 
 ```
 curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1
 curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2
@@ -190,7 +193,7 @@ curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tena
 
 ### Step 4. (Optional) Grafana Dashboards 
 
-1. Setup scraping for the new NGINX instances
+Setup scraping for the new NGINX instances
 ```yml
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -248,7 +251,7 @@ spec:
 EOF
 ```
 
-2. Login to Grafana. On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
+Login to Grafana. On the UDF you can acess Grafana from BIGIP "Access" methods as per the image below.
 
 <p align="left">
   <img src="images/grafana.png" style="width:35%">
@@ -275,7 +278,7 @@ Select any of the 2 Ingress Dashboards (NGINX Ingress / NGINX Ingress Details) w
 
 
 
-2. Run the following script to generate traffic and review the Grafana Dashboards per tenant
+Run the following script to generate traffic and review the Grafana Dashboards per tenant
 ```cmd
 for i in {1..500} ; do curl http://tenant1.f5demo.local/ --resolve tenant1.f5demo.local:80:$IP_tenant1; \
 curl http://tenant2.f5demo.local/ --resolve tenant2.f5demo.local:80:$IP_tenant2;  \
@@ -295,3 +298,15 @@ done
 <p align="left">
   <img src="images/ingress-details.png" style="width:90%">
 </p>
+
+
+
+### Step 5. Clean up the environment
+
+Delete the namespaces that were created during this demo to remove all configuration
+```
+kubectl delete ns tenant1
+kubectl delete ns tenant2
+rm -R nginx_t1
+rm -R nginx_t2
+```

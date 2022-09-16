@@ -44,7 +44,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `TLS-Termination`.
 ```
@@ -65,6 +66,12 @@ kubectl get vs edge-tls-vs
 Access the `echo-svc` service using the following example. 
 ```
 curl -vk https://edge.f5demo.local/ --resolve edge.f5demo.local:443:10.1.10.68
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f edge-tls.yml
+kubectl delete -f edge-vs.yml
 ```
 
 ## Re-Encrypt TLS Termination
@@ -106,7 +113,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `TLS-Termination`.
 ```
@@ -127,6 +135,12 @@ kubectl get vs reencrypt-tls-vs
 Access the `secure-app` service using the following example. 
 ```
 curl -vk https://reencrypt.f5demo.local/ --resolve reencrypt.f5demo.local:443:10.1.10.69
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f reencrypt-tls.yml
+kubectl delete -f reencrypt-vs.yml
 ```
 
 ## Passthrough TLS Termination
@@ -165,7 +179,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `TLS-Termination`.
 ```
@@ -186,6 +201,12 @@ kubectl get vs passthrough-tls-vs
 Access the `echo-svc` service using the following example. 
 ```
 curl -vk https://passthrough.f5demo.local/ --resolve passthrough.f5demo.local:443:10.1.10.70
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f passthrough-tls.yml
+kubectl delete -f passthrough-vs.yml
 ```
 
 ## Certificate as K8s secret
@@ -237,7 +258,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Create the K8s secret, TLSProfile and VirtualServer resources.
 ```
@@ -254,4 +276,11 @@ kubectl get vs k8s-tls-vs
 Access the `echo-svc` service using the following example. 
 ```
 curl -vk https://k8s.f5demo.local/ --resolve k8s.f5demo.local:443:10.1.10.71
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f reference-secret.yml
+kubectl delete -f reference-tls.yml
+kubectl delete -f reference-vs.yml
 ```

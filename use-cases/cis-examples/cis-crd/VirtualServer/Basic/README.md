@@ -29,7 +29,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `basic`.
 ```
@@ -40,7 +41,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f noHost.yml
 ```
-> Note: CIS will create a Virtual Server on BIG-IP with VIP "10.1.10.54" and attaches a policy which forwards all traffic to service echo-svc.   
+> **Note:** CIS will create a Virtual Server on BIG-IP with VIP "10.1.10.54" and attaches a policy which forwards all traffic to service echo-svc.   
 
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
@@ -71,6 +72,10 @@ In all cases you should be able to access the service running in K8s. The output
     "Data": "0"
 }
 ```
+***Clean up the environment (Optional)***
+```
+kubectl delete -f noHost.yml
+```
 
 ## HTTP Virtual Server with Host parameter and a single service.
 
@@ -93,8 +98,10 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
+
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 
 Change the working directory to `basic`.
@@ -106,7 +113,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f virtual-single-pool.yml
 ```
-> Note: CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
+> **Note:** CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
@@ -145,6 +152,11 @@ In both cases you should be able to access the service running in K8s. The outpu
 }
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-single-pool.yml
+```
+
 ## HTTP Virtual Server with two services (Path Based Routing).
 
 This section demonstrates the deployment of a Virtual Server with 2 services as the pools. This is a typical Path Based Forwarding example
@@ -170,8 +182,10 @@ spec:
     service: app2-svc
     servicePort: 8080    
 ```
+
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `basic`.
 ```
@@ -182,7 +196,7 @@ Create the VS CRD resource.
 ```
 kubectl apply -f virtual-two-pools.yml
 ```
-> Note: CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and will attach a policy that forwards traffic to service app1-svc or app2-svc based on the URI path.   
+> **Note:** CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and will attach a policy that forwards traffic to service app1-svc or app2-svc based on the URI path.   
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
@@ -210,4 +224,9 @@ Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:07:21:49 +0000
 URI: /svc2                                    <======== URI Path
 Request ID: a5b08e8249b65a11aaaacd307feeca8e  
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-two-pools.yml
 ```

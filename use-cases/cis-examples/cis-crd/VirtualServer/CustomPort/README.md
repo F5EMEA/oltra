@@ -23,8 +23,11 @@ spec:
 ```
 > **Note:** for HTTPS VirtualServer the parameter name is `virtualServerHTTPSPort`
 
+
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
 
 Change the working directory to `CustomPort`.
 ```
@@ -62,4 +65,9 @@ You should be able to access the service running in K8s. The output should be si
     "Remote Port": "56414",
     "Timestamp": "1657610679",
     "Data": "0"
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f custom-http-port.yml
 ```

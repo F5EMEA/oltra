@@ -20,6 +20,10 @@ spec:
         number: 80
 ```
 
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
 Change the working directory to `basic-ingress`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/basic-ingress
@@ -88,4 +92,9 @@ $ curl http://test.f5demo.local --resolve test.f5demo.local:80:10.1.10.49
     "Timestamp": "1657553826",
     "Data": "0"
 }
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f basic-ingress.yml
 ```

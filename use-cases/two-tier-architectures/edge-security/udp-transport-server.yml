@@ -4,7 +4,7 @@ metadata:
   labels:
     f5cr: "true"
   name: udp-transport-server
-  namespace: layer4
+  namespace: layer7
 spec:
   virtualServerAddress: "10.1.10.125"
   virtualServerPort: 53

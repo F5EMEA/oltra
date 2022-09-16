@@ -50,7 +50,8 @@ spec:
 By deploying the above 2 VirtualServer CRDs in your cluster, CIS will create a single HTTP Virtual Server (with VIP `10.1.10.59`) on the BIG-IP system with a Policy that routes based on the hostname (in this example, `app1.f5demo.local` and `app2.f5demo.local`). This is because both VS CRDs share the same hostGroup property.
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `HostGroup`.
 ```
@@ -97,7 +98,10 @@ URI: /                                        <======== URI Path
 Request ID: a5b08e8249b65a11aaaacd307feeca8e  
 ```
 
-
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-with-hostGroup.yml
+```
 
 ## HTTP Virtual Server with Host Based Routing and IPAM
 
@@ -139,7 +143,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Create the VS CRD resources. 
 ```
@@ -175,4 +180,9 @@ Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:07:21:49 +0000
 URI: /                                        <======== URI Path
 Request ID: a5b08e8249b65a11aaaacd307feeca8e  
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-with-hostGroup-ipam.yml
 ```

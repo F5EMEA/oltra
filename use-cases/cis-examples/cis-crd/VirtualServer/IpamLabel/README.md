@@ -3,7 +3,8 @@
 This section demonstrates the F5 IPAM functionality, where teh VirtualServer IP Address is dynamically provieded by the IPAM Controller. 
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `IpamLabel`.
 ```
@@ -74,4 +75,10 @@ The output should be similar to:
     "Timestamp": "1657611589",
     "Data": "0"
 }
+```
+
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-with-ipamLabel.yml
 ```

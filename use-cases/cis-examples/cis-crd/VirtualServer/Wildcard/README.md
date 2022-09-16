@@ -29,7 +29,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `Wildcard`.
 ```
@@ -64,7 +65,6 @@ curl http://test2.f5demo.local/ --resolve test2.f5demo.local:80:10.1.10.72
 ...
 ...
 curl http://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.72
-
 ```
 
 Verify that you traffic was forwarded to the `echo-svc` service on both tests. The output should be similar to:
@@ -82,6 +82,11 @@ Verify that you traffic was forwarded to the `echo-svc` service on both tests. T
     "Timestamp": "1657635755",
     "Data": "0"
 }
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f wildcardhost-vs.yml
 ```
 
 ## HTTPS Virtual Server with wildcard Host parameter
@@ -129,7 +134,8 @@ spec:
 ```
 
 Access the terminal on the VS Code.
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Create the VS CRD resource. 
 ```
@@ -159,7 +165,12 @@ curl -k https://test2.f5test.local/ --resolve test2.f5test.local:443:10.1.10.73
 ...
 ...
 curl -k https://test10.f5test.local/ --resolve test10.f5test.local:443:10.1.10.73
-
 ```
 
 Verify that you traffic was forwarded to the `echo-svc` service on both tests.
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f wildcardhost-tls.yml
+kubectl delete -f wildcardhost-tls-vs.yml
+```

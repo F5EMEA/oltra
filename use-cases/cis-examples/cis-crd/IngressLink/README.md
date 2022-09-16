@@ -54,7 +54,7 @@ This section demonstrates how deploy an IngressLink with a dynamic IP.
 
 Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `IngressLink`.
 ```
@@ -117,7 +117,7 @@ URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
 ```
 
-Clean up the environment
+***Clean up the environment (Optional)***
 ```
 kubectl delete -f ingress.yml
 kubectl delete -f svc_nginx.yml
@@ -129,7 +129,7 @@ This section demonstrates how deploy an IngressLink with a static IP.
 
 Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:20%">
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `IngressLink`.
 ```
@@ -187,7 +187,7 @@ URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
 ```
 
-Clean up the environment
+***Clean up the environment (Optional)***
 ```
 kubectl delete -f ingress.yml
 kubectl delete -f svc_nginx.yml
