@@ -118,7 +118,7 @@ config:
 To make the process simple from converting YAML to AS3 JSON we are using the JINJA2 templates. The templates take the input from the configuration file(s) in YAML and use it to create the final AS3 JSON format. This process takes place as part of the CI/CD pipeline and can be implement either as an Ansible playbook or a Python script. For this demo we selected to use Python script to run the JINJA2 template conversion. 
 
 <p align="center">
-  <img src="process.png" style="width:85%">
+  <img src="images/process.png" style="width:85%">
 </p>
 
 ### Using CI/CD
@@ -128,7 +128,7 @@ When there is a commit on the repository we are using the CI/CD pipeline runs au
 - The ***third stage*** is the validation. In this stage we validate the configuration that has been applied but we can also run a number of supporting post-deployment tasks. Things like DNS publishing, firewall policy configuration, email/slack notifactions and many others.
 
 <p align="center">
-  <img src="cicd.png" style="width:85%">
+  <img src="images/cicd.png" style="width:85%">
 </p>
 
 
@@ -275,7 +275,7 @@ Select the pipeline that is actively running and review the process.
 
 Once the pipeline has completed successfully, login to BIGIP and review the Virtual Server and Pool members to verify that Load Balancing takes place for the 2 NodePorts and the ratio is 10 to 1.
 <p align="left">
-  <img src="process.png" style="width:80%">
+  <img src="images/pools.png" style="width:80%">
 </p>
 
 
