@@ -59,7 +59,7 @@ The expected output is:
 <body>
 <center><h1>400 Bad Request</h1></center>
 <center>No required SSL certificate was sent</center>
-<hr><center>nginx/1.19.1</center>
+<hr><center>nginx/1.21.5</center>
 </body>
 </html>
 ```
@@ -71,11 +71,11 @@ curl --insecure --resolve webapp.example.com:443:10.1.10.40 https://webapp.examp
 
 The expected output is:
 ```
-Server address: 10.244.0.8:8080
-Server name: webapp-7c6d448df9-9ts8x
-Date: 23/Sep/2020:07:18:52 +0000
+Server address: 10.244.140.76:8080
+Server name: webapp-7c6d448df9-c6z64
+Date: 16/Sep/2022:15:03:47 +0000
 URI: /
-Request ID: acb0f48057ccdfd250debe5afe58252a
+Request ID: b01151a689cd5e18ef9a6c76ca976233
 ```
 
 ***Clean up the environment (Optional)***

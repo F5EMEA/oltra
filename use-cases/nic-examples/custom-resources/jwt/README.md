@@ -8,7 +8,7 @@ Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` dro
 
 Change the working directory to `ingress-mtls`.
 ```
-cd ~/oltra/use-cases/nic-examples/custom-resources/ingress-mtls
+cd ~/oltra/use-cases/nic-examples/custom-resources/jwt
 ```
 
 ## Step 1 - Deploy a Web Application
@@ -45,7 +45,7 @@ Note that the VirtualServer references the policy `jwt-policy` created in Step 3
 
 If you attempt to access the application without providing a valid JWT, NGINX will reject your requests for that VirtualServer:
 ```
-curl --resolve webapp.example.com:443:10.1.10.40 http://webapp.example.com:443/
+curl --resolve webapp.example.com:80:10.1.10.40 http://webapp.example.com:80/
 ```
 
 The expected output is:
@@ -54,23 +54,23 @@ The expected output is:
 <head><title>401 Authorization Required</title></head>
 <body>
 <center><h1>401 Authorization Required</h1></center>
-<hr><center>nginx/1.19.1</center>
+<hr><center>nginx/1.21.5</center>
 </body>
 </html>
 ```
 
 If you provide a valid JWT, your request will succeed:
 ```
-curl --resolve webapp.example.com:443:10.1.10.40 http://webapp.example.com:443/ -H "token: `cat token.jwt`"
+curl --resolve webapp.example.com:80:10.1.10.40 http://webapp.example.com:80/ -H "token: `cat token.jwt`"
 ```
 
 The expected output is:
 ```
-Server address: 172.17.0.3:8080
-Server name: webapp-7c6d448df9-lcrx6
-Date: 10/Sep/2020:18:20:03 +0000
+Server address: 10.244.140.76:8080
+Server name: webapp-7c6d448df9-c6z64
+Date: 16/Sep/2022:15:06:04 +0000
 URI: /
-Request ID: db2c07ce640755ccbe9f666d16f85620
+Request ID: a7939401b3fc11d54aa70f466f8fbe71
 ```
 
 ***Clean up the environment (Optional)***

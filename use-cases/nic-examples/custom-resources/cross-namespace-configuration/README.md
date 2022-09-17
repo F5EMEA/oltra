@@ -18,41 +18,41 @@ cd ~/oltra/use-cases/nic-examples/custom-resources/cross-namespace-configuration
 
 Create the required tea, coffee, and cafe namespaces:
 ```
-kubectl create -f namespaces.yaml 
+kubectl apply -f namespaces.yaml 
 ```
 
 ## Step 2 - Deploy the Cafe Application
 
 Create the tea deployment and service in the tea namespace:
 ```
-kubectl create -f tea.yaml 
+kubectl apply -f tea.yaml 
 ```
 
 Create the coffee deployment and service in the coffee namespace:
 ```
-kubectl create -f coffee.yaml
+kubectl apply -f coffee.yaml
 ```
 
 ## Step 3 - Configure Load Balancing and TLS Termination
 
 Create the VirtualServerRoute resource for tea in the tea namespace:
 ```
-kubectl create -f tea-virtual-server-route.yaml
+kubectl apply -f tea-virtual-server-route.yaml
 ```
 
 Create the VirtualServerRoute resource for coffee in the coffee namespace:
 ```
-kubectl create -f coffee-virtual-server-route.yaml
+kubectl apply -f coffee-virtual-server-route.yaml
 ```
 
 Create the secret with the TLS certificate and key in the cafe namespace:
 ```
-kubectl create -f cafe-secret.yaml
+kubectl apply -f cafe-secret.yaml
 ```
 
 Create the VirtualServer resource for the cafe app in the cafe namespace:
 ```
-kubectl create -f cafe-virtual-server.yaml
+kubectl apply -f cafe-virtual-server.yaml
 ```
 
 ## Step 4 - Test the Configuration
@@ -88,18 +88,30 @@ To get coffee:
 ```
 curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/coffee --insecure
 
-##################     Expected Output    ###################
-Server address: 10.16.1.193:80
-Server name: coffee-7dbb5795f6-mltpf
-...
+##########  Expected Output  ############
+Server address: 10.244.140.109:8080
+Server name: coffee-6f4b79b975-7xkkh
+Date: 16/Sep/2022:14:53:53 +0000
+URI: /coffee
+Request ID: b044a101d3cfdf3be412ec7247ed006c
+##########################################
 ```
 
 If your prefer tea:
 ```
 curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/tea --insecure
 
-##################     Expected Output    ###################
-Server address: 10.16.0.157:80
-Server name: tea-7d57856c44-674b8
-...
+##########  Expected Output  ############
+Server address: 10.244.196.189:8080
+Server name: tea-6fb46d899f-nsjhz
+Date: 16/Sep/2022:14:54:27 +0000
+URI: /tea
+Request ID: d1444af240f8c8ac8a28f39b909b15d2
+##########################################
 ```
+
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f namespaces.yaml 
+```    

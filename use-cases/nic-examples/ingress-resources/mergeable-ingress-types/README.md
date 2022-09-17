@@ -63,128 +63,166 @@ load balancing for that application using Ingress resources with the `nginx.org/
 
 ## 1. Deploy the Ingress Controller
 
-1. Follow the [installation](https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-manifests/) instructions to deploy the Ingress Controller.
+Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
 
-2. Save the public IP address of the Ingress Controller into a shell variable:
-    ```
-    $ IC_IP=XXX.YYY.ZZZ.III
-    ```
-3. Save the HTTPS port of the Ingress Controller into a shell variable:
-    ```
-    $ IC_HTTPS_PORT=<port number>
-    ```
+Change the working directory to `mergeable-ingress-types`.
+```
+cd ~/oltra/use-cases/nic-examples/ingress-resources/mergeable-ingress-types
+```
 
 ## 2. Deploy the Cafe Application
 
 Create the coffee and the tea deployments and services:
 ```
-$ kubectl create -f cafe.yaml
+kubectl apply -f cafe.yaml
 ```
 
 ## 3. Configure Load Balancing
 
 1. Create a secret with an SSL certificate and a key:
-    ```
-    $ kubectl create -f cafe-secret.yaml
-    ```
+```
+kubectl apply -f cafe-secret.yaml
+```
 
 2. Create the Master Ingress resource:
-    ```
-    $ kubectl create -f cafe-master.yaml
-    ```
+```
+kubectl apply -f cafe-master.yaml
+```
 
 3. Create the Minion Ingress resource for the Coffee Service:
-    ```
-    $ kubectl create -f coffee-minion.yaml
-    ```
+```
+kubectl apply -f coffee-minion.yaml
+```
 
 4. Create the Minion Ingress resource for the Tea Service:
-   ```
-    $ kubectl create -f tea-minion.yaml
-    ```
+```
+kubectl apply -f tea-minion.yaml
+```
 
 ## 4. Test the Application
 
 1. To access the application, curl the coffee and the tea services. We'll use ```curl```'s --insecure option to turn off certificate verification of our self-signed
 certificate and the --resolve option to set the Host header of a request with ```cafe.example.com```
 
-    To get coffee:
-    ```
-    $ curl --resolve cafe.example.com:$IC_HTTPS_PORT:$IC_IP https://cafe.example.com:$IC_HTTPS_PORT/coffee --insecure
-    Server address: 10.12.0.18:80
-    Server name: coffee-7586895968-r26zn
-    ...
-    ```
-    If you prefer tea:
-    ```
-    $ curl --resolve cafe.example.com:$IC_HTTPS_PORT:$IC_IP https://cafe.example.com:$IC_HTTPS_PORT/tea --insecure
-    Server address: 10.12.0.19:80
-    Server name: tea-7cd44fcb4d-xfw2x
-    ...
-    ```
+To get coffee:
+```
+curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/coffee --insecure
+
+
+############  Expected Output ############# 
+Server address: 10.244.196.190:8080
+Server name: coffee-6f4b79b975-l8ht2
+Date: 17/Sep/2022:06:05:33 +0000
+URI: /coffee
+Request ID: 667c72a5a04ae2170abd2ce039888524
+```
+
+If you prefer tea:
+```
+$ curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/tea --insecure
+
+
+############  Expected Output ############# 
+Server address: 10.244.140.77:8080
+Server name: tea-6fb46d899f-nvwmw
+Date: 17/Sep/2022:06:06:36 +0000
+URI: /tea
+Request ID: e6e30d9a16755039e74e5d7554a6dd1a
+```
 
 ## 5. Examine the Configuration
 
-1. Access the NGINX Pod.
+Access the NGINX Pod.
 ```
-$ kubectl get pods -n nginx-ingress
-NAME                             READY     STATUS    RESTARTS   AGE
-nginx-ingress-66bc44674b-hrcx8   1/1       Running   0          4m
+kubectl get pods -n nginx
+
+############  Expected Output ############# 
+NAME                           READY   STATUS    RESTARTS       AGE
+nginx-plus-6d496bdb85-2z8qn    1/1     Running   0              18m
 ```
 
 2. Examine the NGINX Configuration.
 ```
-$ kubectl exec -it nginx-ingress-66bc44674b-hrcx8 -n nginx-ingress -- cat /etc/nginx/conf.d/default-cafe-ingress-master.conf
+kubectl exec -it <NGINX POD NAME> -n nginx-ingress -- cat /etc/nginx/conf.d/default-cafe-ingress-master.conf
 
-upstream default-cafe-ingress-coffee-minion-cafe.example.com-coffee-svc {
-	server 172.17.0.5:80;
-	server 172.17.0.6:80;
+
+# configuration for default/cafe-ingress-master
+upstream default-cafe-ingress-coffee-minion-cafe.example.com-coffee-svc-80 {
+        zone default-cafe-ingress-coffee-minion-cafe.example.com-coffee-svc-80 512k;
+        random two least_conn;
+        server 10.244.140.72:8080 max_fails=1 fail_timeout=10s max_conns=0;
+        server 10.244.196.190:8080 max_fails=1 fail_timeout=10s max_conns=0;
+        keepalive 100;
 }
-upstream default-cafe-ingress-tea-minion-cafe.example.com-tea-svc {
-	server 172.17.0.7:80;
-	server 172.17.0.8:80;
-	server 172.17.0.9:80;
+upstream default-cafe-ingress-tea-minion-cafe.example.com-tea-svc-80 {
+        zone default-cafe-ingress-tea-minion-cafe.example.com-tea-svc-80 512k;
+        random two least_conn;
+        server 10.244.140.77:8080 max_fails=1 fail_timeout=10s max_conns=0;
+        server 10.244.196.133:8080 max_fails=1 fail_timeout=10s max_conns=0;
+        server 10.244.196.151:8080 max_fails=1 fail_timeout=10s max_conns=0;
+        keepalive 100;
 }
- # *Master*, configured in Ingress Resource: default-cafe-ingress-master
 server {
-	listen 80;
-	listen 443 ssl;
-	ssl_certificate /etc/nginx/secrets/default-cafe-secret;
-	ssl_certificate_key /etc/nginx/secrets/default-cafe-secret;
-	server_tokens on;
-	server_name cafe.example.com;
-	if ($scheme = http) {
-		return 301 https://$host:443$request_uri;
-	}
-	 # *Minion*, configured in Ingress Resource: default-cafe-ingress-coffee-minion
-	location /coffee {
-		proxy_http_version 1.1;
-		proxy_connect_timeout 60s;
-		proxy_read_timeout 60s;
-		client_max_body_size 1m;
-		proxy_set_header Host $host;
-		proxy_set_header X-Real-IP $remote_addr;
-		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		proxy_set_header X-Forwarded-Host $host;
-		proxy_set_header X-Forwarded-Port $server_port;
-		proxy_set_header X-Forwarded-Proto $scheme;
-		proxy_buffering on;
-		proxy_pass http://default-cafe-ingress-coffee-minion-cafe.example.com-coffee-svc;
-	}
-	 # *Minion*, configured in Ingress Resource: default-cafe-ingress-tea-minion
-	location /tea {
-		proxy_http_version 1.1;
-		proxy_connect_timeout 60s;
-		proxy_read_timeout 60s;
-		client_max_body_size 1m;
-		proxy_set_header Host $host;
-		proxy_set_header X-Real-IP $remote_addr;
-		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-		proxy_set_header X-Forwarded-Host $host;
-		proxy_set_header X-Forwarded-Port $server_port;
-		proxy_set_header X-Forwarded-Proto $scheme;
-		proxy_buffering on;
-		proxy_pass http://default-cafe-ingress-tea-minion-cafe.example.com-tea-svc;
-	}
+        listen 80;
+        listen [::]:80;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        ssl_certificate /etc/nginx/secrets/default-cafe-secret;
+        ssl_certificate_key /etc/nginx/secrets/default-cafe-secret;
+        server_tokens "on";
+        server_name cafe.example.com;
+        status_zone cafe.example.com;
+        set $resource_type "ingress";
+        set $resource_name "cafe-ingress-master";
+        set $resource_namespace "default";
+        if ($scheme = http) {
+                return 301 https://$host:443$request_uri;
+        }
+        location /coffee {
+                set $service "coffee-svc";
+                # location for minion default/cafe-ingress-coffee-minion
+                set $resource_name "cafe-ingress-coffee-minion";
+                set $resource_namespace "default";
+                proxy_http_version 1.1;
+                proxy_set_header Connection "";
+                proxy_connect_timeout 60s;
+                proxy_read_timeout 60s;
+                proxy_send_timeout 60s;
+                client_max_body_size 1m;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Port $server_port;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_buffering on;
+                proxy_pass http://default-cafe-ingress-coffee-minion-cafe.example.com-coffee-svc-80;
+        }
+        location /tea {
+                set $service "tea-svc";
+                # location for minion default/cafe-ingress-tea-minion
+                set $resource_name "cafe-ingress-tea-minion";
+                set $resource_namespace "default";
+                proxy_http_version 1.1;
+                proxy_set_header Connection "";
+                proxy_connect_timeout 60s;
+                proxy_read_timeout 60s;
+                proxy_send_timeout 60s;
+                client_max_body_size 1m;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Port $server_port;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_buffering on;
+                proxy_pass http://default-cafe-ingress-tea-minion-cafe.example.com-tea-svc-80;
+        }
 }
 ```
+
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f .
+```  

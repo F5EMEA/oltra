@@ -6,67 +6,82 @@ In this example we deploy the NGINX Plus Ingress Controller with [NGINX App Prot
 
 ## 1. Deploy the Ingress Controller
 
-1. Follow the installation [instructions](https://docs.nginx.com/nginx-ingress-controller/installation) to deploy the Ingress Controller with NGINX App Protect DoS.
+Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
 
-2. Save the public IP address of the Ingress Controller into a shell variable:
-    ```
-    $ IC_IP=XXX.YYY.ZZZ.III
-    ```
-3. Save the HTTPS port of the Ingress Controller into a shell variable:
-    ```
-    $ IC_HTTPS_PORT=<port number>
-    ```
+Change the working directory to `app-protect-dos`.
+```
+cd ~/oltra/use-cases/nic-examples/ingress-resources/app-protect-dos
+```
 
 ## 2. Deploy the Webapp Application
 
 Create the webapp deployment and service:
 ```
-$ kubectl create -f webapp.yaml
+kubectl apply -f webapp.yaml
 ```
 
 ## 3. Configure Load Balancing
-1. Create the syslog services and pod for the App Protect DoS security and access logs:
-    ```
-    $ kubectl create -f syslog.yaml
-    $ kubectl create -f syslog2.yaml
-    ```
-2. Create a secret with an SSL certificate and a key:
-    ```
-    $ kubectl create -f webapp-secret.yaml
-    ```
-3. Create the App Protect DoS Protected Resource:
-    ```
-    $ kubectl create -f apdos-protected.yaml
-    ```
-4. Create the App Protect DoS policy and log configuration:
-    ```
-    $ kubectl create -f apdos-policy.yaml
-    $ kubectl create -f apdos-logconf.yaml
-    ```
-5. Create an Ingress Resource:
-
-    ```
-    $ kubectl create -f webapp-ingress.yaml
-    ```
-    Note the App Protect DoS annotation in the Ingress resource. This enables DOS protection by specifying the DOS protected resource configuration that applies to this Ingress.
+Create the syslog services and pod for the App Protect DoS security and access logs:
+```
+kubectl apply -f syslog.yaml
+kubectl apply -f syslog2.yaml
+```
+Create a secret with an SSL certificate and a key:
+```
+kubectl apply -f webapp-secret.yaml
+```
+Create the App Protect DoS Protected Resource:
+```
+kubectl apply -f apdos-protected.yaml
+```
+Create the App Protect DoS policy and log configuration:
+```
+kubectl apply -f apdos-policy.yaml
+kubectl apply -f apdos-logconf.yaml
+```
+Create an Ingress Resource:
+```
+kubectl apply -f webapp-ingress.yaml
+```
+Note the App Protect DoS annotation in the Ingress resource. This enables DOS protection by specifying the DOS protected resource configuration that applies to this Ingress.
 
 ## 4. Test the Application
 
-1. To access the application, curl the Webapp service. We'll use `curl`'s --insecure option to turn off certificate verification of our self-signed
+To access the application, curl the Webapp service. We'll use `curl`'s --insecure option to turn off certificate verification of our self-signed
 certificate and the --resolve option to set the Host header of a request with `webapp.example.com`
 
-    Send a request to the application::
-    ```
-    $ curl --resolve webapp.example.com:$IC_HTTPS_PORT:$IC_IP https://webapp.example.com:$IC_HTTPS_PORT/ --insecure
-    Server address: 10.12.0.18:80
-    Server name: coffee-7586895968-r26zn
-    ...
-    ```
+Send a request to the application::
+```
+curl --resolve webapp.example.com:$IC_HTTPS_PORT:$IC_IP https://webapp.example.com:$IC_HTTPS_PORT/ --insecure
+
+The expected output is:
+```
+Server address: 10.244.140.79:8080
+Server name: webapp-7c6d448df9-l586q
+Date: 16/Sep/2022:14:37:57 +0000
+URI: /
+Request ID: 2a6d7758ed937b3262cd21a6dcfe534d
+```
+
+Get the name of the syslog pods that were deployed
+```
+kubectl get po | grep syslog
+
+#################   Expected Output   ################
+syslog-2-785bb59cf9-6d8vd    1/1     Running   0              3m1s
+syslog-b8cddb59f-8jptj       1/1     Running   0              3m3s
+#####################################################
+
 1. To check the security logs in the syslog pod:
-    ```
-    $ kubectl exec -it <SYSLOG_POD> -- cat /var/log/messages
-    ```
+```
+$ kubectl exec -it <SYSLOG_POD> -- cat /var/log/messages
+```
 2. To check the access logs in the syslog pod:
- ```
- $ kubectl exec -it <SYSLOG_2_POD> -- cat /var/log/messages
- ```
+```
+$ kubectl exec -it <SYSLOG_2_POD> -- cat /var/log/messages
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f .
+```    

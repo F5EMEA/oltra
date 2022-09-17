@@ -8,30 +8,30 @@ In this example we use the [VirtualServer](https://docs.nginx.com/nginx-ingress-
 
 Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
 
-Change the working directory to `rate-limit`.
+Change the working directory to `traffic-splitting`.
 ```
-cd ~/oltra/use-cases/nic-examples/custom-resources/rate-limit
+cd ~/oltra/use-cases/nic-examples/custom-resources/traffic-splitting
 ```
 
 ## Step 1 - Deploy the Cafe Application
 
 Create the coffee deployments and services:
 ```
-kubectl create -f cafe.yaml
+kubectl apply -f cafe.yaml
 ```
 
 ## Step 2 - Configure Load Balancing
 
 Create the VirtualServer resource:
 ```
-kubectl create -f cafe-virtual-server.yaml
+kubectl apply -f cafe-virtual-server.yaml
 ```
 
 ## Step 3 - Test the Configuration
 
 Check that the configuration has been successfully applied by inspecting the events of the VirtualServer:
 ```
-kubectl describe virtualserver cafe
+kubectl describe virtualserver.k8s.nginx.org cafe
 
 ####################################     Expected Output    ####################################
 Events:
@@ -41,8 +41,13 @@ Events:
 ```
 
 Access the application using curl. We'll use curl's `--resolve` option to set the IP address and HTTP port of the Ingress Controller to the domain name of the cafe application. Try to get coffee multiple times to see how NGINX sends requests to different versions of the coffee service:
-```
-curl --resolve cafe.example.com:$IC_HTTP_PORT:$IC_IP http://cafe.example.com:$IC_HTTP_PORT/coffee
+```cmd
+for i in {1..20} ; do curl -s --resolve cafe.example.com:80:10.1.10.40 http://cafe.example.com/coffee | grep name; done
 ```
 
 90% of responses will come from `coffee-v1-svc` and 10 % of responses will come from `coffee-v2-svc`:
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f cafe-virtual-server.yaml
+```    

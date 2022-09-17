@@ -38,18 +38,27 @@ Note that the VirtualServer references the policy `rate-limit-policy` created in
 
 ## Step 4 - Test the Configuration
 
-Let's test the configuration. If you access the application at a rate that exceeds one request per second, NGINX will start rejecting your requests:
-```
-curl --resolve webapp.example.com:$IC_HTTP_PORT:$IC_IP http://webapp.example.com:$IC_HTTP_PORT/
+Let's test the configuration. If you access the application at a rate less than one request per second, NGINX will allow your requests:
+```cmd
+for i in {1..10} ; do curl http://webapp.example.com/ --resolve webapp.example.com:80:10.1.10.40; sleep 1; done
 ```
 
 The expected output is:
 ```
-Server address: 10.8.1.19:8080
-Server name: webapp-dc88fc766-zr7f8
-. . .
+Server address: 10.244.140.104:8080
+Server name: webapp-7c6d448df9-c6z64
+Date: 17/Sep/2022:04:10:05 +0000
+URI: /
+Request ID: a8d0428ffc9a9113a81fc3063327897c
+```
 
-curl --resolve webapp.example.com:$IC_HTTP_PORT:$IC_IP http://webapp.example.com:$IC_HTTP_PORT/
+If you access the application at a rate higher than one request per second, NGINX will start rejecting your requests:
+```cmd
+for i in {1..10} ; do curl http://webapp.example.com/ --resolve webapp.example.com:80:10.1.10.40; done
+```
+
+The expected output is:
+```
 <html>
 <head><title>503 Service Temporarily Unavailable</title></head>
 <body>

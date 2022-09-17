@@ -52,13 +52,25 @@ To access the application, curl the Webapp service. We'll use the --resolve opti
 Send a request to the application:
 ```
 curl --resolve webapp.example.com:80:10.1.10.40 http://webapp.example.com:80/
+```
 
-####################################     Expected Output    ####################################
+The expected output is:
+```
+Server address: 10.244.140.79:8080
+Server name: webapp-7c6d448df9-l586q
+Date: 16/Sep/2022:14:37:57 +0000
+URI: /
+Request ID: 2a6d7758ed937b3262cd21a6dcfe534d
+```
 
-Server address: 10.12.0.18:80
-Server name: webapp-7586895968-r26zn
-...
-################################################################################################
+Get the name of the syslog pods that were deployed
+```
+kubectl get po | grep syslog
+
+#################   Expected Output   ################
+syslog-2-785bb59cf9-6d8vd    1/1     Running   0              3m1s
+syslog-b8cddb59f-8jptj       1/1     Running   0              3m3s
+#####################################################
 ```
 
 To check the security logs in the syslog pod:
@@ -70,7 +82,6 @@ To check the access logs in the syslog pod:
 ```
 kubectl exec -it <SYSLOG_POD_2> -- cat /var/log/messages
 ```
-
 
 ***Clean up the environment (Optional)***
 ```

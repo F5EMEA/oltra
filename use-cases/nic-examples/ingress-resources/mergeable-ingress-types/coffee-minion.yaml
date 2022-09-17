@@ -3,9 +3,10 @@ kind: Ingress
 metadata:
   name: cafe-ingress-coffee-minion
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+#    kubernetes.io/ingress.class: "nginx"
     nginx.org/mergeable-ingress-type: "minion"
 spec:
+  ingressClassName: nginx-plus
   rules:
   - host: cafe.example.com
     http:

@@ -16,5 +16,10 @@ spec:
     nodePort: 30443
     protocol: TCP
     name: https
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30880
+    protocol: TCP
+    name: dashboard
   selector:
     app: nginx-plus

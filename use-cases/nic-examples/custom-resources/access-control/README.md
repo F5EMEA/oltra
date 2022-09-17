@@ -40,14 +40,15 @@ kubectl apply -f virtual-server.yaml
 Let's access the application:
 ```
 curl --resolve webapp.example.com:80:10.1.10.40 http://webapp.example.com:80
+```
 
-############   Expected Output  ##############
-
+The expected output is:
+```html
 <html>
 <head><title>403 Forbidden</title></head>
 <body>
 <center><h1>403 Forbidden</h1></center>
-<hr><center>nginx/1.17.9</center>
+<hr><center>nginx/1.21.5</center>
 </body>
 </html>
 ```
@@ -69,10 +70,13 @@ Let's access the application again:
 ```
 curl --resolve webapp.example.com:80:10.1.10.40 http://webapp.example.com:80
 
-############   Expected Output  ##############
-
-Server address: 10.64.0.13:8080
-Server name: webapp-5cbbc7bd78-wf85w
+The expected output is:
+```
+Server address: 10.244.140.79:8080
+Server name: webapp-7c6d448df9-l586q
+Date: 16/Sep/2022:14:37:57 +0000
+URI: /
+Request ID: 2a6d7758ed937b3262cd21a6dcfe534d
 ```
 
 In contrast with Step 4, we got a 200 response, which means that our updated policy successfully allowed our request.
@@ -80,8 +84,5 @@ In contrast with Step 4, we got a 200 response, which means that our updated pol
 
 ***Clean up the environment (Optional)***
 ```
-kubectl delete -f access-control-policy-allow.yaml
-kubectl delete -f virtual-server.yaml
-kubectl delete -f access-control-policy-deny.yaml
-kubectl delete -f  webapp.yaml
+kubectl delete -f .
 ```

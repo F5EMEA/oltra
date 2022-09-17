@@ -6,56 +6,64 @@ In this example we deploy the NGINX or NGINX Plus Ingress Controller, a simple w
 
 ## 1. Deploy the Ingress Controller
 
-1. Follow the [installation](https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-manifests/) instructions to deploy the Ingress Controller.
+Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
 
-2. Save the public IP address of the Ingress Controller into a shell variable:
-    ```
-    $ IC_IP=XXX.YYY.ZZZ.III
-    ```
-3. Save the HTTPS port of the Ingress Controller into a shell variable:
-    ```
-    $ IC_HTTPS_PORT=<port number>
-    ```
+Change the working directory to `complete-example`.
+```
+cd ~/oltra/use-cases/nic-examples/ingress-resources/complete-example
+```
 
 ## 2. Deploy the Cafe Application
 
 Create the coffee and the tea deployments and services:
 ```
-$ kubectl create -f cafe.yaml
+kubectl apply -f cafe.yaml
 ```
 
 ## 3. Configure Load Balancing
 
-1. Create a secret with an SSL certificate and a key:
-    ```
-    $ kubectl create -f cafe-secret.yaml
-    ```
+Create a secret with an SSL certificate and a key:
+```
+kubectl apply -f cafe-secret.yaml
+```
 
-2. Create an Ingress resource:
-    ```
-    $ kubectl create -f cafe-ingress.yaml
-    ```
+Create an Ingress resource:
+```
+kubectl apply -f cafe-ingress.yaml
+```
 
 ## 4. Test the Application
 
-1. To access the application, curl the coffee and the tea services. We'll use ```curl```'s --insecure option to turn off certificate verification of our self-signed
+To access the application, curl the coffee and the tea services. We'll use ```curl```'s --insecure option to turn off certificate verification of our self-signed
 certificate and the --resolve option to set the Host header of a request with ```cafe.example.com```
 
-    To get coffee:
-    ```
-    $ curl --resolve cafe.example.com:$IC_HTTPS_PORT:$IC_IP https://cafe.example.com:$IC_HTTPS_PORT/coffee --insecure
-    Server address: 10.12.0.18:80
-    Server name: coffee-7586895968-r26zn
-    ...
-    ```
-    If your prefer tea:
-    ```
-    $ curl --resolve cafe.example.com:$IC_HTTPS_PORT:$IC_IP https://cafe.example.com:$IC_HTTPS_PORT/tea --insecure
-    Server address: 10.12.0.19:80
-    Server name: tea-7cd44fcb4d-xfw2x
-    ...
-    ```
+To get coffee:
+```
+curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/coffee --insecure
 
-1. You can view an NGINX status page, either stub_status for NGINX, or the Live Activity Monitoring Dashboard for NGINX Plus:
-    1. Follow the [instructions](https://docs.nginx.com/nginx-ingress-controller/logging-and-monitoring/status-page/) to access the status page.
-    1. For NGINX Plus, If you go to the Upstream tab, you'll see: ![dashboard](dashboard.png)
+###########  Expected Output  ##########
+Server address: 10.244.196.136:8080
+Server name: coffee-6f4b79b975-l8ht2
+Date: 16/Sep/2022:14:50:01 +0000
+URI: /coffee
+Request ID: 5ca5c11a263c4457ebb8194319fdc19e
+########################################
+```
+
+If your prefer tea:
+```
+$ curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/tea --insecure
+
+###########  Expected Output  ##########
+Server address: 10.244.196.189:8080
+Server name: tea-6fb46d899f-nsjhz
+Date: 16/Sep/2022:14:50:45 +0000
+URI: /tea
+Request ID: 76e835733e75a367455566e3cc31c9b5
+########################################
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f .
+```  

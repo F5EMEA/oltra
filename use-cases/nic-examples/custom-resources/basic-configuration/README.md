@@ -17,19 +17,19 @@ cd ~/oltra/use-cases/nic-examples/custom-resources/basic-configuration
 
 Create the coffee and the tea deployments and services:
 ```
-kubectl create -f cafe.yaml
+kubectl apply -f cafe.yaml
 ```
 
 ## Step 2 - Configure Load Balancing and TLS Termination
 
 Create the secret with the TLS certificate and key:
 ```
-kubectl create -f cafe-secret.yaml
+kubectl apply -f cafe-secret.yaml
 ```
 
 Create the VirtualServer resource:
 ```
-kubectl create -f cafe-virtual-server.yaml
+kubectl apply -f cafe-virtual-server.yaml
 ```
 
 ## Step 3 - Test the Configuration
@@ -52,11 +52,13 @@ To get coffee:
 ```
 curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/coffee --insecure
 
-
-####################################     Expected Output    ####################################
-Server address: 10.16.1.182:80
-Server name: coffee-7dbb5795f6-tnbtq
-...
+###########  Expected Output  ##########
+Server address: 10.244.196.136:8080
+Server name: coffee-6f4b79b975-l8ht2
+Date: 16/Sep/2022:14:50:01 +0000
+URI: /coffee
+Request ID: 5ca5c11a263c4457ebb8194319fdc19e
+########################################
 ```
 
 If your prefer tea:
@@ -64,14 +66,19 @@ If your prefer tea:
 curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/tea --insecure
 
 
-####################################     Expected Output    ####################################
-Server address: 10.16.0.149:80
-Server name: tea-7d57856c44-zlftd
-...
+###########  Expected Output  ##########
+Server address: 10.244.196.189:8080
+Server name: tea-6fb46d899f-nsjhz
+Date: 16/Sep/2022:14:50:45 +0000
+URI: /tea
+Request ID: 76e835733e75a367455566e3cc31c9b5
+########################################
+
 ```
 
 
 ***Clean up the environment (Optional)***
 ```
-kubectl delete -f .
+kubectl delete -f cafe-virtual-server.yaml
+kubectl delete -f cafe-secret.yaml
 ```    

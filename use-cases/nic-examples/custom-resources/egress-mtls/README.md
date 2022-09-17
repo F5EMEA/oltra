@@ -53,7 +53,7 @@ Note that the VirtualServer references the policy `egress-mtls-policy` created i
 
 Access the secure backend with the following command:
 ```
-$ curl --resolve webapp.example.com:$IC_HTTP_PORT:$IC_IP http://webapp.example.com:$IC_HTTP_PORT/
+curl --resolve webapp.example.com:80:10.1.10.40 http://webapp.example.com/:80
 
 ########    Expected Output    ########
 hello from pod secure-app-8cb576989-7hdhp
