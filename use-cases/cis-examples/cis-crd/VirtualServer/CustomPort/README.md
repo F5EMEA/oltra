@@ -23,10 +23,7 @@ spec:
 ```
 > **Note:** for HTTPS VirtualServer the parameter name is `virtualServerHTTPSPort`
 
-
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 
 Change the working directory to `CustomPort`.
@@ -34,16 +31,22 @@ Change the working directory to `CustomPort`.
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/CustomPort
 ```
 
-Create the VS CRD resource. 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
+
+Create the VirtualServer resource.
 ```
 kubectl apply -f custom-http-port.yml
 ```
 CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.57` and attaches a policy which forwards all traffic to pool echo-svc when the Host Header is equal to `custom.f5demo.local`.   
 
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs custom-port-http-vs
+kubectl get f5-vs custom-port-http-vs
 ```
 
 Try accessing the service with curl as per the examples below. 

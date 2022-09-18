@@ -3,11 +3,11 @@ In this section we provide examples for the most common use-cases of IngressLink
 - [IngressLink with dynamic IP](#ingresslink-with-dynamic-ip)
 - [IngressLink with static IP](#ingressLink-with-static-ip)
 
+<img src="ingresslink.png" style="width:80%">
 
 F5 IngressLink is the first true integration between BIG-IP and NGINX technologies. F5 IngressLink was built to support customers with modern, container application workloads that use both BIG-IP Container Ingress Services and NGINX Ingress Controller for Kubernetes. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of BIG-IP and NGINX and fostering better collaboration across NetOps and DevOps teams. The diagram below demonstrates this use-case.
 
-<img src="ingresslink.png">
-
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ### How does it work
 IngressLink specification contains a label selector. The same label needs to exist on the service that is publishing the NGINX+ Ingress Controller. Only when there is a match, CIS will create a Layer 4 VirtualServer on the BIGP either with a staic or a dynamic IP address.
@@ -52,9 +52,6 @@ spec:
 ## IngressLink with dynamic IP
 This section demonstrates how deploy an IngressLink with a dynamic IP.
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `IngressLink`.
 ```
@@ -126,10 +123,6 @@ kubectl delete -f ingresslink.yml
 
 ## IngressLink with static IP
 This section demonstrates how deploy an IngressLink with a static IP.
-
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `IngressLink`.
 ```

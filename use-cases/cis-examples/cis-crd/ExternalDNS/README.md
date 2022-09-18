@@ -4,6 +4,8 @@ In this section we provide examples for the most common use-cases of ExternalDNS
 
 ExternalDNS is a Kubernetes add-on that allows you to control DNS records of F5 DNS servers with information about exposed Kubernetes services through VirtualServer, TransportServer or IngressLink CRDs.
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
 ### How does it work
 ExternalDNS has on its specification the `host` parameter that defines the FQDN that user wants to publish. In order for CIS to establish a link between the ExternalDNS resources, that holds the wideIP information, and the VirtualServer, that holds the IP that the users should connect to, it looks for a match on Host parameter that exists on both resources. If a match is established, then CIS creates a `wideIP` on F5 DNS with the pool member IP being the VirtualServer IP address. The same applies for TransportServer and IngressLink.
 
@@ -84,9 +86,11 @@ spec:
       timeout: 10
 
 ```
-Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
 
 Change the working directory to `TransportServer`.
 ```
@@ -100,12 +104,12 @@ kubectl apply -f ts-fqdn.yml
 
 Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts edns-app1
+kubectl get f5-ts edns-app1
 ```
 
 Save the IP adresses that was assigned by the IPAM for this TS
 ```
-IP=$(kubectl get ts edns-app1 --output=jsonpath='{.status.vsAddress}')
+IP=$(kubectl get f5-ts edns-app1 --output=jsonpath='{.status.vsAddress}')
 ```
 
 Try accessing the service as per the example below. 

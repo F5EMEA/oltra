@@ -5,6 +5,8 @@ This section demonstrates the options to configure virtual server using Wildcard
  - [HTTP Virtual Server with wildcard Host parameter](#http-virtual-server-with-wildcard-host-parameter)
  - [HTTPS Virtual Server with wildcard Host parameter](#https-virtual-server-with-wildcard-host-parameter)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
 ## HTTP Virtual Server with wildcard Host parameter
 
 This section demonstrates the deployment of a **HTTP** Virtual Server with wildcard Host parameter.
@@ -28,25 +30,26 @@ spec:
     servicePort: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Change the working directory to `Wildcard`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Wildcard
 ```
 
-Create the VS CRD resource. 
+Create the VirtualServer resource. 
 ```
 kubectl apply -f wildcardhost-vs.yml
 ```
 
 CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.72` and attach a policy that forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs wildcard-vs
+kubectl get f5-vs wildcard-vs
 ```
 
 Try accessing the service with curl as per the examples below. 
@@ -133,20 +136,21 @@ spec:
   snat: auto
 ```
 
-Access the terminal on the VS Code.
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
-Create the VS CRD resource. 
+Create the VirtualServer resource. 
 ```
 kubectl apply -f wildcardhost-tls.yml
 kubectl apply -f wildcardhost-tls-vs.yml
 ```
 CIS will create an HTTPS Virtual Server on BIG-IP with VIP `10.1.10.73` and attach a policy that forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs wildcard-tls-vs
+kubectl get f5-vs wildcard-tls-vs
 ```
 
 Try accessing the service with curl as per the examples below. 

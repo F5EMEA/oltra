@@ -38,17 +38,16 @@ The demos build for OLTRA can be found below:
 
 - [**Monitoring BIGIP services with Prometheus, Grafana and Elastic**](use-cases/bigip-monitoring)
 - [**Monitoring NGINX+ Ingress services with Prometheus, Grafana and Elastic**](use-cases/nginx-monitoring)
-- **Securing K8s services with BIGIP and CIS** <br>
 
 
 ## Examples
 The examples build for OLTRA can be found below:
 
 - [**Ingress capabilities with CIS**](use-cases/cis-examples)
+- [**Ingress capabilities with NGINX+**](use-cases/nic-examples)
 - [**Publishing Type LoadBalancer services with CIS**](use-cases/cis-examples/cis-crd/serviceTypeLB/)
 - [**DNS Publishing of K8s services with CIS**](use-cases/cis-examples/cis-crd/ExternalDNS/)
 
-<br>
 <br>
 ---
 

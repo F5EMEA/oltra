@@ -4,6 +4,7 @@ In this section we provide examples for the most common use-cases of TransportSe
 - [TCP TransportServer with IPAM](#tcp-transport-server-with-ipam)
 - [UDP TransportServer](#udp-transport-server)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ## TCP Transport Server
 This section demonstrates the deployment of a TCP TransportServer CRD.
@@ -30,9 +31,10 @@ spec:
       interval: 3
       timeout: 10
 ```
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-app.yml
+```
 
 Change the working directory to `TransportServer`.
 ```
@@ -47,7 +49,7 @@ kubectl apply -f tcp-transport-server.yml
 
 Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts tcp-ts
+kubectl get f5-ts tcp-ts
 ```
 
 Access the service as per the examples below. 
@@ -96,28 +98,29 @@ spec:
       timeout: 10
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-app.yml
+```
 
 Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/TransportServer
 ```
 
-Create the TS CRD resources. 
+Create the TransportServer resource. 
 ```
 kubectl apply -f tcp-transport-server-ipamLabel.yml
 ```
 
-Confirm that TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+Confirm that TransportServer resource is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts tcp-ipam-ts
+kubectl get f5-ts tcp-ipam-ts
 ```
 
 Save the IP adresses that was assigned by the IPAM for this TS
 ```
-IP=$(kubectl get ts tcp-ipam-ts --template '{{.status.vsAddress}}')
+IP=$(kubectl get f5-ts tcp-ipam-ts --output=jsonpath='{.status.vsAddress}')
 ```
 
 Try accessing the service as per the example below. 
@@ -163,23 +166,24 @@ spec:
     servicePort: 5353
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/dns.yaml
+```
 
 Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/TransportServer
 ```
 
-Create the TS CRD resources. 
+Create the TransportServer resource
 ```
 kubectl apply -f udp-transport-server.yml
 ```
 
-Confirm that TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+Confirm that TransportServer resource is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts udp-transport-server
+kubectl get f5-ts udp-transport-server
 ```
 
 Try accessing any DNS service on the internet like `www.example.com` through the Transport Server VIP (`10.1.10.75`)

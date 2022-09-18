@@ -5,6 +5,7 @@ This section demonstrates the three option to configure VirtualServer TLS termin
  - [Passthrough TLS](#passthrough-tls-termination)
  - [Certificate as K8s secret](#certificate-as-k8s-secret)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ## Edge TLS Termination 
 This section demonstrates how to configure VirtualServer with edge TLS termination.
@@ -43,9 +44,10 @@ spec:
       servicePort: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Change the working directory to `TLS-Termination`.
 ```
@@ -60,7 +62,7 @@ kubectl apply -f edge-vs.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs edge-tls-vs
+kubectl get f5-vs edge-tls-vs
 ```
 
 Access the `echo-svc` service using the following example. 
@@ -112,9 +114,10 @@ spec:
       servicePort: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Change the working directory to `TLS-Termination`.
 ```
@@ -127,9 +130,9 @@ kubectl apply -f reencrypt-tls.yml
 kubectl apply -f reencrypt-vs.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs reencrypt-tls-vs
+kubectl get f5-vs reencrypt-tls-vs
 ```
 
 Access the `secure-app` service using the following example. 
@@ -178,9 +181,10 @@ spec:
       servicePort: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Change the working directory to `TLS-Termination`.
 ```
@@ -193,9 +197,9 @@ kubectl apply -f passthrough-tls.yml
 kubectl apply -f passthrough-vs.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs passthrough-tls-vs
+kubectl get f5-vs passthrough-tls-vs
 ```
 
 Access the `echo-svc` service using the following example. 
@@ -257,9 +261,10 @@ spec:
       servicePort: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Create the K8s secret, TLSProfile and VirtualServer resources.
 ```
@@ -270,7 +275,7 @@ kubectl apply -f reference-vs.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs k8s-tls-vs
+kubectl get f5-vs k8s-tls-vs
 ```
 
 Access the `echo-svc` service using the following example. 

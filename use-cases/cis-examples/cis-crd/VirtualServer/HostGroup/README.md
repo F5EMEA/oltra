@@ -7,6 +7,7 @@ We provide the following 2 examples for the `HostGroup` feature:
 - [HTTP Virtual Server with Host Based Routing](#http-virtual-server-with-host-based-routing)
 - [HTTP Virtual Server with Host Based Routing and IPAM](#http-virtual-server-with-host-based-routing-and-ipam)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ## HTTP Virtual Server with Host Based Routing
 
@@ -49,23 +50,25 @@ spec:
 ```
 By deploying the above 2 VirtualServer CRDs in your cluster, CIS will create a single HTTP Virtual Server (with VIP `10.1.10.59`) on the BIG-IP system with a Policy that routes based on the hostname (in this example, `app1.f5demo.local` and `app2.f5demo.local`). This is because both VS CRDs share the same hostGroup property.
 
-Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
 
 Change the working directory to `HostGroup`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HostGroup
 ```
 
-Create the VS CRD resources. 
+Create the VirtualServer resources.
 ```
 kubectl apply -f virtual-with-hostGroup.yml
 ```
 
-Confirm that both VS CRDs is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that both VirtualServer resources are deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 
 ################################################   Expected Output  ################################################
 NAME                  HOST                  TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
@@ -142,18 +145,25 @@ spec:
       servicePort: 8080
 ```
 
-Access the terminal on the VS Code.
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
-Create the VS CRD resources. 
+Create the VirtualServer resources. 
 ```
 kubectl apply -f virtual-with-hostGroup-ipam.yml
 ```
 
-Confirm that both VS CRDs is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Change the working directory to `HostGroup`.
 ```
-kubectl get vs 
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HostGroup
+```
+
+Confirm that both VirtualServer resources are deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+```
+kubectl get f5-vs 
 
 ################################################   Expected Output  ################################################
 NAME                  HOST                  TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
@@ -164,7 +174,7 @@ ipam2-hostgroup-vs    ipam2.f5demo.local                                        
 
 Save the IP adresses that was assigned by the IPAM for this VirtualServer
 ```
-IP=$(kubectl get vs ipam1-hostgroup-vs --template '{{.status.vsAddress}}')
+IP=$(kubectl get f5-vs ipam1-hostgroup-vs --output=jsonpath='{.status.vsAddress}')
 ```
 
 Try accessing the serviceas per the examples below. 

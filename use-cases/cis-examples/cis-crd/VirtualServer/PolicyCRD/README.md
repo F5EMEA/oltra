@@ -9,6 +9,8 @@ This section demonstrates the deployment of a Virtual Server with custom HTTP, P
 - [iRules](#iRules)
 - [WAF Policies](#waf-policies)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
 ## Custom HTTP Profile
 This section demonstrates the deployment of a Virtual Server with a custom HTTP Profiles that add XFF header.
 
@@ -41,13 +43,14 @@ spec:
     servicePort: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
 Change the working directory to `PolicyCRD`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
 Create the PolicyCRD and VirtualServerCRD resources.
@@ -56,9 +59,9 @@ kubectl apply -f xff-policy.yml
 kubectl apply -f vs-with-policy-xff.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resources is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 ```
 
 On the BIGIP we created a profile called `http-xff` on the common partition that adds the client IP as an HTTP header (x-forwarded-for) before forading the transaction to the backend. This profile has been reference on the PolicyCRD.
@@ -107,10 +110,10 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
-
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Change the working directory to `PolicyCRD`.
 ```
@@ -125,7 +128,7 @@ kubectl apply -f vs-with-policy-persistence.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 ```
 
 Access the service few times using the following example.
@@ -173,6 +176,10 @@ spec:
     path: /
     service: echo-svc
     servicePort: 80
+```
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
 Access the terminal on the VS Code.
@@ -244,6 +251,11 @@ spec:
     path: /
     service: echo-svc
     servicePort: 80
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
 Access the terminal on the VS Code.

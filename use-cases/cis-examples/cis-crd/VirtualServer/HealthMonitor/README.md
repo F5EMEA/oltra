@@ -35,24 +35,26 @@ spec:
       timeout: 10
 ```
 
-Access the terminal on the VS Code.
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
 
 Change the working directory to `HealthMonitor`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HealthMonitor
 ```
 
-Create the CRD resource.
+Create the VirtualServer resource.
 ```
 kubectl apply -f health-monitor.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs health-vs  
+kubectl get f5-vs health-vs  
 ```
 
 On the BIGIP UI, you should see the application pool marked as green and a custom monitor assigned to the pool

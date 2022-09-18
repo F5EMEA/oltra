@@ -13,12 +13,13 @@ For services of the type LoadBalancer, the controller deployed inside the Kubern
 
 The mandatory parameter for service type LoadBalancer to work alongside CIS is to add the annotation `cis.f5.com/ipamLabel` on the service you want to publish.
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ### Verify IPAM status
 To verify that IPAM is running, run the following command.
 
 ```
-kubectl get po -n kube-system | grep f5-ipam
+kubectl get po -n bigip | grep f5-ipam
 
 **************** Expected Result ****************
 NAME                                      READY   STATUS    RESTARTS       AGE
@@ -28,7 +29,7 @@ f5-ipam-5bf9fbdb5-dzqwd                    1/1     Running   12 (39h ago)   18d
 Review the IPAM configured IP ranges.
 
 ```
-kubectl -n kube-system describe deployment f5-ipam
+kubectl -n bigip describe deployment f5-ipam
 
 **************** Expected Result ****************
 ...
@@ -37,7 +38,7 @@ kubectl -n kube-system describe deployment f5-ipam
       /app/bin/f5-ipam-controller
     Args:
       --orchestration=kubernetes
-      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","customer1":"10.1.10.190-10.1.10.192","customer2":"10.1.10.193-10.1.10.195","customer3":"10.1.10.196-10.1.10.199"}'
+      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","tenant1":"10.1.10.190-10.1.10.192","tenant2":"10.1.10.193-10.1.10.195"}'
       --log-level=DEBUG
 ...
 ...
@@ -70,9 +71,11 @@ spec:
     app: echo
   type: LoadBalancer
 ```
-Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Change the working directory to `serviceTypeLB`.
 ```
@@ -84,7 +87,7 @@ Create the K8s service.
 kubectl apply -f serviceTypeLB.yml
 ```
 
-Confirm that the service has been deployed correctly. You should see the Load Balancer IP address on the service that was just created.
+Confirm that the service has a LoadBalancer IP assigned to it.
 ```
 kubectl get svc svc-lb-ipam
 ```
@@ -153,9 +156,10 @@ spec:
   type: LoadBalancer
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
 Change the working directory to `serviceTypeLB`.
 ```
@@ -167,14 +171,19 @@ Create the K8s service.
 kubectl apply -f healthMonitor-serviceTypeLB.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see the Load Balancer IP address on the service that was just created..
+Confirm that the service has a LoadBalancer IP assigned to it.
 ```
-kubectl get svc 
+kubectl get svc svc-health-1
+```
+
+Save the IP adresses that was assigned by the IPAM for this service
+```
+IP=$(kubectl get svc svc-health-1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 Try accessing the service with curl as per the examples below. 
 ```
-curl http://<IP address provided from IPAM>
+curl http://$IP
 ```
 
 Go to the F5 GUI and make sure that the pool created is now marked as Green by the monitor.
@@ -216,6 +225,11 @@ spec:
   type: LoadBalancer
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
 Create the K8s service. 
 ```
 kubectl apply -f multiport-serviceTypeLB.yml
@@ -226,10 +240,20 @@ Confirm that the VS CRD is deployed correctly. You should see the Load Balancer 
 kubectl get svc -n nginx
 ```
 
+Confirm that the service has a LoadBalancer IP assigned to it.
+```
+kubectl get svc nginx-plus-lb
+```
+
+Save the IP adresses that was assigned by the IPAM for this service
+```
+IP=$(kubectl get svc nginx-plus-lb --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+```
+
 Try accessing the service with curl as per the examples below. 
 ```
-curl http://<IP address provided from IPAM>
-curl -k https://<IP address provided from IPAM>
+curl http://$IP
+curl -k https://$IP
 ```
 
 ***Clean up the environment (Optional)***

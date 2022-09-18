@@ -5,6 +5,7 @@ In this section we provide 2 rewrite examples. One for AppRoot rewrite and anoth
 - [AppRoot rewrite (rewriteAppRoot)](#approot-rewrite)
 - [URI Path rewrite (rewrite)](#uri-path-rewrite)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ## AppRoot rewrite
 Redirecting the application to specific path when request made with root path "/".
@@ -27,9 +28,10 @@ spec:
       servicePort: 8080
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
 
 Change the working directory to `Rewrite`.
 ```
@@ -43,7 +45,7 @@ kubectl apply -f approot.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs approot-vs
+kubectl get f5-vs approot-vs
 ```
 
 Access the service using curl. 
@@ -97,9 +99,10 @@ spec:
       rewrite: /library
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
 
 Change the working directory to `Rewrite`.
 ```
@@ -113,7 +116,7 @@ kubectl apply -f rewrite.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs rewrite-vs
+kubectl get f5-vs rewrite-vs
 ```
 
 Access the service using curl. 
