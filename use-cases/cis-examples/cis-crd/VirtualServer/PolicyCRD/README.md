@@ -9,6 +9,8 @@ This section demonstrates the deployment of a Virtual Server with custom HTTP, P
 - [iRules](#iRules)
 - [WAF Policies](#waf-policies)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
 ## Custom HTTP Profile
 This section demonstrates the deployment of a Virtual Server with a custom HTTP Profiles that add XFF header.
 
@@ -41,15 +43,25 @@ spec:
     servicePort: 80
 ```
 
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
 Create the PolicyCRD and VirtualServerCRD resources.
 ```
 kubectl apply -f xff-policy.yml
 kubectl apply -f vs-with-policy-xff.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resources is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 ```
 
 On the BIGIP we created a profile called `http-xff` on the common partition that adds the client IP as an HTTP header (x-forwarded-for) before forading the transaction to the backend. This profile has been reference on the PolicyCRD.
@@ -61,6 +73,11 @@ curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.66
 
 Verify that the `x-forwarded-for` Header exists and contains the client's actual IP
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f xff-policy.yml
+kubectl delete -f vs-with-policy-xff.yml
+```
 
 ## Persistence
 The default persistence that is configured with CIS is **/Common/cookie**. In this section we will demonstrate the deployment of a Virtual Server with persistence profile set to **None**.
@@ -93,6 +110,15 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
 
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
@@ -102,7 +128,7 @@ kubectl apply -f vs-with-policy-persistence.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 ```
 
 Access the service few times using the following example.
@@ -114,7 +140,11 @@ curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:1
 
 Verify that the transactions are actually going to multiple backend pods and they dont persist on a single one.
 
-
+***Clean up the environment (Optional)***
+```
+kubectl delete -f persistence-policy.yml
+kubectl delete -f vs-with-policy-persistence.yml
+```
 
 ## iRules
 This section demonstrates the deployment of a Virtual Server with a iRules to provide a **Sorry Page**.
@@ -147,6 +177,19 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
 
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
@@ -168,7 +211,11 @@ curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.63
 
 Verify that the sorry page is sent back from BIGIP.
 
-
+***Clean up the environment (Optional)***
+```
+kubectl delete -f irule-policy.yml
+kubectl delete -f vs-with-policy-irule.yml
+```
 
 ## WAF Policies
 This section demonstrates the deployment of a Virtual Server with a WAF policy to protect against Layer 7 threats.
@@ -206,6 +253,20 @@ spec:
     servicePort: 80
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+
+Change the working directory to `PolicyCRD`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
+```
+
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
 kubectl apply -f waf-policy.yml
@@ -238,3 +299,8 @@ Verify that the  transaction that contains the attack gets blocked by BIGIP WAF.
 </html>
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f waf-policy.yml
+kubectl delete -f vs-with-policy-waf.yml
+```

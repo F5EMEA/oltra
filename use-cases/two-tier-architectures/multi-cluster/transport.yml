@@ -1,0 +1,46 @@
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: app1-cluster1
+  namespace: cluster1
+spec:
+  ipamLabel: "tenant1"
+  host: gslb.f5demo.local
+  virtualServerPort: 80
+  virtualServerName: app1-cluster1
+  mode: standard
+  snat: auto
+  pool:
+    service: nginx-cluster1
+    servicePort: 80
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10
+
+
+---
+
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: app1-cluster2
+  namespace: cluster2
+spec:
+  ipamLabel: "tenant2"
+  host: gslb.f5demo.local  
+  virtualServerPort: 80
+  virtualServerName: app1-cluster2
+  mode: standard
+  snat: auto
+  pool:
+    service: nginx-cluster2
+    servicePort: 80
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10

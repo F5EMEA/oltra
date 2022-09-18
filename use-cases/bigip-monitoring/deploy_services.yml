@@ -147,4 +147,4 @@ spec:
   pools:
   - path: /
     service: readiness-svc
-    servicePort: 80
+    servicePort: 8080

@@ -7,6 +7,7 @@ We provide the following 2 examples for the `HostGroup` feature:
 - [HTTP Virtual Server with Host Based Routing](#http-virtual-server-with-host-based-routing)
 - [HTTP Virtual Server with Host Based Routing and IPAM](#http-virtual-server-with-host-based-routing-and-ipam)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ## HTTP Virtual Server with Host Based Routing
 
@@ -49,31 +50,36 @@ spec:
 ```
 By deploying the above 2 VirtualServer CRDs in your cluster, CIS will create a single HTTP Virtual Server (with VIP `10.1.10.59`) on the BIG-IP system with a Policy that routes based on the hostname (in this example, `app1.f5demo.local` and `app2.f5demo.local`). This is because both VS CRDs share the same hostGroup property.
 
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
+
 Change the working directory to `HostGroup`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HostGroup
 ```
 
-Create the VS CRD resources. 
+Create the VirtualServer resources.
 ```
 kubectl apply -f virtual-with-hostGroup.yml
 ```
 
-Confirm that both VS CRDs is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that both VirtualServer resources are deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 
-----------------------------   OUTPUT  ---------------------------
-
+################################################   Expected Output  ################################################
 NAME                  HOST                  TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
 app1-hostgroup-vs     app1.f5demo.local                                    10.1.10.59               None            Ok       13s
 app2-hostgroup-vs     app2.f5demo.local                                    10.1.10.59               None            Ok       13s
+####################################################################################################################
 ```
 
 Try accessing the service as per the example below. 
 ```
 curl http://test.f5demo.local/ --resolve test.f5demo.local:80:10.1.10.59
-
 ```
 In the above example you should see a reset connection as it didnt match the configured Host parameter.
 `curl: (56) Recv failure: Connection reset by peer`
@@ -87,8 +93,7 @@ curl http://app2.f5demo.local/ --resolve app2.f5demo.local:80:10.1.10.59
 ```
 
 Verify that the traffic was forwarded to the `app1-svc` and `app2-svc` services as per the Hostname.  The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.140.116:8080
 Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:07:21:49 +0000
@@ -96,7 +101,10 @@ URI: /                                        <======== URI Path
 Request ID: a5b08e8249b65a11aaaacd307feeca8e  
 ```
 
-
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-with-hostGroup.yml
+```
 
 ## HTTP Virtual Server with Host Based Routing and IPAM
 
@@ -137,26 +145,36 @@ spec:
       servicePort: 8080
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
 
-Create the VS CRD resources. 
+
+Create the VirtualServer resources. 
 ```
 kubectl apply -f virtual-with-hostGroup-ipam.yml
 ```
 
-Confirm that both VS CRDs is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Change the working directory to `HostGroup`.
 ```
-kubectl get vs 
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HostGroup
+```
 
-----------------------------   OUTPUT  ---------------------------
+Confirm that both VirtualServer resources are deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+```
+kubectl get f5-vs 
 
+################################################   Expected Output  ################################################
 NAME                  HOST                  TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
 ipam1-hostgroup-vs    ipam1.f5demo.local                                                dev         None            Ok       9s
 ipam2-hostgroup-vs    ipam2.f5demo.local                                                dev         None            Ok       9s
+####################################################################################################################
 ```
 
 Save the IP adresses that was assigned by the IPAM for this VirtualServer
 ```
-IP=$(kubectl get vs ipam1-hostgroup-vs --template '{{.status.vsAddress}}')
+IP=$(kubectl get f5-vs ipam1-hostgroup-vs --output=jsonpath='{.status.vsAddress}')
 ```
 
 Try accessing the serviceas per the examples below. 
@@ -166,11 +184,15 @@ curl http://ipam2.f5demo.local/ --resolve ipam2.f5demo.local:80:$IP
 ```
 
 Verify that the traffic was forwarded to the `app1-svc` and `app2-svc` services as per the Hostname. The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.140.116:8080
 Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:07:21:49 +0000
 URI: /                                        <======== URI Path
 Request ID: a5b08e8249b65a11aaaacd307feeca8e  
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-with-hostGroup-ipam.yml
 ```

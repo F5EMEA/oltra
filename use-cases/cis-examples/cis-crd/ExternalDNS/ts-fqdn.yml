@@ -1,0 +1,20 @@
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: edns-app1
+spec:
+  ipamLabel: "prod"
+  host: edns.f5demo.local
+  virtualServerPort: 80
+  virtualServerName: edns-app1
+  mode: standard
+  snat: auto
+  pool:
+    service: app1-svc
+    servicePort: 8080
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10

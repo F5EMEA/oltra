@@ -37,6 +37,9 @@ spec:
         pathType: Prefix
 ```
 
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `health-monitor`
 ```
@@ -90,3 +93,8 @@ On the BIGIP UI, you should see the application pool marked as green and a custo
 :-------------------------:|:-------------------------:
 ![health-monitor-bigip-1](images/health-monitor-bigip-1.png)  |  ![health-monitor-bigip-2](images/health-monitor-bigip-2.png)
 
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f health-monitor.yml
+```

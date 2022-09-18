@@ -61,6 +61,6 @@ metadata:
   name: basic-auth
   namespace: monitoring
 data:
-  password: Q0lTbGFiMTIzCg== # CISlab123
+  password: SW5ncmVzc2xhYjEyMw== # CISlab123
   user: YWRtaW4= # admin
 type: Opaque

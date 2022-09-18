@@ -5,12 +5,13 @@ In this section we provide 3 Virtual Server deployment examples. The first two e
 - [HTTP Virtual Server without Host parameter](#http-virtual-server-without-host-parameter)
 - [HTTP Virtual Server with Host parameter and a single service](#http-virtual-server-with-host-parameter-and-a-single-service)
 - [HTTP Virtual Server with two services (Path Based Routing)](#http-virtual-server-with-two-services-path-based-routing)
+<br><br>
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ## HTTP Virtual Server without Host parameter.
 
 This section demonstrates the deployment of a Basic Virtual Server without Host parameter and a single service as the pool. The virtual server should send traffic for all Hostnames and Paths to the same pool.
-
 
 Eg: noHost.yml
 ```yml
@@ -33,16 +34,21 @@ Change the working directory to `basic`.
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Basic
 ```
 
-Create the VS CRD resource. 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
+Create the VirtualServer resource. 
 ```
 kubectl apply -f noHost.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP "10.1.10.54" and attaches a policy which forwards all traffic to service echo-svc.   
 
+> **Note:** CIS will create a Virtual Server on BIG-IP with VIP "10.1.10.54" and attaches a policy which forwards all traffic to service echo-svc.   
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs nohost-vs 
+kubectl get f5-vs nohost-vs 
 ```
 
 Access the service as per the examples below. 
@@ -53,8 +59,7 @@ curl http://test.f5demo.local --resolve test.f5demo.local:80:10.1.10.54
 ```
 
 In all cases you should be able to access the service running in K8s. The output should be similar to:
-
-```cmd
+```json
 {
     "Server Name": "test.f5demo.local",
     "Server Address": "10.244.140.93",
@@ -68,6 +73,11 @@ In all cases you should be able to access the service running in K8s. The output
     "Timestamp": "1657610216",
     "Data": "0"
 }
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f noHost.yml
 ```
 
 ## HTTP Virtual Server with Host parameter and a single service.
@@ -97,15 +107,21 @@ Change the working directory to `basic`.
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Basic
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
 Create the VS CRD resource. 
 ```
 kubectl apply -f virtual-single-pool.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+> **Note:** CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
+
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs single-pool-vs
+kubectl get f5-vs single-pool-vs
 ```
 
 Try accessing the service with curl as per the examples below. 
@@ -124,8 +140,7 @@ curl http://app1.f5demo.local/test --resolve app1.f5demo.local:80:10.1.10.55
 ```
 
 In both cases you should be able to access the service running in K8s. The output should be similar to:
-
-```cmd
+```json
 {
     "Server Name": "app1.f5demo.local",
     "Server Address": "10.244.196.135",
@@ -139,6 +154,11 @@ In both cases you should be able to access the service running in K8s. The outpu
     "Timestamp": "1657610340",
     "Data": "0"
 }
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-single-pool.yml
 ```
 
 ## HTTP Virtual Server with two services (Path Based Routing).
@@ -172,15 +192,20 @@ Change the working directory to `basic`.
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Basic
 ```
 
-Create the VS CRD resource. 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
+
+Create the VirtualServer resource. 
 ```
 kubectl apply -f virtual-two-pools.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and will attach a policy that forwards traffic to service app1-svc or app2-svc based on the URI path.   
+> **Note:** CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.56` and will attach a policy that forwards traffic to service app1-svc or app2-svc based on the URI path.   
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs two-pools-vs
+kubectl get f5-vs two-pools-vs
 ```
 
 Try accessing the service with curl as per the examples below. 
@@ -198,11 +223,15 @@ curl http://pools.f5demo.local/svc2 --resolve pools.f5demo.local:80:10.1.10.56
 ```
 
 Verify that the traffic was forwarded to the right service depending on the path that was entered. The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.140.116:8080
 Server name: app2-78c95bccb5-jvfnr
 Date: 12/Jul/2022:07:21:49 +0000
 URI: /svc2                                    <======== URI Path
 Request ID: a5b08e8249b65a11aaaacd307feeca8e  
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f virtual-two-pools.yml
 ```

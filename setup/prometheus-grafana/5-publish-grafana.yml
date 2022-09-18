@@ -19,3 +19,29 @@ spec:
       interval: 3
       timeout: 10
 
+---
+
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  labels:
+    f5cr: "true"
+  name: prometheus
+  namespace: monitoring
+spec:
+  virtualServerAddress: "10.1.10.20"
+  virtualServerPort: 9090
+  virtualServerName: prometheus
+  mode: standard
+  snat: auto
+  pool:
+    service: prometheus-k8s
+    servicePort: 9090
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10
+
+
+
+

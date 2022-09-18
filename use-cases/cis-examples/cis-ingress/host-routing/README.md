@@ -40,6 +40,9 @@ spec:
                number: 80
 
 ```
+Access the terminal on the VS Code.
+
+<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
 
 Change the working directory to `host-routing`.
 ```
@@ -108,3 +111,7 @@ URI: /
 Request ID: b07b6622cf0573aecd412da90f341ca9
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f host-routing.yml
+```

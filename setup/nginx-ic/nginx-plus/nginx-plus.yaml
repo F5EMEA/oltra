@@ -18,11 +18,10 @@ spec:
         prometheus.io/scheme: http
     spec:
       serviceAccountName: nginx-ingress
-#      imagePullSecrets:
-#      - name: regcred
+      imagePullSecrets:
+      - name: regcred
       containers:
-      - image: registry.f5demo.local/root/images/nginx-ingress-plus-nap-dos:2.2.2
-#      - image: private-registry.nginx.com/nginx-ic-nap/nginx-plus-ingress:2.1.1
+      - image: private-registry.nginx.com/nginx-ic-nap-dos/nginx-plus-ingress:2.3.1
         imagePullPolicy: IfNotPresent
         name: nginx-plus
         ports:
@@ -34,6 +33,8 @@ spec:
           containerPort: 8081
         - name: prometheus
           containerPort: 9113
+        - name: dashboard
+          containerPort: 8080
         readinessProbe:
           httpGet:
             path: /nginx-ready
@@ -62,8 +63,11 @@ spec:
           - -default-server-tls-secret=$(POD_NAMESPACE)/default-server-secret
           - -ingress-class=nginx-plus
           - -enable-app-protect
+          - -enable-app-protect-dos
          #- -v=3 # Enables extensive logging. Useful for troubleshooting.
           - -report-ingress-status
+          - -nginx-status-allow-cidrs=10.0.0.0/8
+          - -nginx-status
          #- -external-service=nginx-ingress
           - -enable-prometheus-metrics
          #- -global-configuration=$(POD_NAMESPACE)/nginx-configuration

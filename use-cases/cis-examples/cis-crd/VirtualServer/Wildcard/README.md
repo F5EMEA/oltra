@@ -5,6 +5,8 @@ This section demonstrates the options to configure virtual server using Wildcard
  - [HTTP Virtual Server with wildcard Host parameter](#http-virtual-server-with-wildcard-host-parameter)
  - [HTTPS Virtual Server with wildcard Host parameter](#https-virtual-server-with-wildcard-host-parameter)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
 ## HTTP Virtual Server with wildcard Host parameter
 
 This section demonstrates the deployment of a **HTTP** Virtual Server with wildcard Host parameter.
@@ -27,21 +29,27 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
+
 Change the working directory to `Wildcard`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Wildcard
 ```
 
-Create the VS CRD resource. 
+Create the VirtualServer resource. 
 ```
 kubectl apply -f wildcardhost-vs.yml
 ```
 
 CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.72` and attach a policy that forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs wildcard-vs
+kubectl get f5-vs wildcard-vs
 ```
 
 Try accessing the service with curl as per the examples below. 
@@ -60,11 +68,10 @@ curl http://test2.f5demo.local/ --resolve test2.f5demo.local:80:10.1.10.72
 ...
 ...
 curl http://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.72
-
 ```
 
 Verify that you traffic was forwarded to the `echo-svc` service on both tests. The output should be similar to:
-```cmd
+```json
 {
     "Server Name": "test1.f5demo.local",
     "Server Address": "10.244.140.78",
@@ -80,12 +87,16 @@ Verify that you traffic was forwarded to the `echo-svc` service on both tests. T
 }
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f wildcardhost-vs.yml
+```
+
 ## HTTPS Virtual Server with wildcard Host parameter
 
 This section demonstrates the deployment of a **HTTPS** Virtual Server with wildcard Host parameter.
 The virtual server should send traffic to the backend service if the Host Header matches the wildcard value configured on the Host parameter.
 For this example we need to use 2 custom resources; TLSProfile and VirtualServer
-
 
 Eg: wildcardhost-tls.yml / wildcardhost-tls-vs.yml
 
@@ -125,17 +136,21 @@ spec:
   snat: auto
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+```
 
-Create the VS CRD resource. 
+Create the VirtualServer resource. 
 ```
 kubectl apply -f wildcardhost-tls.yml
 kubectl apply -f wildcardhost-tls-vs.yml
 ```
 CIS will create an HTTPS Virtual Server on BIG-IP with VIP `10.1.10.73` and attach a policy that forwards traffic to service `echo-svc` if the Host Header matches `*.f5demo.local`.   
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs wildcard-tls-vs
+kubectl get f5-vs wildcard-tls-vs
 ```
 
 Try accessing the service with curl as per the examples below. 
@@ -154,7 +169,12 @@ curl -k https://test2.f5test.local/ --resolve test2.f5test.local:443:10.1.10.73
 ...
 ...
 curl -k https://test10.f5test.local/ --resolve test10.f5test.local:443:10.1.10.73
-
 ```
 
 Verify that you traffic was forwarded to the `echo-svc` service on both tests.
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f wildcardhost-tls.yml
+kubectl delete -f wildcardhost-tls-vs.yml
+```

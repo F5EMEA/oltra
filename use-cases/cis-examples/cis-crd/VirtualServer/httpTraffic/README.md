@@ -51,6 +51,8 @@ spec:
 
 ```
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
 Change the working directory to `httpTaffic`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/httpTaffic
@@ -62,9 +64,9 @@ kubectl apply -f redirect-tls.yml
 kubectl apply -f redirect-vs.yml
 ```
 
-Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
+Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 ```
 
 Access the service on Port 80 using the following example. 
@@ -73,8 +75,7 @@ curl -v http://coffee.f5demo.local/mocha --resolve coffee.f5demo.local:80:10.1.1
 ```
 
 Verify that BIGIP redirected the traffic to the HTTPS Server (port 443). The output should be similar to:
-
-```cmd
+```
 * Added coffee.f5demo.local:80:10.1.10.60 to DNS cache
 * Hostname coffee.f5demo.local was found in DNS cache
 *   Trying 10.1.10.60...
@@ -95,3 +96,10 @@ Verify that BIGIP redirected the traffic to the HTTPS Server (port 443). The out
 < 
 * Connection #0 to host coffee.f5demo.local left intact
 ```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f redirect-tls.yml
+kubectl delete -f redirect-vs.yml
+```
+

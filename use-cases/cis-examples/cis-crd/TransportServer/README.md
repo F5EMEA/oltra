@@ -4,6 +4,7 @@ In this section we provide examples for the most common use-cases of TransportSe
 - [TCP TransportServer with IPAM](#tcp-transport-server-with-ipam)
 - [UDP TransportServer](#udp-transport-server)
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 ## TCP Transport Server
 This section demonstrates the deployment of a TCP TransportServer CRD.
@@ -30,6 +31,11 @@ spec:
       interval: 3
       timeout: 10
 ```
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-app.yml
+```
+
 Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/TransportServer
@@ -39,28 +45,30 @@ Create the TS CRD resource.
 ```
 kubectl apply -f tcp-transport-server.yml
 ```
-
-CIS will create a L4 Virtual Server on BIG-IP with VIP "10.1.10.74" and the service `myapp-svc` as the pool
+>Note: CIS will create a L4 Virtual Server on BIG-IP with VIP "10.1.10.74" and the service `myapp-svc` as the pool. 
 
 Confirm that the TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts tcp-ts
+kubectl get f5-ts tcp-ts
 ```
 
 Access the service as per the examples below. 
-
 ```
 curl http://10.1.10.74
 ```
 
 The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.140.103:8080
 Server name: myapp-6cc75dfc85-qhk5d
 Date: 14/Jul/2022:06:17:19 +0000
 URI: /
 Request ID: 18c2b70bcca18c590a0125db04be5661
+```
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f tcp-transport-server.yml
 ```
 
 ## TCP Transport Server with IPAM
@@ -90,32 +98,38 @@ spec:
       timeout: 10
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-app.yml
+```
+
 Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/TransportServer
 ```
 
-Create the TS CRD resources. 
+Create the TransportServer resource. 
 ```
 kubectl apply -f tcp-transport-server-ipamLabel.yml
 ```
 
-Confirm that TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+Confirm that TransportServer resource is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts tcp-ipam-ts
+kubectl get f5-ts tcp-ipam-ts
 ```
+
 Save the IP adresses that was assigned by the IPAM for this TS
 ```
-IP=$(kubectl get ts tcp-ipam-ts --template '{{.status.vsAddress}}')
+IP=$(kubectl get f5-ts tcp-ipam-ts --output=jsonpath='{.status.vsAddress}')
 ```
+
 Try accessing the service as per the example below. 
 ```
 curl http://$IP/
 ```
 
 The output should be similar to:
-
-```cmd
+```
 Server address: 10.244.196.189:8080
 Server name: myapp-6cc75dfc85-msntl
 Date: 14/Jul/2022:06:22:38 +0000
@@ -123,6 +137,10 @@ URI: /
 Request ID: 705dca97504efb7adba9c6fbd4309605
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f tcp-transport-server-ipamLabel.yml
+```
 ## UDP Transport Server
 
 This section demonstrates the deployment of a UDP Transport Server (Deploying coreDNS server)
@@ -148,31 +166,33 @@ spec:
     servicePort: 5353
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/dns.yaml
+```
 
 Change the working directory to `TransportServer`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/TransportServer
 ```
 
-Create the TS CRD resources. 
+Create the TransportServer resource
 ```
 kubectl apply -f udp-transport-server.yml
 ```
 
-Confirm that TS CRD is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
+Confirm that TransportServer resource is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts udp-transport-server
+kubectl get f5-ts udp-transport-server
 ```
 
 Try accessing any DNS service on the internet like `www.example.com` through the Transport Server VIP (`10.1.10.75`)
-
 ```
 dig @10.1.10.75 www.example.com
 ```
 
 The output should be similar to:
-
-```cmd
+```
 ; <<>> DiG 9.11.3-1ubuntu1.13-Ubuntu <<>> @10.1.10.75 www.example.com
 ; (1 server found)
 ;; global options: +cmd
@@ -195,3 +215,8 @@ www.example.com.        14244   IN      A       93.184.216.34
 ```
 
 > Note that the response comes from 10.1.10.75 which is the Transport Server IP
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f udp-transport-server.yml
+```

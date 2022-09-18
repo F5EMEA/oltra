@@ -1,0 +1,16 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: l7-app1
+  namespace: layer7
+  labels:
+    f5cr: "true"
+spec:
+  host: "l7-app1.f5demo.local"
+  policyName: app1-waf-policy
+  ipamLabel: "prod"
+  virtualServerName: "l7-app1"
+  pools:
+  - path: /
+    service: app1-svc
+    servicePort: 8080
