@@ -178,17 +178,10 @@ Deploy 2 new CIS instances. One will manage namespace `cluster1` and the other w
 cp ~/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster1.yml
 cp ~/oltra/setup/cis/cis/cis-ctlr-crd.yml cis-cluster2.yml
 
-sed -i  '42i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-username=$(BIGIP_USERNAME)",' cis-cluster1.yml
-sed -i  '43i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-password=$(BIGIP_PASSWORD)",' cis-cluster1.yml
-sed -i  '44i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-url=10.1.1.5",' cis-cluster1.yml
 sed -i  '50i \ \ \ \ \ \ \ \ \ \ \  "--namespace=cluster1",' cis-cluster1.yml
 sed -i 's/f5-cis-crd/f5-cis-crd1/' cis-cluster1.yml
 sed -i 's/bigip-partition=cis-crd/bigip-partition=cis-crd1/' cis-cluster1.yml
 
-sed -i  '44i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-url=10.1.1.5",' cis-cluster1.yml
-sed -i  '42i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-username=$(BIGIP_USERNAME)",' cis-cluster2.yml
-sed -i  '43i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-password=$(BIGIP_PASSWORD)",' cis-cluster2.yml
-sed -i  '44i \ \ \ \ \ \ \ \ \ \ \  "--gtm-bigip-url=10.1.1.5",' cis-cluster2.yml
 sed -i  '50i \ \ \ \ \ \ \ \ \ \ \  "--namespace=cluster2",' cis-cluster2.yml
 sed -i 's/f5-cis-crd/f5-cis-crd2/' cis-cluster2.yml
 sed -i 's/bigip-partition=cis-crd/bigip-partition=cis-crd2/' cis-cluster2.yml

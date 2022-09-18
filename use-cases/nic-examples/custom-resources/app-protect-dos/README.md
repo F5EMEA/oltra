@@ -51,7 +51,7 @@ To access the application, curl the Webapp service. We'll use the --resolve opti
 
 Send a request to the application:
 ```
-curl --resolve webapp.example.com:80:10.1.10.40 http://webapp.example.com:80/
+curl --resolve webapp.example.com:80:10.1.10.10 http://webapp.example.com:80/
 ```
 
 The expected output is:

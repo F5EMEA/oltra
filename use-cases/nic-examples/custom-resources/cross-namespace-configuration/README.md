@@ -86,7 +86,7 @@ Access the application using curl. We'll use curl's `--insecure` option to turn 
     
 To get coffee:
 ```
-curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/coffee --insecure
+curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/coffee --insecure
 
 ##########  Expected Output  ############
 Server address: 10.244.140.109:8080
@@ -99,7 +99,7 @@ Request ID: b044a101d3cfdf3be412ec7247ed006c
 
 If your prefer tea:
 ```
-curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/tea --insecure
+curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/tea --insecure
 
 ##########  Expected Output  ############
 Server address: 10.244.196.189:8080

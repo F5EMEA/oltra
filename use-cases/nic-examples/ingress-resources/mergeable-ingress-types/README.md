@@ -106,7 +106,7 @@ certificate and the --resolve option to set the Host header of a request with ``
 
 To get coffee:
 ```
-curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/coffee --insecure
+curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/coffee --insecure
 
 
 ############  Expected Output ############# 
@@ -119,7 +119,7 @@ Request ID: 667c72a5a04ae2170abd2ce039888524
 
 If you prefer tea:
 ```
-$ curl --resolve cafe.example.com:443:10.1.10.40 https://cafe.example.com:443/tea --insecure
+$ curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/tea --insecure
 
 
 ############  Expected Output ############# 

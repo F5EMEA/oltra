@@ -49,7 +49,7 @@ kubectl apply -f virtual-server.yaml
 
 If you attempt to access the application without providing a valid Client certificate and key, NGINX will reject your requests for that VirtualServer:
 ```
-curl --insecure --resolve webapp.example.com:443:10.1.10.40 https://webapp.example.com:443/
+curl --insecure --resolve webapp.example.com:443:10.1.10.10 https://webapp.example.com:443/
 ```
 
 The expected output is:
@@ -66,7 +66,7 @@ The expected output is:
 
 If you provide a valid Client certificate and key, your request will succeed:
 ```
-curl --insecure --resolve webapp.example.com:443:10.1.10.40 https://webapp.example.com:443/ --cert ./client-cert.pem --key ./client-key.pem
+curl --insecure --resolve webapp.example.com:443:10.1.10.10 https://webapp.example.com:443/ --cert ./client-cert.pem --key ./client-key.pem
 ```
 
 The expected output is:

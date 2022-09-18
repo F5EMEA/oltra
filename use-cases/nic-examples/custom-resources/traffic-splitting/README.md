@@ -42,7 +42,7 @@ Events:
 
 Access the application using curl. We'll use curl's `--resolve` option to set the IP address and HTTP port of the Ingress Controller to the domain name of the cafe application. Try to get coffee multiple times to see how NGINX sends requests to different versions of the coffee service:
 ```cmd
-for i in {1..20} ; do curl -s --resolve cafe.example.com:80:10.1.10.40 http://cafe.example.com/coffee | grep name; done
+for i in {1..20} ; do curl -s --resolve cafe.example.com:80:10.1.10.10 http://cafe.example.com/coffee | grep name; done
 ```
 
 90% of responses will come from `coffee-v1-svc` and 10 % of responses will come from `coffee-v2-svc`:

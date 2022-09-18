@@ -52,7 +52,7 @@ certificate and the --resolve option to set the Host header of a request with `w
 
 Send a request to the application::
 ```
-curl --resolve webapp.example.com:$IC_HTTPS_PORT:$IC_IP https://webapp.example.com:$IC_HTTPS_PORT/ --insecure
+curl --resolve webapp.example.com:443:10.1.10.10 https://webapp.example.com:443/ --insecure
 
 The expected output is:
 ```
