@@ -69,6 +69,7 @@ kubectl apply -f access-control-policy-allow.yaml
 Let's access the application again:
 ```
 curl --resolve webapp.example.com:80:10.1.10.10 http://webapp.example.com:80
+```
 
 The expected output is:
 ```
