@@ -8,7 +8,7 @@ spec:
     kind: VirtualServer
     plural: virtualservers
     shortNames:
-      - vs
+      - f5-vs
     singular: virtualserver
   scope: Namespaced
   versions:
@@ -288,7 +288,7 @@ spec:
     kind: TransportServer
     plural: transportservers
     shortNames:
-      - ts
+      - f5-ts
     singular: transportserver
   scope: Namespaced
   versions:

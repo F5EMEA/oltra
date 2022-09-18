@@ -6,7 +6,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.40"
+  virtualServerAddress: "10.1.10.10"
   virtualServerPort: 80
   virtualServerName: "nginx-plus"
   mode: standard
@@ -28,7 +28,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.40"
+  virtualServerAddress: "10.1.10.10"
   virtualServerPort: 443
   virtualServerName: "nginx-plus-ssl"
   mode: standard
@@ -49,7 +49,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  virtualServerAddress: "10.1.10.40"
+  virtualServerAddress: "10.1.10.10"
   virtualServerPort: 8080
   virtualServerName: "nginx-plus-dashboard"
   mode: standard

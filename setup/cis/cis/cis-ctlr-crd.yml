@@ -39,6 +39,9 @@ spec:
             # See the k8s-bigip-ctlr documentation for information about
             # all config options
             # https://clouddocs.f5.com/containers/latest/
+            "--gtm-bigip-username=$(BIGIP_USERNAME)",
+            "--gtm-bigip-password=$(BIGIP_PASSWORD)",
+            "--gtm-bigip-url=10.1.1.5",
             "--bigip-username=$(BIGIP_USERNAME)",
             "--bigip-password=$(BIGIP_PASSWORD)",
             "--bigip-url=10.1.1.5",
