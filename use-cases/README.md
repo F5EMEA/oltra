@@ -12,7 +12,6 @@ The demos build for OLTRA can be found below:
 
 - [**Monitoring BIGIP services with Prometheus, Grafana and Elastic**](bigip-monitoring)
 - [**Monitoring NGINX+ Ingress services with Prometheus, Grafana and Elastic**](nginx-monitoring)
-- **Securing K8s services with BIGIP and CIS** <br>
 
 
 # Examples
