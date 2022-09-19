@@ -1,0 +1,33 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: nap-cafe
+  namespace: nap-vs
+spec:
+  host: nap-cafe.f5demo.local
+  policies:
+  - name: cocoa-policy
+  upstreams:
+  - name: cocoa
+    service: cocoa-svc
+    port: 80
+  - name: coffee
+    service: coffee-svc
+    port: 80
+  - name: tea
+    service: tea-svc
+    port: 80    
+  routes:
+  - path: /
+    action:
+      pass: webapp
+  - path: /tea
+    policies:
+    - tea-policy
+    action:
+      pass: webapp
+  - path: /coffee
+    policies:
+    - coffee-policy
+    action:
+      pass: webapp
