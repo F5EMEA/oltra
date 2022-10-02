@@ -1,14 +1,46 @@
 # NAP Demo
 
-
 In this example we deploy the NGINX Plus Ingress Controller with [NGINX App Protect](https://www.nginx.com/products/nginx-app-protect/) and we will create different types of violations and review their logs. 
 The violations are:
+
+Working with Signatures
+- Enabling Signature-Sets
+- Creating your own Signature-Sets
+- Modifying the policy
+
+HTTP Compliance
+
+
+Evasion Techniques
+
+
+Working File Types
+
+
+Working with Cookies
+
+
+Working with Headers
+
+
+Working with parameters
+
+
+
+
+
+
+
+- Enabling Signature 
 - Different types of Signature-based
 - HTTP Compliance
 - Evasion technique
 - File type extension
 - Cookie name 
 - Cookie va
+
+### Pre-requisites
+Deploy an application and apply the Base WAF policy to protect it. 
 
 
 ## Step 1 - Create multiple Ingress and VS CRDs

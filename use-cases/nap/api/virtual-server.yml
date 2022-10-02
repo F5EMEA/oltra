@@ -1,0 +1,17 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: webapp
+  namespace: nap-vs
+spec:
+  host: webapp.f5demo.local
+  policies:
+  - name: waf-policy
+  upstreams:
+  - name: webapp
+    service: webapp-svc
+    port: 80
+  routes:
+  - path: /
+    action:
+      pass: webapp

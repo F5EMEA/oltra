@@ -50,7 +50,7 @@ curl --resolve webapp.f5demo.local:80:10.1.10.10 http://webapp.f5demo.local/
 Server address: 10.244.140.109:8080
 Server name: webapp-7586895968-r26zn
 Date: 12/Sep/2022:14:12:25 +0000
-URI: /library
+URI: /
 Request ID: 0495d6a17797ea9776120d5f4af10c1a
 ```
 
