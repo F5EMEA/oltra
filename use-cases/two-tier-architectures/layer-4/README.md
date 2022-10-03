@@ -210,13 +210,13 @@ kubectl apply -f udp-transport-server.yml
 
 Confirm that TransportServer is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts udp-transport-server -n layer4
+kubectl get f5-ts udp-transport-server -n layer4
 ```
 
 Try accessing any DNS service on the internet like `www.example.com` through the Transport Server VIP (`10.1.10.125`)
 
 ```
-dig @10.1.10.125 www.example.com
+dig @10.1.10.124 www.example.com
 ```
 
 The output should be similar to:

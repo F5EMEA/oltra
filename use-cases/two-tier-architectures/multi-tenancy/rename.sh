@@ -36,8 +36,8 @@ sed -i 's/name: nginx-plus/name: nginx-tenant2/' nginx_t2/nginx-plus/nginx-plus.
 sed -i 's/app: nginx-plus/app: nginx-tenant1/' nginx_t1/nginx-plus/nginx-plus.yaml
 sed -i 's/app: nginx-plus/app: nginx-tenant2/' nginx_t2/nginx-plus/nginx-plus.yaml
 sed -i 's/app: nginx-plus/app: nginx-tenant1/' nginx_t1/nginx-plus/nginx-plus.yaml
-sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-tenant1/' nginx_t1/nginx-plus/nginx-plus.yaml
-sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-tenant2/' nginx_t2/nginx-plus/nginx-plus.yaml
+sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-tenant1-plus/' nginx_t1/nginx-plus/nginx-plus.yaml
+sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-tenant2-plus/' nginx_t2/nginx-plus/nginx-plus.yaml
 
 sed -i '4s/name: nginx/name: nginx-tenant1/' nginx_t1/nginx-plus/ingress-class-plus.yaml
 sed -i '4s/name: nginx/name: nginx-tenant2/' nginx_t2/nginx-plus/ingress-class-plus.yaml

@@ -131,7 +131,6 @@ cd ~/oltra/use-cases/two-tier-architectures/multi-cluster
 
 Copy the NGINX plus deployment from the setup folder
 ```
-cd ~/oltra/use-cases/two-tier-architectures/multi-cluster
 mkdir nginx_t1
 mkdir nginx_t2
 cp -R ~/oltra/setup/nginx-ic/* nginx_t1
@@ -213,8 +212,9 @@ for i in {1..50} ; do dig @10.1.10.200 gslb.f5demo.local +short; done
 Delete the namespaces that were created during this demo to remove all configuration
 ```
 kubectl delete -f transport.yml
-kubectl delete -f edns.yml
 sleep 15
+kubectl delete -f edns.yml
+sleep 45
 kubectl delete -f cis-cluster1.yml
 kubectl delete -f cis-cluster2.yml
 kubectl delete ns cluster1
