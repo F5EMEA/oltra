@@ -27,6 +27,6 @@ One way a platform team can provide custom functionality is to use a custom temp
 
 # Examples
 
-* [OpenID Connect Custom Authentication Flow](Custom-OIDC-Flow/README.md)
+* [OpenID Connect Custom Authentication Flow](custom-oidc-flow/README.md)
 
 
