@@ -87,9 +87,9 @@ The Ingress examples below make use of snippets, and so require snippets to be e
 
 ## Available Examples
 
-The Canary use-case is essentially advanced routing, so take a look at the following example walk-throughs in the `examples` folder:
+The Canary use-case is essentially advanced routing, so take a look at the following example walk-throughs in the `nic-examples` folder:
 
-* NGINX xref:../../examples/nginx-crd/advanced-routing/README.md[Advanced Routing] CRDs
+* [Advanced Routing CRDs](../../use-cases/nic-examples/custom-resources/advanced-routing/README.md)
 
 ## Canary Example (CRD)
 
