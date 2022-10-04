@@ -2,7 +2,7 @@
 
 A guide to managing application routing with NGINX Ingress Controller
 
-The latest https://www.f5.com/state-of-application-strategy-repor[F5 State of Application Strategy Report (2022)] highlighted that 90% of organizations are executing on a Digital Transformation strategy. Those efforts proceed through the stages of Automation, Digital Expansion, and AI-assisted Business.
+The latest [F5 State of Application Strategy Report (2022)](https://www.f5.com/state-of-application-strategy-report) highlighted that 90% of organizations are executing on a Digital Transformation strategy. Those efforts proceed through the stages of Automation, Digital Expansion, and AI-assisted Business.
 
 Kubernetes and micro-services architectures in general play a key role in achieving success in the Digital Expansion phase of that transformation. 
 
