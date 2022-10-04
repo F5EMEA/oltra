@@ -1,0 +1,23 @@
+---
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: nginx-frontend
+spec:
+  host: www.whatcheese.nginx.demo
+  upstreams:
+  - name: nginx-frontend
+    service: nginx-frontend
+    port: 80
+  routes:
+  - path: /
+    action:
+      proxy:
+        upstream: nginx-frontend
+  - path: /protected
+    policies:
+    - name: okta-oidc
+      namespace: default
+    action:
+      proxy:
+        upstream: nginx-frontend

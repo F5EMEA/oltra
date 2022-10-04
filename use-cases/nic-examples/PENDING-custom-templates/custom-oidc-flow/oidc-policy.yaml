@@ -1,0 +1,12 @@
+---
+apiVersion: k8s.nginx.org/v1
+kind: Policy
+metadata:
+  name: okta-oidc
+spec:
+  oidc:
+    clientID: foo
+    clientSecret: okta-client-secret
+    authEndpoint: https://dev-nnnnn.okta.com/oauth2/v1/authorize
+    tokenEndpoint: https://dev-nnnnn.okta.com/oauth2/v1/token
+    jwksURI: https://dev-nnnnn.okta.com/oauth2/v1/keys
