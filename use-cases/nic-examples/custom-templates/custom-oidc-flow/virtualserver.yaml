@@ -2,7 +2,7 @@
 apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
-  name: nginx-frontend
+  name: nginx-oidc-demo
   namespace: default
 spec:
   ingressClassName: nginx-plus-oidc
@@ -11,15 +11,15 @@ spec:
   - name: nginx-oidc-demo
     service: nginx-oidc-demo
     port: 80
+  policies:
+  - name: keycloak-oidc
+    namespace: default
   routes:
   - path: /
     action:
       proxy:
         upstream: nginx-oidc-demo
   - path: /protected
-    policies:
-    - name: keycloak-oidc
-      namespace: default
     action:
       proxy:
         upstream: nginx-oidc-demo

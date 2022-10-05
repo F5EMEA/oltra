@@ -14,11 +14,19 @@ Create the namespace for the keycloak services
 kubectl create namespace keycloak
 ```
 
+> ### Step 1a update the configmap first (optional)
+>
+> If you have come here from an OIDC example and you have the `EXTERNAL-IP` of your NGINX ready, then you can update the `kc-configmap.yaml` here before you deploy it. 
+> 
+> This saves you from needing to update it in the browser later.
+>
+> To update, simply execute: `sed -i -re 's/10.1.10.171/YOU-EXTERNAL-IP' kc-configmap.yaml`
+
+
 ## Step 2. Deploy Keycloak
 
-The first step is to import our `realm` configuration via a `ConfigMap`. The configmap will be mounted into the keycloak pod
-as a volume under `/opt/keycloak/data/import` and because we pass in the `--import-realm` argument to keycloak it will import
-the `OltraKeyCloak` realm for us.
+The second step is to import our `realm` configuration via a `ConfigMap`. The configmap will be mounted into the keycloak pod
+as a volume at start up and keycloak will import our `OltraKeyCloak` realm from it.
 
 ```
 kubectl apply -f kc-configmap.yaml
@@ -40,17 +48,19 @@ kubectl -n keycloak get all
 
 If all is well, then you should be able to connect to the `EXTERNAL-IP` address assigned to the service by the BigIP. Eg:
 
->NAME                            READY   STATUS    RESTARTS   AGE
->pod/keycloak-78c5cd894b-7cpnv   1/1     Running   0          14m
->
->NAME               TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
->service/keycloak   LoadBalancer   10.101.45.193   10.1.10.170   8080:30086/TCP   5h37m
->
->NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
->deployment.apps/keycloak   1/1     1            1           5h37m
->
->NAME                                  DESIRED   CURRENT   READY   AGE
->replicaset.apps/keycloak-78c5cd894b   1         1         1       30m
+```bash
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/keycloak-78c5cd894b-7cpnv   1/1     Running   0          14m
+
+NAME               TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/keycloak   LoadBalancer   10.101.45.193   10.1.10.170   8080:30086/TCP   5h37m
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/keycloak   1/1     1            1           5h37m
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/keycloak-78c5cd894b   1         1         1       30m
+```
 
 Open the Keycloak admin interface in your browser http://10.1.10.170:8080/admin/master/console
 

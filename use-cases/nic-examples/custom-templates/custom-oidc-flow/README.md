@@ -4,7 +4,13 @@ This use-case comes from a prospect providing a SaaS based scheduling and people
 
 - [OpenID Connect Custom Authorization Flow](#openid-connect-custom-authorization-flow)
 - [The problem](#the-problem)
-- [](#)
+- [The Solution](#the-solution)
+- [Try it for yourself](#try-it-for-yourself)
+  - [Step 1. Deploy an Ingress Controller](#step-1-deploy-an-ingress-controller)
+  - [Step 2. Confirm your Ingress is up and running](#step-2-confirm-your-ingress-is-up-and-running)
+  - [Step 3. Deploy keycloak](#step-3-deploy-keycloak)
+  - [Step 4. Deploy our Demo application](#step-4-deploy-our-demo-application)
+  - [Step 5. Test](#step-5-test)
 
 # The problem
 
@@ -51,7 +57,9 @@ Now the `jwt_auth` directive uses the `$do_oidc_auth` variable to determine whet
 
 With these few changes we were able to completely change the way the OIDC flow was implemented in the Ingress Controller.
 
-## Try it for yourself
+# Try it for yourself
+
+## Step 1. Deploy an Ingress Controller
 
 Copy the IC setup files to the local folder and patch them
 
@@ -60,7 +68,9 @@ cp -rp ~/oltra/setup/nginx-ic nginx-ic
 patch -p0 < oidc.patch
 ``` 
 
-This will patch the NGINX IC files to use the `nginx-oidc` namespace, and add our custom template to the NGINX ConfigMap. See `nginx-ic/resources/nginx-config.yaml`.
+This will patch the NGINX IC files to use the `nginx-oidc` namespace, and add our custom template to the NGINX ConfigMap. 
+See the created `nginx-ic/resources/nginx-config.yaml` for the full `virtualserver` template.
+
 Next we create the namespace and resources needed for the Ingress Controller
 
 ```
@@ -72,6 +82,94 @@ Finally add your `regcred` secret for access to the NGINX Private registry, and 
 ```
 kubectl create secret docker-registry regcred --docker-server=private-registry.nginx.com --docker-username="<JWT>" --docker-password=none -n nginx-oidc
 kubectl apply -f nginx-ic/nginx-plus
+kubectl apply -f nginx-plus-service.yaml
+```
+## Step 2. Confirm your Ingress is up and running
+
+Check the Ingress deployment with:
+
+```
+kubectl -n nginx-oidc get all
+```
+Confirm that the pods are running, and the service has returned an `EXTERNAL-IP` address. Make a note of the external IP, because you'll
+need to provide it to keycloak in the next step.
+
+```bash
+NAME               TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/nginx      LoadBalancer   10.101.45.193   10.1.10.171   8080:30086/TCP   5h37m
 ```
 
+## Step 3. Deploy keycloak
 
+Head on over to [The Keycloak Setup instructions](../../../../setup/keycloak/README.md) and deploy a keycloak service in the cluster.
+
+> ### NOTE 
+> Remember to update the IP address in the redirects to match your Ingresses `EXTERNAL-IP`
+
+## Step 4. Deploy our Demo application
+
+We now have an Ingress controller with OIDC capabilities, and an idp ready to provide authentication.
+The next step is to deploy our demo application.
+
+The demo appliction is a simple NGINX deployment which is configured with two locations:
+
+```nginx
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+
+        location /protected {
+            add_header x_username $http_username always;
+            add_header x_protected "true" always;
+            root   /usr/share/nginx/html;
+            if ( $http_username = "" ) {
+                return 401;
+            }
+            default_type text/plain;
+            return 200 "Welcome to /protected $http_username\nToken: $http_jwtToken\n";
+```
+
+The root(/) location returns the standard NGINX Welcome page, and the /protected location returns a text
+page which includes a couple of headers injected by the Ingress controller. The /protected location is
+configured to return a `HTTP 401` if the Ingress controller does not set the `username` header.
+
+The `VirtualServer` resource is configured to required OIDC authentication for all locations, and if it
+were using the default template all access would require the client to have a JWT, but due to our new
+logic you should be able to access all content on the application until the app returns a `401`.
+
+Deploy the application
+```bash
+kubectl apply -f nginx-oidc-demo-app.yaml
+```
+
+You may need to check the `oidc-poilcy.yaml` at this point and update the urls to use the `EXTERNAL-IP` address
+assigned to your KeyCloak service.
+
+```bash
+kubectl -n keycloak get service/keycloak
+```
+
+Deploy the OIDC Secret and Policy
+```bash
+kubectl apply -f oidc-secret.yaml
+kubectl apply -f oidc-policy.yaml
+```
+
+Finally deploy the VirtualServer to configure the Ingress. Again you might need to update the `Host` parameter
+to match the `EXTERNAL-IP` given to your Ingress Controller.
+
+```bash
+kubectl apply -f virtualserver.yaml
+```
+
+## Step 5. Test
+
+You should now be able to hit your ingress controller on it's External IP and see a "Welcome to NGNIX" page.
+this page is accessable without authentication, because the upstream server returned the content wihout requiring
+authentication.
+
+If you attempt to acess the `/protected` resource, you should go through the OIDC flow because the upstream returns
+a `HTTP 401` and we initiate the OIDC authentication with Keycloak.
+
+Enjoy!
