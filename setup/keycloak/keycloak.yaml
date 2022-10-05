@@ -39,10 +39,14 @@ spec:
       labels:
         app: keycloak
     spec:
+      volumes:
+      - name: kc-import
+        configMap:
+          name: kc-import
       containers:
       - name: keycloak
         image: quay.io/keycloak/keycloak:latest
-        args: ["start-dev"]
+        args: ["start-dev", "--import-realm"]
         env:
         - name: KEYCLOAK_ADMIN
           value: "admin"
@@ -57,3 +61,6 @@ spec:
           httpGet:
             path: /realms/master
             port: 8080
+        volumeMounts:
+        - name: kc-import
+          mountPath: /opt/keycloak/data/import/
