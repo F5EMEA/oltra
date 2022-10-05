@@ -1,6 +1,6 @@
 diff -urN ../../../../setup/nginx-ic/nginx-plus/ingress-class-plus.yaml nginx-ic/nginx-plus/ingress-class-plus.yaml
 --- ../../../../setup/nginx-ic/nginx-plus/ingress-class-plus.yaml	2022-10-04 14:15:09.299339031 +0000
-+++ nginx-ic/nginx-plus/ingress-class-plus.yaml	2022-10-05 11:03:26.966849508 +0000
++++ nginx-ic/nginx-plus/ingress-class-plus.yaml	2022-10-05 13:26:22.635349918 +0000
 @@ -1,11 +1,11 @@
  apiVersion: networking.k8s.io/v1
  kind: IngressClass
@@ -18,7 +18,7 @@ diff -urN ../../../../setup/nginx-ic/nginx-plus/ingress-class-plus.yaml nginx-ic
 +    name: nginx-plus-oidc
 diff -urN ../../../../setup/nginx-ic/nginx-plus/nginx-plus.yaml nginx-ic/nginx-plus/nginx-plus.yaml
 --- ../../../../setup/nginx-ic/nginx-plus/nginx-plus.yaml	2022-10-04 14:15:09.299339031 +0000
-+++ nginx-ic/nginx-plus/nginx-plus.yaml	2022-10-05 11:03:26.966849508 +0000
++++ nginx-ic/nginx-plus/nginx-plus.yaml	2022-10-05 13:26:22.635349918 +0000
 @@ -1,17 +1,17 @@
  apiVersion: apps/v1
  kind: Deployment
@@ -93,7 +93,7 @@ diff -urN ../../../../setup/nginx-ic/nginx-plus/svc-plus.yaml nginx-ic/nginx-plu
 -    app: nginx-plus
 diff -urN ../../../../setup/nginx-ic/rbac/ap-rbac.yaml nginx-ic/rbac/ap-rbac.yaml
 --- ../../../../setup/nginx-ic/rbac/ap-rbac.yaml	2022-10-04 14:15:09.303339031 +0000
-+++ nginx-ic/rbac/ap-rbac.yaml	2022-10-05 11:03:26.970849469 +0000
++++ nginx-ic/rbac/ap-rbac.yaml	2022-10-05 13:26:22.635349918 +0000
 @@ -17,11 +17,11 @@
  kind: ClusterRoleBinding
  apiVersion: rbac.authorization.k8s.io/v1
@@ -110,7 +110,7 @@ diff -urN ../../../../setup/nginx-ic/rbac/ap-rbac.yaml nginx-ic/rbac/ap-rbac.yam
    name: nginx-ingress-app-protect
 diff -urN ../../../../setup/nginx-ic/rbac/apdos-rbac.yaml nginx-ic/rbac/apdos-rbac.yaml
 --- ../../../../setup/nginx-ic/rbac/apdos-rbac.yaml	2022-10-04 14:15:09.303339031 +0000
-+++ nginx-ic/rbac/apdos-rbac.yaml	2022-10-05 11:03:26.970849469 +0000
++++ nginx-ic/rbac/apdos-rbac.yaml	2022-10-05 13:26:22.635349918 +0000
 @@ -17,11 +17,11 @@
  kind: ClusterRoleBinding
  apiVersion: rbac.authorization.k8s.io/v1
@@ -127,7 +127,7 @@ diff -urN ../../../../setup/nginx-ic/rbac/apdos-rbac.yaml nginx-ic/rbac/apdos-rb
    name: nginx-ingress-app-protect-dos
 diff -urN ../../../../setup/nginx-ic/rbac/ns-and-sa.yaml nginx-ic/rbac/ns-and-sa.yaml
 --- ../../../../setup/nginx-ic/rbac/ns-and-sa.yaml	2022-10-04 14:15:09.303339031 +0000
-+++ nginx-ic/rbac/ns-and-sa.yaml	2022-10-05 11:03:26.970849469 +0000
++++ nginx-ic/rbac/ns-and-sa.yaml	2022-10-05 13:26:22.635349918 +0000
 @@ -1,10 +1,10 @@
  apiVersion: v1
  kind: Namespace
@@ -144,7 +144,7 @@ diff -urN ../../../../setup/nginx-ic/rbac/ns-and-sa.yaml nginx-ic/rbac/ns-and-sa
 +  namespace: nginx-oidc
 diff -urN ../../../../setup/nginx-ic/rbac/rbac.yaml nginx-ic/rbac/rbac.yaml
 --- ../../../../setup/nginx-ic/rbac/rbac.yaml	2022-10-04 14:15:09.303339031 +0000
-+++ nginx-ic/rbac/rbac.yaml	2022-10-05 11:14:40.033457798 +0000
++++ nginx-ic/rbac/rbac.yaml	2022-10-05 13:26:22.635349918 +0000
 @@ -127,11 +127,11 @@
  kind: ClusterRoleBinding
  apiVersion: rbac.authorization.k8s.io/v1
@@ -161,7 +161,7 @@ diff -urN ../../../../setup/nginx-ic/rbac/rbac.yaml nginx-ic/rbac/rbac.yaml
    name: nginx-ingress
 diff -urN ../../../../setup/nginx-ic/resources/default-server-secret.yaml nginx-ic/resources/default-server-secret.yaml
 --- ../../../../setup/nginx-ic/resources/default-server-secret.yaml	2022-10-04 14:15:09.303339031 +0000
-+++ nginx-ic/resources/default-server-secret.yaml	2022-10-05 11:03:26.970849469 +0000
++++ nginx-ic/resources/default-server-secret.yaml	2022-10-05 13:26:22.635349918 +0000
 @@ -2,7 +2,7 @@
  kind: Secret
  metadata:
@@ -173,7 +173,7 @@ diff -urN ../../../../setup/nginx-ic/resources/default-server-secret.yaml nginx-
    tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN2akNDQWFZQ0NRREFPRjl0THNhWFhEQU5CZ2txaGtpRzl3MEJBUXNGQURBaE1SOHdIUVlEVlFRRERCWk8KUjBsT1dFbHVaM0psYzNORGIyNTBjbTlzYkdWeU1CNFhEVEU0TURreE1qRTRNRE16TlZvWERUSXpNRGt4TVRFNApNRE16TlZvd0lURWZNQjBHQTFVRUF3d1dUa2RKVGxoSmJtZHlaWE56UTI5dWRISnZiR3hsY2pDQ0FTSXdEUVlKCktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUwvN2hIUEtFWGRMdjNyaUM3QlBrMTNpWkt5eTlyQ08KR2xZUXYyK2EzUDF0azIrS3YwVGF5aGRCbDRrcnNUcTZzZm8vWUk1Y2Vhbkw4WGM3U1pyQkVRYm9EN2REbWs1Qgo4eDZLS2xHWU5IWlg0Rm5UZ0VPaStlM2ptTFFxRlBSY1kzVnNPazFFeUZBL0JnWlJVbkNHZUtGeERSN0tQdGhyCmtqSXVuektURXUyaDU4Tlp0S21ScUJHdDEwcTNRYzhZT3ExM2FnbmovUWRjc0ZYYTJnMjB1K1lYZDdoZ3krZksKWk4vVUkxQUQ0YzZyM1lma1ZWUmVHd1lxQVp1WXN2V0RKbW1GNWRwdEMzN011cDBPRUxVTExSakZJOTZXNXIwSAo1TmdPc25NWFJNV1hYVlpiNWRxT3R0SmRtS3FhZ25TZ1JQQVpQN2MwQjFQU2FqYzZjNGZRVXpNQ0F3RUFBVEFOCkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQWpLb2tRdGRPcEsrTzhibWVPc3lySmdJSXJycVFVY2ZOUitjb0hZVUoKdGhrYnhITFMzR3VBTWI5dm15VExPY2xxeC9aYzJPblEwMEJCLzlTb0swcitFZ1U2UlVrRWtWcitTTFA3NTdUWgozZWI4dmdPdEduMS9ienM3bzNBaS9kclkrcUI5Q2k1S3lPc3FHTG1US2xFaUtOYkcyR1ZyTWxjS0ZYQU80YTY3Cklnc1hzYktNbTQwV1U3cG9mcGltU1ZmaXFSdkV5YmN3N0NYODF6cFErUyt1eHRYK2VBZ3V0NHh3VlI5d2IyVXYKelhuZk9HbWhWNThDd1dIQnNKa0kxNXhaa2VUWXdSN0diaEFMSkZUUkk3dkhvQXprTWIzbjAxQjQyWjNrN3RXNQpJUDFmTlpIOFUvOWxiUHNoT21FRFZkdjF5ZytVRVJxbStGSis2R0oxeFJGcGZnPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
 diff -urN ../../../../setup/nginx-ic/resources/nginx-config.yaml nginx-ic/resources/nginx-config.yaml
 --- ../../../../setup/nginx-ic/resources/nginx-config.yaml	2022-10-04 14:15:09.303339031 +0000
-+++ nginx-ic/resources/nginx-config.yaml	2022-10-05 11:03:26.970849469 +0000
++++ nginx-ic/resources/nginx-config.yaml	2022-10-05 13:27:25.635271327 +0000
 @@ -2,10 +2,608 @@
  apiVersion: v1
  metadata:
@@ -281,7 +281,7 @@ diff -urN ../../../../setup/nginx-ic/resources/nginx-config.yaml nginx-ic/resour
 +        set $oidc_scopes "{{ $oidc.Scope }}";
 +        set $oidc_client "{{ $oidc.ClientID }}";
 +        set $oidc_client_secret "{{ $oidc.ClientSecret }}";
-+        set $redir_location "_passport_exchange";
++        set $redir_location "{{ $oidc.RedirectURI }}";
 +
 +        {{ end }}
 +    

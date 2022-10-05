@@ -2,12 +2,12 @@
 apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
-  name: okta-oidc
-  namespace: nginx-oidc
+  name: keycloak-oidc
+  namespace: default
 spec:
   oidc:
-    clientID: foo
-    clientSecret: okta-client-secret
-    authEndpoint: https://dev-nnnnn.okta.com/oauth2/v1/authorize
-    tokenEndpoint: https://dev-nnnnn.okta.com/oauth2/v1/token
-    jwksURI: https://dev-nnnnn.okta.com/oauth2/v1/keys
+    clientID: nginx-oidc
+    clientSecret: keycloak-client-secret
+    authEndpoint: http://10.1.10.170:8080/realms/OltraKeyCloak/protocol/openid-connect/auth
+    tokenEndpoint: http://10.1.10.170:8080/realms/OltraKeyCloak/protocol/openid-connect/token
+    jwksURI: http://10.1.10.170:8080/realms/OltraKeyCloak/protocol/openid-connect/certs

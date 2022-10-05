@@ -3,21 +3,23 @@ apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
   name: nginx-frontend
+  namespace: default
 spec:
-  host: www.whatcheese.nginx.demo
+  ingressClassName: nginx-plus-oidc
+  host: 10.1.10.171
   upstreams:
-  - name: nginx-frontend
-    service: nginx-frontend
+  - name: nginx-oidc-demo
+    service: nginx-oidc-demo
     port: 80
   routes:
   - path: /
     action:
       proxy:
-        upstream: nginx-frontend
+        upstream: nginx-oidc-demo
   - path: /protected
     policies:
-    - name: okta-oidc
+    - name: keycloak-oidc
       namespace: default
     action:
       proxy:
-        upstream: nginx-frontend
+        upstream: nginx-oidc-demo

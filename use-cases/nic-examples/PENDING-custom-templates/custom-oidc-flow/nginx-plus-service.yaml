@@ -5,7 +5,7 @@ metadata:
   name: nginx
   namespace: nginx-oidc
   annotations:
-    cis.f5.com/ipamlabel: prod
+    cis.f5.com/ipamLabel: prod
 spec:
   selector:
     app: nginx-plus-oidc

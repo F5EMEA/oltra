@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-frontend-config
+  name: nginx-oidc-demo-config
+  namespace: default
 data:
   default.conf: |
     server {
@@ -36,21 +37,22 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-frontend
+  name: nginx-oidc-demo
+  namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx-frontend
+      app: nginx-oidc-demo
   template:
     metadata:
       labels:
-        app: nginx-frontend
+        app: nginx-oidc-demo
     spec:
       volumes:
       - name: nginx-config
         configMap:
-          name: nginx-frontend-config
+          name: nginx-oidc-demo-config
       containers:
       - image: nginx
         imagePullPolicy: IfNotPresent
@@ -74,15 +76,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-frontend
+  name: nginx-oidc-demo
+  namespace: default
 spec:
-  #externalTrafficPolicy: Local
   selector:
-    app: nginx-frontend
-  type: NodePort
+    app: nginx-oidc-demo
+  type: ClusterIP
   ports:
     - name: http
       port: 80
       targetPort: 80
       protocol: TCP
-      nodePort: 31080
