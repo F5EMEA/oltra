@@ -3,6 +3,7 @@ apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
   name: okta-oidc
+  namespace: nginx-oidc
 spec:
   oidc:
     clientID: foo

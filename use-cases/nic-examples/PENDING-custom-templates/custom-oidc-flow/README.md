@@ -50,3 +50,28 @@ This sets a variable called `$do_oidc_auth` which would either be empty if a `$s
 Now the `jwt_auth` directive uses the `$do_oidc_auth` variable to determine whether to authenticate the user or not, and the `proxy_intercept_errors` directive is required for the `@do_oidc_auth` flow to operate in the case where a `HTTP 401` is received from the upstream. We also pass through the full JWT Token to the upstream in a header called jwtToken.
 
 With these few changes we were able to completely change the way the OIDC flow was implemented in the Ingress Controller.
+
+## Try it for yourself
+
+Copy the IC setup files to the local folder and patch them
+
+```
+cp -rp ~/oltra/setup/nginx-ic nginx-ic
+patch -p0 < oidc.patch
+``` 
+
+This will patch the NGINX IC files to use the `nginx-oidc` namespace, and add our custom template to the NGINX ConfigMap. See `nginx-ic/resources/nginx-config.yaml`.
+Next we create the namespace and resources needed for the Ingress Controller
+
+```
+kubectl apply -f nginx-ic/rbac
+kubectl apply -f nginx-ic/resources
+```
+
+Finally add your `regcred` secret for access to the NGINX Private registry, and then deploy the Ingress Controller
+```
+kubectl create secret docker-registry regcred --docker-server=private-registry.nginx.com --docker-username="<JWT>" --docker-password=none -n nginx-oidc
+kubectl apply -f nginx-ic/nginx-plus
+```
+
+
