@@ -4,7 +4,7 @@ metadata:
   name: apps-tentant1
   namespace: tenant1
 spec:
-  ingressClassName: nginx-tenant1
+  ingressClassName: nginx-tenant1-plus
   rules:
   - host: tenant1.f5demo.local
     http:
@@ -30,7 +30,7 @@ metadata:
   name: apps-tentant2
   namespace: tenant2
 spec:
-  ingressClassName: nginx-tenant2
+  ingressClassName: nginx-tenant2-plus
   rules:
   - host: tenant2.f5demo.local
     http:
