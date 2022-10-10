@@ -170,6 +170,6 @@ this page is accessable without authentication, because the upstream server retu
 authentication.
 
 If you attempt to acess the `/protected` resource, you should go through the OIDC flow because the upstream returns
-a `HTTP 401` and we initiate the OIDC authentication with Keycloak.
+a `HTTP 401` and we initiate the OIDC authentication with Keycloak. You can login with user: "buck", and password: "nginxFTW"
 
 Enjoy!
