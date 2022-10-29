@@ -9,7 +9,7 @@ There are some cases that CIS might not be able to meet the customer requirement
 
 The above use-cases and many more could be addressed with a GitOps deployment of AS3 services.  
 
-<p align="left">
+<p align="center">
   <img src="images/gitops.png" style="width:80%">
 </p>
 
