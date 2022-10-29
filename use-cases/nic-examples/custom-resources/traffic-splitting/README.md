@@ -31,7 +31,7 @@ kubectl apply -f cafe-virtual-server.yaml
 
 Check that the configuration has been successfully applied by inspecting the events of the VirtualServer:
 ```
-kubectl describe virtualserver.k8s.nginx.org cafe
+kubectl describe vs cafe
 
 ####################################     Expected Output    ####################################
 Events:

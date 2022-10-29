@@ -36,8 +36,8 @@ sed -i 's/name: nginx-plus/name: nginx-cluster2/' nginx_t2/nginx-plus/nginx-plus
 sed -i 's/app: nginx-plus/app: nginx-cluster1/' nginx_t1/nginx-plus/nginx-plus.yaml
 sed -i 's/app: nginx-plus/app: nginx-cluster2/' nginx_t2/nginx-plus/nginx-plus.yaml
 sed -i 's/app: nginx-plus/app: nginx-cluster1/' nginx_t1/nginx-plus/nginx-plus.yaml
-sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-cluster1/' nginx_t1/nginx-plus/nginx-plus.yaml
-sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-cluster2/' nginx_t2/nginx-plus/nginx-plus.yaml
+sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-cluster1-plus/' nginx_t1/nginx-plus/nginx-plus.yaml
+sed -i 's/ingress-class=nginx-plus/ingress-class=nginx-cluster2-plus/' nginx_t2/nginx-plus/nginx-plus.yaml
 
 sed -i '4s/name: nginx/name: nginx-cluster1/' nginx_t1/nginx-plus/ingress-class-plus.yaml
 sed -i '4s/name: nginx/name: nginx-cluster2/' nginx_t2/nginx-plus/ingress-class-plus.yaml
@@ -45,8 +45,10 @@ sed -i '4s/name: nginx/name: nginx-cluster2/' nginx_t2/nginx-plus/ingress-class-
 sed -i 's/nginx-plus/nginx-cluster1/' nginx_t1/nginx-plus/ingress-class-plus.yaml
 sed -i 's/nginx-plus/nginx-cluster2/' nginx_t2/nginx-plus/ingress-class-plus.yaml
 
+sed -i '21, 21d' nginx_t1/nginx-plus/svc-plus.yaml
 sed -i '16, 16d' nginx_t1/nginx-plus/svc-plus.yaml
 sed -i '11, 11d' nginx_t1/nginx-plus/svc-plus.yaml
+sed -i '21, 21d' nginx_t2/nginx-plus/svc-plus.yaml
 sed -i '16, 16d' nginx_t2/nginx-plus/svc-plus.yaml
 sed -i '11, 11d' nginx_t2/nginx-plus/svc-plus.yaml
 sed -i 's/nginx-plus/nginx-cluster1/' nginx_t1/nginx-plus/svc-plus.yaml

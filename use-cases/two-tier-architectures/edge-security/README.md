@@ -111,14 +111,14 @@ kubectl apply -f app2-vs.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServers that was just deployed.
 ```
-kubectl get vs -n layer7
+kubectl get f5-vs -n layer7
 ```
 
 Save the IP adresses that was assigned by the IPAM for this service
 ```
-IP_www=$(kubectl get vs l7-www -n layer7 --output=jsonpath='{.status.vsAddress}')
-IP_app1=$(kubectl get vs l7-app1 -n layer7 --output=jsonpath='{.status.vsAddress}')
-IP_app2=$(kubectl get vs l7-app2 -n layer7 --output=jsonpath='{.status.vsAddress}')
+IP_www=$(kubectl get f5-vs l7-www -n layer7 --output=jsonpath='{.status.vsAddress}')
+IP_app1=$(kubectl get f5-vs l7-app1 -n layer7 --output=jsonpath='{.status.vsAddress}')
+IP_app2=$(kubectl get f5-vs l7-app2 -n layer7 --output=jsonpath='{.status.vsAddress}')
 
 ```
 
@@ -191,7 +191,7 @@ kubectl apply -f udp-transport-server.yml
 
 Confirm that TransportServer is deployed correctly. You should see `Ok` under the Status column for the TransportServer that was just deployed.
 ```
-kubectl get ts udp-transport-server -n layer4
+kubectl get f5-ts udp-transport-server -n layer7
 ```
 
 Try accessing any DNS service on the internet like `www.example.com` through the Transport Server VIP (`10.1.10.125`)

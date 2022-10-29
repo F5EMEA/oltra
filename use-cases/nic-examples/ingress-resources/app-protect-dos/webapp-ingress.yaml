@@ -5,7 +5,7 @@ metadata:
   annotations:
     appprotectdos.f5.com/app-protect-dos-resource: "default/dos-protected"
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx-plus
   tls:
     - hosts:
       - webapp.example.com
