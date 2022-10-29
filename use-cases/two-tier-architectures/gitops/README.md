@@ -9,6 +9,11 @@ There are some cases that CIS might not be able to meet the customer requirement
 
 The above use-cases and many more could be addressed with a GitOps deployment of AS3 services.  
 
+<p align="left">
+  <img src="images/gitops.png" style="width:80%">
+</p>
+
+
 ## Technologies used
 To create a GitOps environment for these kind of deployments we would need the following technologies:
 * **AS3.** AS3 provides a a declarative interface that can assist on managing application-specific configurations on a BIG-IP system. This means that we provide a JSON declaration rather than a set of imperative commands and AS3 will be responsible to make sure the BIGIP is configured accordingly. 
@@ -134,6 +139,12 @@ When there is a commit on the repository we are using the CI/CD pipeline runs au
 
 ## Demo 
 In the following section we will demontrate how we can load balance 2 Ingress Controllers with a ratio of 10 to 1. This scenario is useful to test a new release of NGINX+ Ingress Controller or an application. 
+
+<p align="center">
+  <img src="images/multi-cluster.png" style="width:80%">
+</p>
+
+
 
 ### Step 1. Create two NGINX+ Ingress Controllers
 
