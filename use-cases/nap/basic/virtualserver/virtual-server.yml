@@ -4,7 +4,7 @@ metadata:
   name: webapp
   namespace: nap-vs
 spec:
-  host: webapp.f5demo.local
+  host: webapp-vs.f5demo.local
   policies:
   - name: waf-policy
   upstreams:
