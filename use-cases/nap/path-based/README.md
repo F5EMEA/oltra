@@ -1,9 +1,9 @@
 # WAF
 
 In this example we define different WAF Policies for different URL Path of the application that we have published through NGINX+ IC VirtualServer resources. The configuration would be as follows:
-- For path **/tea** use policy **nap-tea**
-- For path **/coffee** use policy **nap-coffee**
-- For everything else use policy **nap-cocoa**
+- For path **/tea** we will use policy **nap-tea**
+- For path **/coffee** we will use policy **nap-coffee**
+- For everything else we will use policy **nap-cocoa**
 
 
 ## Prerequisites
