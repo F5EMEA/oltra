@@ -1,4 +1,4 @@
-# WAF
+# Enabling WAF policies on Virtual Server CRDs
 
 In this example we using [NGINX App Protect](https://www.nginx.com/products/nginx-app-protect/) as part of an `Virtual Server` CRD to protect a Web Application running inside Kubernetes.
 
