@@ -1,4 +1,4 @@
-# WAF
+# Enable Multiple WAF on different URL Paths 
 
 In this example we define different WAF Policies for different URL Path of the application that we have published through NGINX+ IC VirtualServer resources. The configuration would be as follows:
 - For path **/tea** we will use policy **nap-tea**
