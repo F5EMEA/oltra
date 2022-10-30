@@ -1,0 +1,13 @@
+apiVersion: k8s.nginx.org/v1
+kind: Policy
+metadata:
+  name: waf-policy
+  namespace: nap-vmonitorings
+spec:
+  waf:
+    enable: true
+    apPolicy: "nap-monitoring/nap-demo"
+    securityLogs:
+    - enable: true
+      apLogConf: "nap-monitoring/logconf"
+      logDest: "syslog:server=10.1.1.7:515"

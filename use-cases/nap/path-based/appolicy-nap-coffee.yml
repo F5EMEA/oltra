@@ -1,0 +1,17 @@
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: nap-coffee
+  namespace: nap-vs
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
+    name: nap-coffee
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+    response-pages:
+      - responseContent: "<html><head><title>Custom Reject Page</title></head><body>Blocked from NAP policy: NAP-COFFEE <br><br>Your support ID is: <%TS.request.ID()%><br><br></body></html>"
+        responseHeader: "HTTP/1.1 200 OK\r\nCache-Control: no-cache\r\nPragma: no-cache\r\nConnection: close"
+        responseActionType: "custom"
+        responsePageType: "default"

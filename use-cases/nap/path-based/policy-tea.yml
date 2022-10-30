@@ -1,0 +1,13 @@
+apiVersion: k8s.nginx.org/v1
+kind: Policy
+metadata:
+  name: tea-policy
+  namespace: nap-vs
+spec:
+  waf:
+    enable: true
+    apPolicy: "na-vs/nap-tea"
+    securityLogs:
+    - enable: true
+      apLogConf: "nap-vs/logconf"
+      logDest: "syslog:server=10.1.1.7:515"
