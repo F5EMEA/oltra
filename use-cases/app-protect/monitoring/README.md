@@ -96,7 +96,7 @@ In the following section we will generate multiple attacks so that the dashboard
 
 ### Step 1. Deploy and protect a web application  
 
-Create the application deployment and service in namesapce `monitoring-nap`:
+Create the application deployment and service in namespace `monitoring-nap`:
 ```
 kubectl apply -f apps.yaml
 ```
@@ -124,11 +124,11 @@ kubectl apply -f virtual-server.yaml
 Send a request to the application. We 'll use the --resolve option to set the Host header of a request with `webapp.f5demo.local`
 
 ```
-curl --resolve webapp.f5demo.local:80:10.1.10.10 http://webapp.f5demo.local/
+curl --resolve nap-monitor.f5demo.local:80:10.1.10.10 http://nap-monitor.f5demo.local/
 
 #####################  Expected output  #######################
 Server address: 10.244.140.109:8080
-Server name: webapp-7586895968-r26zn
+Server name: nap-monitor-7586895968-r26zn
 Date: 12/Sep/2022:14:12:25 +0000
 URI: /
 Request ID: 0495d6a17797ea9776120d5f4af10c1a
@@ -139,23 +139,43 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 Now, let's try to send a malicious request to the application:
 ```
 ####SQL Injection (encoded)####
-curl "http://tea.f5demo.cloud/index.php?password=0%22%20or%201%3D1%20%22%0A"
+curl "http://nap-monitor.f5demo.cloud/index.php?password=0%22%20or%201%3D1%20%22%0A"
 ####SQL Injection####
-curl "http://tea.f5demo.cloud/index.php?password==0'%20or%201=1'"
+curl "http://nap-monitor.f5demo.cloud/index.php?password==0'%20or%201=1'"
 ####SQL Injection####
-curl "http://tea.f5demo.cloud/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
+curl "http://nap-monitor.f5demo.cloud/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
 ####Cross Site Scripting####
-curl "http://portal.f5demo.cloud/index.php?username=<script>"
+curl "http://nap-monitor.f5demo.cloud/index.php?username=<script>"
 ####Command Injection####
-curl "http://cafe.f5demo.cloud/index.php?id=0;%20ls%20-l"
+curl "http://nap-monitor.f5demo.cloud/index.php?id=0;%20ls%20-l"
 ```
 
 The expected output  for all the previous requests is the following:
 ``` <html><head><title>Request Rejected</title></head><body>The requested URL was rejected........ ```
 
-### Step 3. Review the violations with the Grafana Dashboards 
+### Step 3. Review Logs 
 
-To review the violations login to Grafana and search with the support ID. More information regarding NAP Grafana Dashboard can be found on the <a href="link"> monitoring </a> lab
+Login to Grafana (credentials **admin/IngressLab123**)
+<p align="left">
+  <img src="images/login.png" style="width:50%">
+</p>
+
+
+Go to **Dashboards->Browse**
+
+<p align="left">
+  <img src="images/browse.png" style="width:22%">
+</p>
+
+
+Select the NAP Dashboards that can be located under the NGINX folder
+
+<p align="left">
+  <img src="images/dashboards.png" style="width:40%">
+</p>
+
+
+
 
 ***Clean up the environment (Optional)***
 ```

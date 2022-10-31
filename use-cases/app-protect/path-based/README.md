@@ -148,4 +148,9 @@ curl --resolve nap-cafe.f5demo.local:80:10.1.10.10 "http://nap-cafe.f5demo.local
 
 ## Step 7 - Review Logs
 
-To review the logs login to Grafana and search with the support ID. More information regarding NAP Grafana Dashboard can be found on the <a href="link"> monitoring </a> lab
+To review the logs login to Grafana and search with the support ID. More information regarding NAP Grafana Dashboard can be found on the [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/use-cases/app-protect/monitoring) lab
+
+***Clean up the environment (Optional)***
+```
+kubectl delete -f .
+```

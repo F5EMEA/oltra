@@ -2,7 +2,7 @@ apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
   name: waf-policy
-  namespace: nap-vmonitorings
+  namespace: nap-monitoring
 spec:
   waf:
     enable: true

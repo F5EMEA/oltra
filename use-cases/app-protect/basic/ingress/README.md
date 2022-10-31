@@ -1,14 +1,14 @@
-# Enabling WAF policies on Virtual Server CRDs
+# Enabling WAF policies on Ingress Resources
 
-In this example we are using [NGINX App Protect](https://www.nginx.com/products/nginx-app-protect/) as part of an `Virtual Server` CRD to protect a Web Application running inside Kubernetes.
+In this example we are using [NGINX App Protect](https://www.nginx.com/products/nginx-app-protect/) as part of an `Ingress Resource` to protect a Web Application running inside Kubernetes.
 
 ## Prerequisites
 
 > *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
-Change the working directory to `virtualserver`.
+Change the working directory to `ingress`.
 ```
-cd ~/oltra/use-cases/nap/basic/virtualserver
+cd ~/oltra/use-cases/nap/basic/ingress
 ```
 
 ## Step 1. Deploy a Web Application
@@ -29,7 +29,7 @@ apiVersion: appprotect.f5.com/v1beta1
 kind: APPolicy
 metadata:
   name: nap-demo
-  namespace: nap-vs
+  namespace: nap-ingress
 spec:
   policy:
     applicationLanguage: utf-8
@@ -38,7 +38,6 @@ spec:
     template:
       name: POLICY_TEMPLATE_NGINX_BASE
 ```
-
 In this example we will be using a simple NAP policy that references mainly the Base template. More information on AP Policies can be found <a href="https://docs.nginx.com/nginx-app-protect/configuration-guide/configuration/#policy-configuration-overview"> here </a>. 
 
 Create the App Protect policy.
@@ -55,7 +54,7 @@ apiVersion: appprotect.f5.com/v1beta1
 kind: APLogConf
 metadata:
   name: logconf
-  namespace: nap-vs
+  namespace: nap-ingress
 spec:
   content:
     format: default
@@ -70,67 +69,49 @@ Create APLogConf resource:
 kubectl apply -f log.yml
 ```
 
-## Step 4 - Deploy the NGINX Policy
-NGINX Policy is where you define as part of the `waf` spec the APPolicy, the APLogConf profile and the log destination that you would like to use.
+## Step 4 - Deploy the Ingress resource
+The APProtect policies, Logging Profiles and Logging destinations are defined as Annotations on Ingress Resources.
 
-Eg: Policy.yml
+Eg: ingress.yml
 ```yml
-apiVersion: k8s.nginx.org/v1
-kind: Policy
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: waf-policy
-  namespace: nap-vs
+  name: nap-ingress
+  namespace: nap-ingress
+  annotations:
+    appprotect.f5.com/app-protect-policy: "app-protect/www"
+    appprotect.f5.com/app-protect-enable: "True"                              
+    appprotect.f5.com/app-protect-security-log-enable: "True"                 
+    appprotect.f5.com/app-protect-security-log: "app-protect/logconf" 
+    appprotect.f5.com/app-protect-security-log-destination: "syslog:server=10.1.1.7:515"
 spec:
-  waf:
-    enable: true
-    apPolicy: "nap-vs/nap-demo"
-    securityLogs:
-    - enable: true
-      apLogConf: "nap-vs/logconf"
-      logDest: "syslog:server=10.1.1.7:515"
-```
+  ingressClassName: nginx-plus
+  rules:
+  - host: nap-ingress.f5demo.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: www-svc
+            port:
+              number: 80
+```      
 
-Create the NGINX policy to reference the AP Policy, the AP Log profile and the log destination.
-```
-kubectl apply -f policy.yaml
-```
-
-## Step 5 - Configure the VirtualServer resource
-On the VirtualServer resource we reference the NGINX policy we just created, in order for NGINX APP Protect to be enforced. 
-
-Eg: VirtualServer.yml
-```yml
-apiVersion: k8s.nginx.org/v1
-kind: VirtualServer
-metadata:
-  name: webapp
-  namespace: nap-vs
-spec:
-  host: webapp-vs.f5demo.local
-  policies:
-  - name: waf-policy
-  upstreams:
-  - name: webapp
-    service: webapp-svc
-    port: 80
-  routes:
-  - path: /
-    action:
-      pass: webapp
-```
-
-Create the VirtualServer resource:
+Create the Ingress resource:
 ```
 kubectl apply -f virtual-server.yaml
 ```
 
-## Step 6 - Test the Application
+## Step 5 - Test the Application
 
-To access the application, curl the webapp service. We'll use the --resolve option to set the Host header of a request with `webapp-vs.f5demo.local`
+To access the application, curl the coffee and the tea services. We'll use the --resolve option to set the Host header of a request with `webapp.f5demo.local`
 
 Send a request to the application:
 ```
-curl --resolve webapp-vs.f5demo.local:80:10.1.10.10 http://webapp-vs.f5demo.local/
+curl --resolve webapp.f5demo.local:80:10.1.10.10 http://webapp.f5demo.local/
 
 #####################  Expected output  #######################
 Server address: 10.244.140.109:8080
@@ -142,7 +123,7 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 
 Now, let's try to send a malicious request to the application:
 ```
-curl --resolve webapp-vs.f5demo.local:80:10.1.10.10 "http://webapp-vs.f5demo.local/<script>"
+curl --resolve webapp.f5demo.local:80:10.1.10.10 "http://webapp.f5demo.local/<script>"
 
 #####################  Expected output  #######################
 <html>
@@ -159,7 +140,7 @@ curl --resolve webapp-vs.f5demo.local:80:10.1.10.10 "http://webapp-vs.f5demo.loc
 
 ## Step 6 - Review Logs
 
-To review the logs login to Grafana and search with the support ID. More information regarding NAP Grafana Dashboard can be found on the [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/use-cases/nap/monitoring) lab
+To review the logs login to Grafana and search with the support ID. More information regarding NAP Grafana Dashboard can be found on the [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/use-cases/app-protect/monitoring) lab
 
 
 ***Clean up the environment (Optional)***
