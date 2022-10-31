@@ -6,8 +6,8 @@ metadata:
 spec:
   waf:
     enable: true
-    apPolicy: "na-vs/nap-cocoa"
+    apPolicy: "nap-cocoa"
     securityLogs:
     - enable: true
-      apLogConf: "nap-vs/logconf"
+      apLogConf: "logconf"
       logDest: "syslog:server=10.1.1.7:515"

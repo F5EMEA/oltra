@@ -8,14 +8,15 @@ In this example we are using [NGINX App Protect](https://www.nginx.com/products/
 
 Change the working directory to `ingress`.
 ```
-cd ~/oltra/use-cases/nap/basic/ingress
+cd ~/oltra/use-cases/app-protect/basic/ingress
 ```
 
 ## Step 1. Deploy a Web Application
 
 Deploy the application manifest and service:
 ```
-kubectl apply -f apps.yaml
+kubectl create namespace nap
+kubectl apply -f app.yml
 ```
 
 ## Step 2 - Deploy the AP Policy
@@ -28,13 +29,13 @@ Eg: APPolicy.yml
 apiVersion: appprotect.f5.com/v1beta1
 kind: APPolicy
 metadata:
-  name: nap-demo
-  namespace: nap-ingress
+  name: nap-ingress
+  namespace: nap
 spec:
   policy:
     applicationLanguage: utf-8
     enforcementMode: blocking
-    name: nap-demo
+    name: nap-ingress
     template:
       name: POLICY_TEMPLATE_NGINX_BASE
 ```
@@ -54,7 +55,7 @@ apiVersion: appprotect.f5.com/v1beta1
 kind: APLogConf
 metadata:
   name: logconf
-  namespace: nap-ingress
+  namespace: nap
 spec:
   content:
     format: default
@@ -78,40 +79,40 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nap-ingress
-  namespace: nap-ingress
+  namespace: nap
   annotations:
-    appprotect.f5.com/app-protect-policy: "app-protect/www"
-    appprotect.f5.com/app-protect-enable: "True"                              
-    appprotect.f5.com/app-protect-security-log-enable: "True"                 
-    appprotect.f5.com/app-protect-security-log: "app-protect/logconf" 
+    appprotect.f5.com/app-protect-policy: "nap-ingress"
+    appprotect.f5.com/app-protect-enable: "True"
+    appprotect.f5.com/app-protect-security-log-enable: "True"
+    appprotect.f5.com/app-protect-security-log: "logconf"
     appprotect.f5.com/app-protect-security-log-destination: "syslog:server=10.1.1.7:515"
 spec:
   ingressClassName: nginx-plus
   rules:
-  - host: nap-ingress.f5demo.local
+  - host: nap-ingress.f5demo.cloud
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: www-svc
+            name: webapp-svc
             port:
               number: 80
 ```      
 
 Create the Ingress resource:
 ```
-kubectl apply -f virtual-server.yaml
+kubectl apply -f ingress.yml
 ```
 
 ## Step 5 - Test the Application
 
-To access the application, curl the coffee and the tea services. We'll use the --resolve option to set the Host header of a request with `webapp.f5demo.local`
+To access the application, curl the coffee and the tea services. We'll use the --resolve option to set the Host header of a request with `nap-ingress.f5demo.cloud`
 
 Send a request to the application:
 ```
-curl --resolve webapp.f5demo.local:80:10.1.10.10 http://webapp.f5demo.local/
+curl http://nap-ingress.f5demo.cloud/
 
 #####################  Expected output  #######################
 Server address: 10.244.140.109:8080
@@ -123,7 +124,7 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 
 Now, let's try to send a malicious request to the application:
 ```
-curl --resolve webapp.f5demo.local:80:10.1.10.10 "http://webapp.f5demo.local/<script>"
+curl "http://nap-ingress.f5demo.cloud/<script>"
 
 #####################  Expected output  #######################
 <html>

@@ -2,9 +2,9 @@ apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
   name: webapp
-  namespace: nap-monitoring
+  namespace: nap
 spec:
-  host: nap-monitor.f5demo.local
+  host: nap-demo.f5demo.cloud
   policies:
   - name: waf-policy
   upstreams:

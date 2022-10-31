@@ -2,9 +2,9 @@ apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
   name: webapp
-  namespace: nap-vs
+  namespace: nap
 spec:
-  host: webapp-vs.f5demo.local
+  host: nap-vs.f5demo.cloud
   policies:
   - name: waf-policy
   upstreams:

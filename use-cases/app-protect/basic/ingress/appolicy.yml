@@ -1,13 +1,13 @@
 apiVersion: appprotect.f5.com/v1beta1
 kind: APPolicy
 metadata:
-  name: nap-demo
-  namespace: nap-ingress
+  name: nap-ingress
+  namespace: nap
 spec:
   policy:
     applicationLanguage: utf-8
     enforcementMode: blocking
-    name: nap-demo
+    name: nap-ingress
     template:
       name: POLICY_TEMPLATE_NGINX_BASE
 

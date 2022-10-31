@@ -8,14 +8,15 @@ In this example we are using [NGINX App Protect](https://www.nginx.com/products/
 
 Change the working directory to `virtualserver`.
 ```
-cd ~/oltra/use-cases/nap/basic/virtualserver
+cd ~/oltra/use-cases/app-protect/basic/virtualserver
 ```
 
 ## Step 1. Deploy a Web Application
 
 Deploy the application manifest and service:
 ```
-kubectl apply -f apps.yaml
+kubectl create namespace nap
+kubectl apply -f app.yml
 ```
 
 ## Step 2 - Deploy the AP Policy
@@ -28,13 +29,13 @@ Eg: APPolicy.yml
 apiVersion: appprotect.f5.com/v1beta1
 kind: APPolicy
 metadata:
-  name: nap-demo
-  namespace: nap-vs
+  name: nap-vs
+  namespace: nap
 spec:
   policy:
     applicationLanguage: utf-8
     enforcementMode: blocking
-    name: nap-demo
+    name: nap-vs
     template:
       name: POLICY_TEMPLATE_NGINX_BASE
 ```
@@ -55,7 +56,7 @@ apiVersion: appprotect.f5.com/v1beta1
 kind: APLogConf
 metadata:
   name: logconf
-  namespace: nap-vs
+  namespace: nap
 spec:
   content:
     format: default
@@ -78,21 +79,21 @@ Eg: Policy.yml
 apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
-  name: waf-policy
-  namespace: nap-vs
+  name: waf-policy-vs
+  namespace: nap
 spec:
   waf:
     enable: true
-    apPolicy: "nap-vs/nap-demo"
+    apPolicy: "nap-vs"
     securityLogs:
     - enable: true
-      apLogConf: "nap-vs/logconf"
+      apLogConf: "logconf"
       logDest: "syslog:server=10.1.1.7:515"
 ```
 
 Create the NGINX policy to reference the AP Policy, the AP Log profile and the log destination.
 ```
-kubectl apply -f policy.yaml
+kubectl apply -f policy.yml
 ```
 
 ## Step 5 - Configure the VirtualServer resource
@@ -104,9 +105,9 @@ apiVersion: k8s.nginx.org/v1
 kind: VirtualServer
 metadata:
   name: webapp
-  namespace: nap-vs
+  namespace: nap
 spec:
-  host: webapp-vs.f5demo.local
+  host: nap-vs.f5demo.cloud
   policies:
   - name: waf-policy
   upstreams:
@@ -121,7 +122,7 @@ spec:
 
 Create the VirtualServer resource:
 ```
-kubectl apply -f virtual-server.yaml
+kubectl apply -f virtual-server.yml
 ```
 
 ## Step 6 - Test the Application
@@ -130,7 +131,7 @@ To access the application, curl the webapp service. We'll use the --resolve opti
 
 Send a request to the application:
 ```
-curl --resolve webapp-vs.f5demo.local:80:10.1.10.10 http://webapp-vs.f5demo.local/
+curl http://nap-vs.f5demo.cloud/
 
 #####################  Expected output  #######################
 Server address: 10.244.140.109:8080
@@ -142,7 +143,7 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 
 Now, let's try to send a malicious request to the application:
 ```
-curl --resolve webapp-vs.f5demo.local:80:10.1.10.10 "http://webapp-vs.f5demo.local/<script>"
+curl "http://nap-vs.f5demo.cloud/<script>"
 
 #####################  Expected output  #######################
 <html>

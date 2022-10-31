@@ -1,52 +1,21 @@
-# NAP Demo
+# Protecting against multiple attack types
 
-In this example we deploy the NGINX Plus Ingress Controller with [NGINX App Protect](https://www.nginx.com/products/nginx-app-protect/) and we will create different types of violations and review their logs. 
-The violations are:
+In this section we will configure **NGINX App Protect** for different type of attacks. For these type of attacks we will enable Blocking mode but also review the logs on the Grafana Dashboard and create exceptions assuming the attack was a *False Positive*. The attack types include the following:
 
-Working with Signatures
-- Enabling Signature-Sets
-- Creating your own Signature-Sets
-- Modifying the policy
-
-HTTP Compliance
-
-
-Evasion Techniques
-
-
-Working File Types
-
-
-Working with Cookies
-
-
-Working with Headers
-
-
-Working with parameters
-
-
-
-
-
-
-
-- Enabling Signature 
-- Different types of Signature-based
+- Attack Signatures
 - HTTP Compliance
-- Evasion technique
-- File type extension
-- Cookie name 
-- Cookie va
+- Evasion Techniques
+- Illegal File Types
+- Malformed Cookies
+- Illegal parameters
+
 
 ### Pre-requisites
 Deploy an application and apply the Base WAF policy to protect it. 
 
-
-## Step 1 - Create multiple Ingress and VS CRDs
-Change the working directory to `nap`.
+Change the working directory to `app-protect/complete`.
 ```
-cd ~/oltra/use-cases/nap/
+cd ~/oltra/use-cases/app-protect/complete
 ```
 
 Deploy apps `coffee`, `tea` and `www` that are configured on `apps.yml`

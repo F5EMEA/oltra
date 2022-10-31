@@ -8,7 +8,7 @@
 ## Table of Contents
 
 - [Available Dashboards](#available-dashboards)
-- [Generating Attacks](#support)
+- [Generating Attacks](#generating-attacks)
 
 ---
 
@@ -93,12 +93,18 @@ The following dashboard are currently under development and should be released s
 ## Generating attacks
 In the following section we will generate multiple attacks so that the dashboards get populated with meaningful data that we can review.
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
+Change the working directory to `monitoring`.
+```
+cd ~/oltra/use-cases/app-protect/monitoring
+```
 ### Step 1. Deploy and protect a web application  
 
-Create the application deployment and service in namespace `monitoring-nap`:
+Create the application deployment and service in namespace `nap`:
 ```
-kubectl apply -f apps.yaml
+kubectl create namespace nap
+kubectl apply -f app.yml
 ```
 
 Create the App Protect policy.
@@ -113,18 +119,18 @@ kubectl apply -f log.yml
 
 Create the policy to reference the AP Policy, the AP Log profile and the log destination.
 ```
-kubectl apply -f policy.yaml
+kubectl apply -f policy.yml
 ```
 
 Create the VirtualServer resource:
 ```
-kubectl apply -f virtual-server.yaml
+kubectl apply -f virtual-server.yml
 ```
 
-Send a request to the application. We 'll use the --resolve option to set the Host header of a request with `webapp.f5demo.local`
+Send a request to the application. We 'll use the --resolve option to set the Host header of a request with `nap-monitor.f5demo.cloud`
 
 ```
-curl --resolve nap-monitor.f5demo.local:80:10.1.10.10 http://nap-monitor.f5demo.local/
+curl http://nap-monitor.f5demo.cloud/
 
 #####################  Expected output  #######################
 Server address: 10.244.140.109:8080
@@ -174,7 +180,7 @@ Select the NAP Dashboards that can be located under the NGINX folder
   <img src="images/dashboards.png" style="width:40%">
 </p>
 
-
+Navigate through the different Dashboards to review the attacks.
 
 
 ***Clean up the environment (Optional)***

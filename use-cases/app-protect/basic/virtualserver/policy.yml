@@ -1,13 +1,13 @@
 apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
-  name: waf-policy
-  namespace: nap-vs
+  name: waf-policy-vs
+  namespace: nap
 spec:
   waf:
     enable: true
-    apPolicy: "nap-vs/nap-demo"
+    apPolicy: "nap-vs"
     securityLogs:
     - enable: true
-      apLogConf: "nap-vs/logconf"
+      apLogConf: "logconf"
       logDest: "syslog:server=10.1.1.7:515"
