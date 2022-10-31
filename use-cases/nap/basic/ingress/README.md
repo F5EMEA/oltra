@@ -1,6 +1,6 @@
 # Enabling WAF policies on Ingress Resources
 
-In this example we using [NGINX App Protect](https://www.nginx.com/products/nginx-app-protect/) as part of an `Ingress Resource` to protect a Web Application running inside Kubernetes.
+In this example we are using [NGINX App Protect](https://www.nginx.com/products/nginx-app-protect/) as part of an `Ingress Resource` to protect a Web Application running inside Kubernetes.
 
 ## Prerequisites
 
