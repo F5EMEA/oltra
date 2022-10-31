@@ -12,14 +12,15 @@ In this example we define different WAF Policies for different URL Path of the a
 
 Change the working directory to `path-based`.
 ```
-cd ~/oltra/use-cases/nap/basic/path-based
+cd ~/oltra/use-cases/app-protect/path-based
 ```
 
 ## Step 1. Deploy a Web Application
 
 Create the application deployment and service:
 ```
-kubectl apply -f cafe.yml
+kubectl create namespace nap
+kubectl apply -f apps.yml
 ```
 
 ## Step 2 - Create 3 different NAP Policies
@@ -42,9 +43,9 @@ kubectl apply -f log.yml
 
 Create the policy to reference the AP Policy that will reference the AP policy, the AP Log profile and the log destination.
 ```
-kubectl apply -f policy-coffee.yaml
-kubectl apply -f policy-tea.yaml
-kubectl apply -f policy-cocoa.yaml
+kubectl apply -f policy-coffee.yml
+kubectl apply -f policy-tea.yml
+kubectl apply -f policy-cocoa.yml
 ```
 
 ## Step 5 - Configure VirtualServer resource
@@ -60,7 +61,7 @@ metadata:
   name: nap-cafe
   namespace: nap-vs
 spec:
-  host: nap-cafe.f5demo.local
+  host: nap-cafe.f5demo.cloud
   policies:
   - name: cocoa-policy     <----  Catch-all NAP Policy
   upstreams:
@@ -79,12 +80,12 @@ spec:
       pass: webapp
   - path: /tea
     policies:
-    - tea-policy            <---- NAP Policy for path /tea
+    - name: tea-policy            <---- NAP Policy for path /tea
     action:
       pass: webapp
   - path: /coffee
     policies:
-    - coffee-policy         <---- NAP Policy for path /coffee
+    - name: coffee-policy         <---- NAP Policy for path /coffee
     action:
       pass: webapp
 ```
@@ -96,11 +97,11 @@ kubectl apply -f virtual-server.yaml
 
 ## Step 6 - Test the Application
 
-To access the application, curl the coffee and the tea services. We'll use the --resolve option to set the Host header of a request with `nap-cafe.f5demo.local`
+To access the application, curl the coffee and the tea services. We'll use the --resolve option to set the Host header of a request with `nap-cafe.f5demo.cloud`
 
 Send a malicious request to the path /tea:
 ```
-curl --resolve nap-cafe.f5demo.local:80:10.1.10.10 http://nap-cafe.f5demo.local/tea/?user=<script>
+curl "http://nap-cafe.f5demo.local/tea/?user=<script>"
 
 #####################  Expected output  #######################
 <html>

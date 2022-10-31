@@ -23,11 +23,11 @@ spec:
       pass: webapp
   - path: /tea
     policies:
-    - tea-policy
+    - name: tea-policy
     action:
       pass: webapp
   - path: /coffee
     policies:
-    - coffee-policy
+    - name: coffee-policy
     action:
       pass: webapp

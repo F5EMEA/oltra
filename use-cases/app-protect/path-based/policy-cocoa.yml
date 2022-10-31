@@ -2,7 +2,7 @@ apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
   name: cocoa-policy
-  namespace: nap-vs
+  namespace: nap
 spec:
   waf:
     enable: true
