@@ -113,23 +113,22 @@ In this example we will configure NAP to work with Argo CD so that we follow a G
 
 1. Make changes to appolicy.yml
 
-    Open the appolicy.yml and change the policy from blocking to transparent. 
+    Open the appolicy.yml, change the policy from blocking to transparent and commit the changes.
   
 <p align="center">
   <img src="images/git-changes.png" style="width:70%">
 </p>
 
-    **Commit the changes**
-
-    > Note: Because you are accessing GitLab behind a reverse proxy, it is recommended to **Edit** instead of **WED IDE**, in case you are using the web browser to access the repository files
+  > Note: Because you are accessing GitLab behind a reverse proxy, it is recommended to **Edit** instead of **WED IDE**, in case you are using the web browser to access the repository files
 
 2. Go to Argo CD and refresh the application.
+
+    Argo CD will detect the changes and immediately apply them to Kubernetes.
 
 <p align="center">
   <img src="images/argo-refresh.png" style="width:70%">
 </p>
 
-    Argo CD will detect the changes and immediately apply them to Kubernetes.
 
 3. Run the following command to verify that the enforcement mode has changed to transparent
     ```
@@ -148,7 +147,7 @@ Be default Argo CD polls Git repositories every three minutes to detect changes 
     On the GitLab UI, select Webhooks that is located under Settings.
 
     <p align="left">
-      <img src="images/gitlab-webhook.png" style="width:18%">
+      <img src="images/gitlab-webhook.png" style="width:20%">
     </p>
 
 2. Create the WebHook.
@@ -161,6 +160,7 @@ Be default Argo CD polls Git repositories every three minutes to detect changes 
     And press `Add webhook`.
 
     > Note: On ArgoCD the webhook URI **MUST** be **/api/webhook** in order to work. If you add a forward slash **/** at the end of the URI, you will receive a 404 from Argo CD.
+
 
 
 3. Make changes to the Appolicy.yml.
