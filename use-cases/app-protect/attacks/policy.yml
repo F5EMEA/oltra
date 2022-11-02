@@ -1,7 +1,7 @@
 apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
-  name: waf-policy-vs
+  name: waf-policy-demo
   namespace: nap
 spec:
   waf:

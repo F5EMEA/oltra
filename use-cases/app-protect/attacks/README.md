@@ -9,6 +9,13 @@ In this section we will configure **NGINX App Protect** for different type of at
 ### Pre-requisites
 Deploy an application and apply the Base WAF policy to protect it. 
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
+Change the working directory to `path-based`.
+```
+cd ~/oltra/use-cases/app-protect/attacks
+```
+
 1. Deploy the application manifest and service:
   ```
   kubectl create namespace nap
@@ -34,7 +41,7 @@ Deploy an application and apply the Base WAF policy to protect it.
 
 6. Test the application by sending a legitimate request to it:
   ```
-  curl http://nap-vs.f5demo.cloud/
+  curl http://nap.f5demo.cloud/
 
   ###############   expected result   ###############
   Server address: 10.244.140.114:80
@@ -46,12 +53,13 @@ Deploy an application and apply the Base WAF policy to protect it.
   ```
 
 7. Verify that the WAF has been applied by sending a malicious request to the application. 
-  ```html
-  curl http://nap-vs.f5demo.cloud/
+  ```
+  curl "http://nap.f5demo.cloud/?test=<script>"
 
   ###############   expected result   ###############
 
-  <html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 742177367032758723<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
+  <html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br>
+  <br>Your support ID is: 742177367032758723<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
   ```
 
 8. Login to Grafana and verify that the violation is showing on the Dashboard. More information about Grafana can be found on the [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/use-cases/app-protect/monitoring) lab.
@@ -81,30 +89,30 @@ Verify that the request status is blocked.
 </p>
 
 To relax the specific signatures (assuming they are false positive), replace the APPolicy manifest with the new one below that has the 2 triggered signatures disabled. 
-
-  ```
-  cat <<EOF | kubectl apply -f -
-  apiVersion: appprotect.f5.com/v1beta1
-  kind: APPolicy
-  metadata:
+Run the following command to modify the APPolicy.
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: nap-demo
+  namespace: nap
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
     name: nap-demo
-    namespace: nap
-  spec:
-    policy:
-      applicationLanguage: utf-8
-      enforcementMode: blocking
-      name: nap-demo
-      template:
-        name: POLICY_TEMPLATE_NGINX_BASE
-      signatures:
-      - signatureId: 200003041
-        enabled: false
-      - signatureId: 200003913
-        enabled: false      
-  EOF
-  ```
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+    signatures:
+    - signatureId: 200003041
+      enabled: false
+    - signatureId: 200003913
+      enabled: false      
+EOF
+```
 
-Run the same request and verify that the transaction is not getting blocked.
+Wait few seconds (5-10 sec) and then run the same request and verify that the transaction is not getting blocked.
 ```
 curl "http://nap.f5demo.cloud/index.php?id=0;%20ls%20-l"
 ```
@@ -121,35 +129,39 @@ The transaction should be successfull and should not get blocked from NGINX App 
 Open the Grafana Main dashboard and look at the URL list. You should see a URL `phpinfo.php`.
 Filter on this URL and verify that the transaction was **Alerted** but not **Blocked**.
 
-Now let's change the configuration by enabling this particular signature.
-
-  ```
-  cat <<EOF | kubectl apply -f -
-  apiVersion: appprotect.f5.com/v1beta1
-  kind: APPolicy
-  metadata:
+Now let's change the configuration by enabling this particular signature. This can be achieved by creating a custom signature-set and adding this particular signature.
+Run the following command to modify the APPolicy.
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: appprotect.f5.com/v1beta1
+kind: APPolicy
+metadata:
+  name: nap-demo
+  namespace: nap
+spec:
+  policy:
+    applicationLanguage: utf-8
+    enforcementMode: blocking
     name: nap-demo
-    namespace: nap
-  spec:
-    policy:
-      applicationLanguage: utf-8
-      enforcementMode: blocking
-      name: nap-demo
-      template:
-        name: POLICY_TEMPLATE_NGINX_BASE
-      signatures:
-      - signatureId: 200010015
-        enabled: true    
-  EOF
-  ```
+    template:
+      name: POLICY_TEMPLATE_NGINX_BASE
+    signature-sets:
+      - name: Custom-picked-signatures
+        block: true
+        alarm: true
+        signatureSet:
+          signatures:
+            - signatureId: 200010015
+EOF
+```
 
-Execute the same transaction again and we expect that the transaction will now be blocked by **NGINX App Protect**.
+Wait few seconds (5-10 sec) and then execute the same transaction again. We expect that the transaction will be blocked by **NGINX App Protect**.
 ```
 curl "http://nap.f5demo.cloud/phpinfo.php"
 ```
 
 Now let's change the configuration by enabling all Medium accuracy signatures.
-
+Run the following command to modify the APPolicy.
 ```
 cat <<EOF | kubectl apply -f -
 apiVersion: appprotect.f5.com/v1beta1
@@ -199,6 +211,7 @@ Open the Grafana Main dashboard and look at the last transactions. You should se
 Click on the SupportID of this transaction and review the details. Verify that the transaction was **Alerted** but not **Blocked**.
 
 Now lets change the NAP configuration to block `Illegal Methods` violation.
+Run the following command to modify the APPolicy.
 
 ```
 cat <<EOF | kubectl apply -f -

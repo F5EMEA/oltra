@@ -1,12 +1,12 @@
 apiVersion: k8s.nginx.org/v1
 kind: Policy
 metadata:
-  name: waf-policy-demo
+  name: waf-policy-monitor
   namespace: nap
 spec:
   waf:
     enable: true
-    apPolicy: "nap-demo"
+    apPolicy: "nap-monitor"
     securityLogs:
     - enable: true
       apLogConf: "logconf"

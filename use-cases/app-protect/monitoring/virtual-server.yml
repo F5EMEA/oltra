@@ -4,9 +4,9 @@ metadata:
   name: webapp
   namespace: nap
 spec:
-  host: nap-demo.f5demo.cloud
+  host: nap-monitor.f5demo.cloud
   policies:
-  - name: waf-policy
+  - name: waf-policy-monitor
   upstreams:
   - name: webapp
     service: webapp-svc

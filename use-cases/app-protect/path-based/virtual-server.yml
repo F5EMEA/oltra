@@ -20,14 +20,14 @@ spec:
   routes:
   - path: /
     action:
-      pass: webapp
+      pass: cocoa
   - path: /tea
     policies:
     - name: tea-policy
     action:
-      pass: webapp
+      pass: tea
   - path: /coffee
     policies:
     - name: coffee-policy
     action:
-      pass: webapp
+      pass: coffee

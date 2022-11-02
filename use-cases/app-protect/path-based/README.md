@@ -92,7 +92,7 @@ spec:
 
 Create the VirtualServer resource 
 ```
-kubectl apply -f virtual-server.yaml
+kubectl apply -f virtual-server.yml
 ```
 
 ## Step 6 - Test the Application

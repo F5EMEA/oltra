@@ -6,7 +6,7 @@ metadata:
 spec:
   host: nap.f5demo.cloud
   policies:
-  - name: waf-policy
+  - name: waf-policy-demo
   upstreams:
   - name: webapp
     service: webapp-svc
