@@ -47,6 +47,7 @@ In this example we will configure NAP to work with Argo CD so that we follow a G
     > Argo CD can be found under the `bigip-01` on the `Access` drop-down menu. 
 
     Use the credentials (**admin** / **Ingresslab123**) to log in. 
+
 <p align="center">
   <img src="images/argo-login.png" style="width:70%">
 </p>
@@ -54,23 +55,24 @@ In this example we will configure NAP to work with Argo CD so that we follow a G
 2. Create a new Application
   
     Click on `+ NEW APP` button that can be found on the top left of the page.
+    
 <p align="center">
   <img src="images/argo-main.png" style="width:70%">
 </p>
 
   Find below the information that needs to inserted in the form. 
   
-    - Application Name -> **nap-demo**
-    - Project -> **default**
-    - Sync Policy -> **Automatic**
-    - Prune Resources -> **Enabled**
-    - Repository URL -> **https://git.f5demo.cloud/nap/argocd.git**
-    - Revision -> **HEAD**
-    - Path -> **.**
-    - Cluster URL -> **https://kubernetes.default.svc**
-    - Namespace  -> **nap-argo**
+  - Application Name -> **nap-demo**
+  - Project -> **default**
+  - Sync Policy -> **Automatic**
+  - Prune Resources -> **Enabled**
+  - Repository URL -> **https://git.f5demo.cloud/nap/argocd.git**
+  - Revision -> **HEAD**
+  - Path -> **.**
+  - Cluster URL -> **https://kubernetes.default.svc**
+  - Namespace  -> **nap-argo**
 
-    Press `Create and wait to see that the Argo CD application being created.
+    Press `Create` and wait to see that the Argo CD application being created.
 
 <p align="center">
   <img src="images/argo-app.png" style="width:70%">
@@ -87,23 +89,15 @@ In this example we will configure NAP to work with Argo CD so that we follow a G
     ```
     kubectl get appolicy nap-v1 -n nap-argo -o yaml
     ```
-
-  The expected output is the following. 
+  
+    The expected output is the following.
+  
     ```
     apiVersion: appprotect.f5.com/v1beta1
     kind: APPolicy
     metadata:
-      annotations:
-        kubectl.kubernetes.io/last-applied-configuration: |
-          {"apiVersion":"appprotect.f5.com/v1beta1","kind":"APPolicy","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"nap-demo"},"name":"nap-v1","namespace":"nap-argo"},"spec":{"policy":{"applicationLanguage":"utf-8","enforcementMode":"transparent","name":"nap-v1","template":{"name":"POLICY_TEMPLATE_NGINX_BASE"}}}}
-      creationTimestamp: "2022-11-01T12:59:36Z"
-      generation: 6
-      labels:
-        app.kubernetes.io/instance: nap-demo
       name: nap-v1
       namespace: nap-argo
-      resourceVersion: "2665839"
-      uid: ed79f06c-42bc-43fc-9bb5-624775d6cd68
     spec:
       policy:
         applicationLanguage: utf-8
@@ -112,34 +106,35 @@ In this example we will configure NAP to work with Argo CD so that we follow a G
         template:
           name: POLICY_TEMPLATE_NGINX_BASE
     ```
+  
     > Note: Please verify that the enforcementMode is set as `Blocking`
-
-
 
 ### Step 3 - Make changes on the Repository 
 
 1. Make changes to appolicy.yml
 
-  Open the appolicy.yml and change the policy from blocking to transparent. 
+    Open the appolicy.yml and change the policy from blocking to transparent. 
+  
 <p align="center">
   <img src="images/git-changes.png" style="width:70%">
 </p>
 
-  **Commit the changes**
+    **Commit the changes**
 
-> Note: Because you are accessing GitLab behind a reverse proxy, it is recommended to **Edit** instead of **WED IDE**, in case you are using the web browser to access the repository files
+    > Note: Because you are accessing GitLab behind a reverse proxy, it is recommended to **Edit** instead of **WED IDE**, in case you are using the web browser to access the repository files
 
 2. Go to Argo CD and refresh the application.
+
 <p align="center">
   <img src="images/argo-refresh.png" style="width:70%">
 </p>
-Argo CD will detect the changes and immediately apply them to Kubernetes.
+
+    Argo CD will detect the changes and immediately apply them to Kubernetes.
 
 3. Run the following command to verify that the enforcement mode has changed to transparent
     ```
     kubectl get appolicy nap-v1 -n nap-argo -o yaml | grep enforcementMode:
     ```
-
     The expected output is the following. 
     ```
     enforcementMode: transparent
@@ -150,10 +145,11 @@ Argo CD will detect the changes and immediately apply them to Kubernetes.
 Be default Argo CD polls Git repositories every three minutes to detect changes to the manifests. To reduce the 3 min window, we will implement a webhook that will be sent from GitLab to Argo CD every time there is a commit on the repo. That will trigger Argo CD to make the comparison and deploy any changes. 
 
 1. Go to Settings->WebHooks
-On the GitLab UI, select Webhooks that is located under Settings.
-<p align="center">
-  <img src="images/gitlab-webhook.png" style="width:30%">
-</p>
+    On the GitLab UI, select Webhooks that is located under Settings.
+
+    <p align="left">
+      <img src="images/gitlab-webhook.png" style="width:18%">
+    </p>
 
 2. Create the WebHook.
     Fill in the following information on the form.
@@ -172,4 +168,5 @@ On the GitLab UI, select Webhooks that is located under Settings.
     Make a change to the APPolicy manifest on GitLab and verify that the changes are replicated immediately to the Kubernetes cluster.
     
     For example change the EnforcementMode to Blocking.
+    
     `enforcementMode: transparent`  =>  `enforcementMode: blocking`
