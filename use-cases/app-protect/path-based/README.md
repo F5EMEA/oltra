@@ -97,11 +97,11 @@ kubectl apply -f virtual-server.yml
 
 ## Step 6 - Test the Application
 
-To access the application, curl the coffee and the tea services. We'll use the --resolve option to set the Host header of a request with `nap-cafe.f5demo.cloud`
+To access the application, curl the coffee and the tea services. 
 
 Send a malicious request to the path /tea:
 ```
-curl "http://nap-cafe.f5demo.local/tea/?user=<script>"
+curl "http://nap-cafe.f5demo.cloud/tea/?user=<script>"
 
 #####################  Expected output  #######################
 <html>
@@ -117,7 +117,7 @@ curl "http://nap-cafe.f5demo.local/tea/?user=<script>"
 
 Send a malicious request to the path /tea:
 ```
-curl --resolve nap-cafe.f5demo.local:80:10.1.10.10 "http://nap-cafe.f5demo.local/coffee/?user=<script>"
+curl "http://nap-cafe.f5demo.cloud/coffee/?user=<script>"
 
 #####################  Expected output  #######################
 <html>
@@ -133,7 +133,7 @@ curl --resolve nap-cafe.f5demo.local:80:10.1.10.10 "http://nap-cafe.f5demo.local
 
 Send a malicious request to a path other than `/tea` or `/coffee`:
 ```
-curl --resolve nap-cafe.f5demo.local:80:10.1.10.10 "http://nap-cafe.f5demo.local/unknown/?user=<script>"
+curl "http://nap-cafe.f5demo.cloud/unknown/?user=<script>"
 
 #####################  Expected output  #######################
 <html>
