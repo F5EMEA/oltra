@@ -1,4 +1,4 @@
-# Building an infrastrucutre to accomodate DevSecOps with NGINX Ingress Controller
+# Building an infrastructure for DevSecOps with NGINX Ingress Controller
 With more and more application workloads moving into Kubernetes, creating an agile, flexible, /multi-cloud (cluster) infrastructure, orginizations are looking into moving also the Web Application Firewall (WAF) security controls inside the Kubernetes environment. This would allow them to continue their modernization journey without compromising security. 
 What we are seeing as a common practice in Medium/Large orginizations that are adapting this strategy is to have the SecOps and the DevOps teams work closer together, but each team maintains their own goals and responsibilities.  
 
@@ -14,13 +14,17 @@ DevOps responsibilities in terms of the WAF policies are:
 
 
 ## What is required?
-In order to build an infrastructure that can accomodate for
+In order to build an infrastructure that can accomodate for both SecOps and DevOps personas, we will need the following:
 
 - Git repository 
 - Observability Platform
 - Policy Management Process
 - NGINX Ingress Controller with App Protect enabled.
 - CI/CD tool(s)
+
+<p align="center">
+  <img src="images/devsecops.png" style="width:90%">
+</p>
 
 
 ### Git repository
