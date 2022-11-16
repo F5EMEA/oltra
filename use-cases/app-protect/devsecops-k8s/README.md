@@ -35,7 +35,7 @@ In order to build an infrastructure that can accomodate for both SecOps and DevO
 Ingress Controller (IC) is the gateway to the applications that live inside the Kubernetes platform. Whether it is Ingress, Routes, or custom resources like VirtualServer and VirtualServerRoute, Ingress Controller is most common way to achieve application traffic routing and provide a bridge between Kubernetes services and external ones.
 Having a WAF enabled on the Ingress controller layer, is the most effient way to apply the security controls inside Kubernetes   
 
-In our environment we will be using NGINX App Protect WAF module, that can be configured as part of Ingress Resources (via an Annotation) or as pat of Custom Resources (VirtualServer, VirtualServerRoute). 
+In our environment we will be using NGINX App Protect WAF module, that can be configured as part of Ingress Resources (with annotations) or as pat of Custom Resources (VirtualServer, VirtualServerRoute). 
 
 <p align="center">
   <img src="images/nap-on-k8s.png" style="width:50%">
@@ -111,7 +111,7 @@ In order to successfully go through the demo below, we suggest you first complet
 - [**Argo CD**](https://github.com/F5EMEA/oltra/tree/main/use-cases/app-protect/argocd)
 
 
-### 1. Reviewing the manifests stored in GitLab 
+### Step 1. Manifests stored on GitLab 
 In our environment we are using GitLab. The design is fairly straightforward and it is based on two repositories. The first repository will be for the NGINX App Protect resources (APPolicy, APLogConf) where the SecOps team will be resposible for and the second repository will be for the application resources (Deployments, Services, Ingress Rules, Configmaps, etc.) where the DecOps team will be resposible for.
 The following two repositories will be used:
 
@@ -130,7 +130,7 @@ Currently all Kubernetes manifests have been configured on the 2 repositories.
 1. Log on to GitLab and review the manifests for both repos. 
 
 <p align="center">
-  <img src="images/nap-gitlab.gif" style="width:70%">
+  <img src="images/nap-gitlab.gif" style="width:75%">
 </p>
 
 
@@ -138,24 +138,23 @@ Currently all Kubernetes manifests have been configured on the 2 repositories.
 Go to repository under **Settings** -> **Webhooks** and scroll to the end. You should see a webhook already created for Argo CD (`https://10.1.10.18/api/webhook`)  
 
 <p align="center">
-  <img src="images/webhook.png" style="width:70%">
+  <img src="images/webhook.png" style="width:60%">
 </p>
 
-### 2. Continuous Deployment with ArgoCD 
+### Step 2. Continuous Deployment with ArgoCD 
 
 1. First we will deploy the NAP policies to Kubernetes. To do that we will create a new application on Argo CD for the **devsecops/nap** repository.
-
   Find below the information that needs to inserted in the form. 
   
-  - Application Name -> **nap-policies**
-  - Project -> **default**
-  - Sync Policy -> **Automatic**
-  - Prune Resources -> **Enabled**
-  - Repository URL -> **https://git.f5demo.cloud/devsecops/nap.git**
-  - Revision -> **HEAD**
-  - Path -> **.**
-  - Cluster URL -> **https://kubernetes.default.svc**
-  - Namespace  -> **secops**
+    - Application Name -> **nap-policies**
+    - Project -> **default**
+    - Sync Policy -> **Automatic**
+    - Prune Resources -> **Enabled**
+    - Repository URL -> **https://git.f5demo.cloud/devsecops/nap.git**
+    - Revision -> **HEAD**
+    - Path -> **.**
+    - Cluster URL -> **https://kubernetes.default.svc**
+    - Namespace  -> **secops**
 
   Press `Create` and wait to see that the Argo CD application being created.
 
@@ -165,25 +164,26 @@ Go to repository under **Settings** -> **Webhooks** and scroll to the end. You s
 
 
 2. Then we will deploy the Application manifests. To do that we will create a new application on Argo CD for the **devsecops/apps** repository.
-
   Find below the information that needs to inserted in the form. 
   
-  - Application Name -> **apps**
-  - Project -> **default**
-  - Sync Policy -> **Automatic**
-  - Prune Resources -> **Enabled**
-  - Repository URL -> **https://git.f5demo.cloud/devsecops/apps.git**
-  - Revision -> **HEAD**
-  - Path -> **.**
-  - Cluster URL -> **https://kubernetes.default.svc**
-  - Namespace  -> **apps**
+    - Application Name -> **apps**
+    - Project -> **default**
+    - Sync Policy -> **Automatic**
+    - Prune Resources -> **Enabled**
+    - Repository URL -> **https://git.f5demo.cloud/devsecops/apps.git**
+    - Revision -> **HEAD**
+    - Path -> **.**
+    - Cluster URL -> **https://kubernetes.default.svc**
+    - Namespace  -> **apps**
 
-    Press `Create` and wait to see that the Argo CD application being created.
+  Press `Create` and wait to see that the Argo CD application being created.
 
 <p align="center">
   <img src="images/argocd-ui.gif" style="width:70%">
 </p>
 
+
+### Step 3. Executing Attacks 
 
 3. Verify that you can succesfully access the application. Go to VSCode and run the following commands
 
@@ -231,7 +231,7 @@ curl "http://portal.f5demo.cloud/index.php?id=0;%20ls%20-l"
 
 2. Login to Grafana and review the above violations.
 
-### Managing False Positives
+### Step 4. Managing False Positives
 
 Now we will execute some requests that will be blocked by NGINX App Protect but are considered as `False Positives` by the secuirty teams.  The first request is accessing a URL that matches a known signature (phpinfo) and it is consider as `Medium Accuracy` Signature, while the second request is sending a Header name with no header value on a GET request that violates the HTTP Protocol Compliance.
 
@@ -287,9 +287,9 @@ curl "http://portal.f5demo.cloud/phpinfo.php"
 ```
 
 10. Repeat the same process but with a different False positive.
-  ```
-  curl "http://portal.f5demo.cloud/index.php" -H "Header1;"
-  ```
+```
+curl "http://portal.f5demo.cloud/index.php" -H "Header1;"
+```
 
 11. Search with the supportID to find this particular transaction and then select `Disable` on the Violation section.
 
