@@ -127,14 +127,14 @@ We will be using VirtualServer CR. The NGINX custom resources (VirtualServer, Po
 
 Currently all Kubernetes manifests have been configured on the 2 repositories. 
 
-1. Log on to GitLab and review the manifests for both repos. 
+Log on to GitLab and review the manifests for both repos. 
 
 <p align="center">
   <img src="images/nap-gitlab.gif" style="width:75%">
 </p>
 
 
-2. Verify that a GitLab webhook is already configured to notify Argo CD for any changes on the code.  
+Verify that a GitLab webhook is already configured to notify Argo CD for any changes on the code.  
 Go to repository under **Settings** -> **Webhooks** and scroll to the end. You should see a webhook already created for Argo CD (`https://10.1.10.18/api/webhook`)  
 
 <p align="center">
@@ -142,50 +142,45 @@ Go to repository under **Settings** -> **Webhooks** and scroll to the end. You s
 </p>
 
 ### Step 2. Continuous Deployment with ArgoCD 
-
-1. First we will deploy the NAP policies to Kubernetes. To do that we will create a new application on Argo CD for the **devsecops/nap** repository.
-  Find below the information that needs to inserted in the form. 
+First we will deploy the NAP policies to Kubernetes. To do that we will create a new application on Argo CD for the **devsecops/nap** repository.
+Find below the information that needs to inserted in the form. 
   
-    - Application Name -> **nap-policies**
-    - Project -> **default**
-    - Sync Policy -> **Automatic**
-    - Prune Resources -> **Enabled**
-    - Repository URL -> **https://git.f5demo.cloud/devsecops/nap.git**
-    - Revision -> **HEAD**
-    - Path -> **.**
-    - Cluster URL -> **https://kubernetes.default.svc**
-    - Namespace  -> **secops**
+  - Application Name -> **nap-policies**
+  - Project -> **default**
+  - Sync Policy -> **Automatic**
+  - Prune Resources -> **Enabled**
+  - Repository URL -> **https://git.f5demo.cloud/devsecops/nap.git**
+  - Revision -> **HEAD**
+  - Path -> **.**
+  - Cluster URL -> **https://kubernetes.default.svc**
+  - Namespace  -> **secops**
 
-  Press `Create` and wait to see that the Argo CD application being created.
+Press `Create` and wait to see that the Argo CD application being created.
 
 <p align="center">
   <img src="images/nap-argo.gif" style="width:70%">
 </p>
 
 
-2. Then we will deploy the Application manifests. To do that we will create a new application on Argo CD for the **devsecops/apps** repository.
-  Find below the information that needs to inserted in the form. 
+Then we will deploy the Application manifests. To do that we will create a new application on Argo CD for the **devsecops/apps** repository.
+Find below the information that needs to inserted in the form. 
   
-    - Application Name -> **apps**
-    - Project -> **default**
-    - Sync Policy -> **Automatic**
-    - Prune Resources -> **Enabled**
-    - Repository URL -> **https://git.f5demo.cloud/devsecops/apps.git**
-    - Revision -> **HEAD**
-    - Path -> **.**
-    - Cluster URL -> **https://kubernetes.default.svc**
-    - Namespace  -> **apps**
+  - Application Name -> **apps**
+  - Project -> **default**
+  - Sync Policy -> **Automatic**
+  - Prune Resources -> **Enabled**
+  - Repository URL -> **https://git.f5demo.cloud/devsecops/apps.git**
+  - Revision -> **HEAD**
+  - Path -> **.**
+  - Cluster URL -> **https://kubernetes.default.svc**
+  - Namespace  -> **apps**
 
-  Press `Create` and wait to see that the Argo CD application being created.
-
-<p align="center">
-  <img src="images/argocd-ui.gif" style="width:70%">
-</p>
+Press `Create` and wait to see that the Argo CD application being created.
 
 
 ### Step 3. Executing Attacks 
 
-3. Verify that you can succesfully access the application. Go to VSCode and run the following commands
+Verify that you can succesfully access the application. Go to VSCode and run the following commands
 
 ```
 curl "http://portal.f5demo.cloud/tea/"
@@ -202,10 +197,7 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 ###############################################################
 ```
 
-
-### Running Malicious requests against the application
-1. Run the following commands to execute some malicious requests towards the website.
-
+Run the following commands to execute some malicious requests towards the website.
 ```
 curl "http://portal.f5demo.cloud/index.php?password=0%22%20or%201%3D1%20%22%0A"
 curl "http://portal.f5demo.cloud/tea/index.php?password==0'%20or%205=5'"
@@ -229,19 +221,19 @@ curl "http://portal.f5demo.cloud/index.php?username=<script>"
 curl "http://portal.f5demo.cloud/index.php?id=0;%20ls%20-l"
 ```
 
-2. Login to Grafana and review the above violations.
+Login to Grafana and review the above violations.
 
 ### Step 4. Managing False Positives
 
 Now we will execute some requests that will be blocked by NGINX App Protect but are considered as `False Positives` by the secuirty teams.  The first request is accessing a URL that matches a known signature (phpinfo) and it is consider as `Medium Accuracy` Signature, while the second request is sending a Header name with no header value on a GET request that violates the HTTP Protocol Compliance.
 
 
-1. Run the following command.
+Run the following command.
 ```
 curl "http://portal.f5demo.cloud/phpinfo.php"
 ```
 
-2. The expected output is:
+The expected output is:
 ```
 <html><head><title>Request Rejected</title></head><body>
 The requested URL was rejected. Please consult with your administrator.<br><br>
@@ -251,13 +243,13 @@ Your support ID is: 4045204596866416688 <br><br>
 
 Assuming this is a `False Positive` we will use the NAP-FPM UI to modify the policy.
 
-3. Login to the False Positive Management tool (Credentials: **admin/Ingresslab123**). NAP-FPM UI can be found under `docker` on the `Access` drop-down menu.
+Login to the False Positive Management tool (Credentials: **admin/Ingresslab123**). NAP-FPM UI can be found under `docker` on the `Access` drop-down menu.
 
 <p align="center">
   <img src="images/fpm-login.png" style="width:45%">
 </p>
 
-4. Search with the supportID.
+Search with the supportID.
 <p align="center">
   <img src="images/fpm-supportid.png" style="width:45%">
 </p>
@@ -267,33 +259,34 @@ Assuming this is a `False Positive` we will use the NAP-FPM UI to modify the pol
   <img src="images/fpm-attack.png" style="width:60%">
 </p>
 
-6. Expand Attack signature details and select `Disable Signature`.
+Expand Attack signature details and select `Disable Signature`.
 <p align="center">
   <img src="images/fpm-expand.png" style="width:50%">
 </p>
 
-7. Enter the Commit message, select the repository and apply the changes. 
+Enter the Commit message, select the repository and apply the changes. 
 <p align="center">
   <img src="images/fpm-commit.png" style="width:55%">
 </p>
 
 Make sure that you received `Success` message when you apply the changes. 
 
-8. Log on to GitLab, go to  **devsecops/nap** repository and review the **Portal** NAP policy (`portal.yaml`). Verify that the Signature ***200010015*** has been disabled.
+Log on to GitLab, go to  **devsecops/nap** repository and review the **Portal** NAP policy (`portal.yaml`). Verify that the Signature ***200010015*** has been disabled.
 
-9. Run again the same transaction and verify that NAP is not blocking this request. 
+Run again the same transaction and verify that NAP is not blocking this request. 
 ```
 curl "http://portal.f5demo.cloud/phpinfo.php"
 ```
 
-10. Repeat the same process but with a different False positive.
+Repeat the same process but with a different False positive.
 ```
 curl "http://portal.f5demo.cloud/index.php" -H "Header1;"
 ```
 
-11. Search with the supportID to find this particular transaction and then select `Disable` on the Violation section.
+Search with the supportID to find this particular transaction and then select `Disable` on the Violation section.
 
-12. Once the change has been deployed re-run the transaction and verify that now it is not getting blocked from NAP.
+
+Once the change has been deployed re-run the transaction and verify that now it is not getting blocked from NAP.
 ```
 curl "http://portal.f5demo.cloud/index.php" -H "Header1;"
 ```
