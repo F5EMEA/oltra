@@ -1,0 +1,130 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-config
+  namespace: monitoring
+data:
+  otel-collector-config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+
+    exporters:
+      prometheus:
+        endpoint: "0.0.0.0:8889"
+        const_labels:
+          label1: value1
+
+      logging:
+
+      zipkin:
+        endpoint: "http://zipkin-collector:9411/api/v2/spans"
+        format: proto
+
+      jaeger:
+        endpoint: jaeger-collector:14250
+        tls:
+          insecure: true
+
+    processors:
+      batch:
+
+    extensions:
+      health_check:
+      pprof:
+        endpoint: :1888
+      zpages:
+        endpoint: :55679
+
+    service:
+      extensions: [pprof, zpages, health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [logging, zipkin, jaeger]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [logging, prometheus]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: monitoring
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: otel-collector
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/name: otel-collector
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8889"
+    spec:
+      volumes:
+      - name: otel-config
+        configMap:
+          name: otel-config
+      containers:
+      - image: otel/opentelemetry-collector-contrib-dev:latest
+        imagePullPolicy: IfNotPresent
+        name: otel-collector
+        ports:
+        - containerPort: 1888
+          protocol: TCP
+        - containerPort: 8888
+          protocol: TCP
+        - containerPort: 8889
+          protocol: TCP
+        - containerPort: 13133
+          protocol: TCP
+        - containerPort: 4317
+          protocol: TCP
+        - containerPort: 55679
+          protocol: TCP
+        resources: {}
+        volumeMounts:
+        - name: otel-config
+          mountPath: /otel
+          readOnly: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        args:
+        - --config=/otel/otel-collector-config.yaml
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: monitoring
+spec:
+  ports:
+  - port: 9411
+    protocol: TCP
+    targetPort: 9411
+    nodePort: 30101
+  selector:
+    app.kubernetes.io/name: otel-collector
+  sessionAffinity: None
+  type: NodePort
+
