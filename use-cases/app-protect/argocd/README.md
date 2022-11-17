@@ -87,7 +87,7 @@ In this example we will configure NAP to work with Argo CD so that we follow a G
 4. Go to VSCode and verify that all the Kubernetes objects have been applied correctly.
 
 ```
-kubectl get appolicy nap-argo -n nap-argo -o yaml
+kubectl get appolicy nap-v1 -n nap-argo -o yaml
 ```
 
 The expected output is the following. 
@@ -97,12 +97,12 @@ kind: APPolicy
 metadata:
   annotations:
     kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"appprotect.f5.com/v1beta1","kind":"APPolicy","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"nap-demo"},"name":"nap-argo","namespace":"nap-argo"},"spec":{"policy":{"applicationLanguage":"utf-8","enforcementMode":"transparent","name":"nap-argo","template":{"name":"POLICY_TEMPLATE_NGINX_BASE"}}}}
+      {"apiVersion":"appprotect.f5.com/v1beta1","kind":"APPolicy","metadata":{"annotations":{},"labels":{"app.kubernetes.io/instance":"nap-demo"},"name":"nap-v1","namespace":"nap-argo"},"spec":{"policy":{"applicationLanguage":"utf-8","enforcementMode":"transparent","name":"nap-v1","template":{"name":"POLICY_TEMPLATE_NGINX_BASE"}}}}
   creationTimestamp: "2022-11-01T12:59:36Z"
   generation: 6
   labels:
     app.kubernetes.io/instance: nap-demo
-  name: nap-argo
+  name: nap-v1
   namespace: nap-argo
   resourceVersion: "2665839"
   uid: ed79f06c-42bc-43fc-9bb5-624775d6cd68
@@ -110,7 +110,7 @@ spec:
   policy:
     applicationLanguage: utf-8
     enforcementMode: blocking
-    name: nap-argo
+    name: nap-v1
     template:
       name: POLICY_TEMPLATE_NGINX_BASE
 ```
@@ -139,7 +139,7 @@ spec:
 
 3. Run the following command to verify that the enforcement mode has changed to transparent
 ```
-kubectl get appolicy nap-argo -n nap-argo -o yaml | grep enforcementMode:
+kubectl get appolicy nap-v1 -n nap-argo -o yaml | grep enforcementMode:
 ```
 
 The expected output is the following. 
