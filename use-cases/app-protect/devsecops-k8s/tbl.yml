@@ -1,6 +1,0 @@
-policy:
-  name: tea
-  applicationLanguage: utf-8
-  enforcementMode: blocking
-  template:
-    name: POLICY_TEMPLATE_NGINX_BASE
