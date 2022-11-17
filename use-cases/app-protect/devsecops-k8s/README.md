@@ -254,7 +254,7 @@ Search with the supportID.
   <img src="images/fpm-supportid.png" style="width:45%">
 </p>
 
-5. Review the violation Details
+Review the violation Details
 <p align="center">
   <img src="images/fpm-attack.png" style="width:60%">
 </p>
