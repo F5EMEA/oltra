@@ -19,7 +19,7 @@ export PATH=~/bin:$PATH
 The KubeAPI Server needs to be modified to enable Service Account Token Volume Projection.
 
 You need to `ssh` on to the master node, and modify `/etc/kubernetes/manifests/kube-apiserver.yaml`.
-Ensure that the following arguments are patched into the file:
+Ensure that the following arguments are added into the file (do not delete anything):
 
 ```
 spec:
@@ -30,6 +30,9 @@ spec:
     - --service-account-issuer=api
     - --service-account-signing-key-file=/etc/kubernetes/pki/sa.key
 ```
+You should finish up with two `--service-account-issuer` entries once finished.
+
+The `kube-api-server` container should restart itself once you have saved the changes. You can keep an eye on this with `kubectl get pods -n kube-system`. Once the API Server has restarted you will need to run `systemctl restart kubelet` on the master and both nodes to complete the changes.
 
 ### Add Jaeger, Zipkin and OpenTelemetry
 
