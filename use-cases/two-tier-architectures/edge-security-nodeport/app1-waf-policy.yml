@@ -1,0 +1,13 @@
+apiVersion: cis.f5.com/v1
+kind: Policy
+metadata:
+  labels:
+    f5cr: "true"
+  name: app1-waf-policy
+  namespace: nginx
+spec:
+  l7Policies:
+    waf: /Common/app1_policy
+  profiles:
+    logProfiles:
+      - /Common/Log all requests
