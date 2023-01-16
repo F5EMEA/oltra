@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: app1
-        image: nginxdemos/nginx-hello:plain-text
+        image: nginxdemos/nginx-hello:0.1-plain-text
         ports:
         - containerPort: 8080
 ---
@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: app2
-        image: nginxdemos/nginx-hello:plain-text
+        image: nginxdemos/nginx-hello:0.1-plain-text
         ports:
         - containerPort: 8080
 ---

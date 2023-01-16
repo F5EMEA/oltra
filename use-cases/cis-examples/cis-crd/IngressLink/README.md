@@ -71,7 +71,7 @@ nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
 
 Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
 ```
-kubectl apply -f svc_nginx.yml
+kubectl apply -f svc-plus.yml
 ```
 
 Deploy the IngressLink resource.
@@ -117,7 +117,7 @@ Request ID: 18c2b70bcca18c590a0125db04be5661
 ***Clean up the environment (Optional)***
 ```
 kubectl delete -f ingress.yml
-kubectl delete -f svc_nginx.yml
+kubectl delete -f svc-plus.yml
 kubectl delete -f ingresslink.yml
 ```
 
@@ -142,7 +142,7 @@ nginx-plus-778ff965c9-h7ssx    1/1     Running   2 (37m ago)   2d16h
 
 Deploy a new service that will contain the label which IngressLink will match. In this case we are using the following label `app: ingresslink`
 ```
-kubectl apply -f svc_nginx.yml
+kubectl apply -f svc-plus.yml
 ```
 
 Deploy the IngressLink resource.
@@ -183,6 +183,6 @@ Request ID: 18c2b70bcca18c590a0125db04be5661
 ***Clean up the environment (Optional)***
 ```
 kubectl delete -f ingress.yml
-kubectl delete -f svc_nginx.yml
+kubectl delete -f svc-plus.yml
 kubectl delete -f ingresslink-static.yml
 ```
