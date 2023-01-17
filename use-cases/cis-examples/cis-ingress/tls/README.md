@@ -50,15 +50,16 @@ spec:
               port:
                 number: 80
 ```
-
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `tls`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/tls
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
 Deploy the secret on Kubernetes that holds the certificate
@@ -74,9 +75,10 @@ kubectl apply -f tls-cert-k8s.yml
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ingress tls-cert-k8s
+```
 
-------------------------   OUTPUT   ------------------------
-
+Expected Output
+```
 Name:             tls-cert-k8s
 Labels:           <none>
 Namespace:        default
@@ -97,7 +99,6 @@ Events:
   ----    ------              ----  ----            -------
   Normal  ResourceConfigured  23s   k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-51_80 for the Ingress.
   Normal  ResourceConfigured  23s   k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-51_443 for the Ingress.
-------------------------------------------------------------
 ```
 
 Try accessing the service with the use of curl as per the example below. We use curl's -k option to turn off certificate verification and the -v option to get the TLS certificate details
@@ -157,22 +158,25 @@ Verify that the SSL Client Profile exists and is assigned the above certificate 
 :-------------------------:|:-------------------------:
 ![ssl-profiles](images/ssl-profiles.png) | ![tls1](images/tls1.png) 
 
-
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Create the Ingress resource.
 ```
 kubectl apply -f tls-cert-bigip.yml
 ```
 
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
+```
+
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ingress tls-cert-bigip
+```
 
-------------------------   OUTPUT   ------------------------
+Expected Output
+```
 Name:             tls-cert-bigip
 Labels:           <none>
 Namespace:        default
@@ -193,7 +197,6 @@ Events:
   ----    ------              ----  ----            -------
   Normal  ResourceConfigured  19s   k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-52_80 for the Ingress.
   Normal  ResourceConfigured  19s   k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-52_443 for the Ingress.
-------------------------------------------------------------
 ```
 
 Try accessing the service.
@@ -261,13 +264,16 @@ Verify that the SSL Client Profile exists for both certificates and that at leas
 ![ssl-profiles](images/ssl-profiles-2.png) | ![sni-configured](images/sni-configured.png)
 
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `tls`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/tls
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
 ```
 
 Create the ingress resource
@@ -278,9 +284,10 @@ kubectl apply -f multi-tls-cert-bigip.yml
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ingress multi-tls-cert-bigip
+```
 
-------------------------   OUTPUT   ------------------------
-
+Expected Output
+```
 Name:             multi-tls-cert-bigip
 Labels:           <none>
 Namespace:        default

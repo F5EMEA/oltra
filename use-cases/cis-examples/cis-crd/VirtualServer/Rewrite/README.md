@@ -74,6 +74,11 @@ You should receive a 302 redirect from BIGIP with Location Header set as `/home`
 < Content-Length: 0
 ```
 
+***Clean up the environment (Optional)***
+```
+kubectl delete -f approot-vs
+```
+
 ## URI Path rewrite
 Rewriting the path in HTTP Header of a request before submitting to the pool
 

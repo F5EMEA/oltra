@@ -133,13 +133,27 @@ kubectl get f5-vs
 
 Access the service few times using the following example.
 ```
-curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
-curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
-curl -v http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
+curl http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
+curl http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
+curl http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
 ```
 
 Verify that the transactions are actually going to multiple backend pods and they dont persist on a single one.
-
+```
+{
+  "Server Name": "persistence.f5demo.local",
+  "Server Address": "10.244.219.102",    <==  POD IP
+  "Server Port": "80",
+  "Request Method": "GET",
+  "Request URI": "/",
+  "Query String": "",
+  "Headers": [{"host":"persistence.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Remote Address": "10.1.20.5",
+  "Remote Port": "55764",
+  "Timestamp": "1673876853",
+  "Data": "0"
+}
+```
 ***Clean up the environment (Optional)***
 ```
 kubectl delete -f persistence-policy.yml
@@ -159,7 +173,7 @@ metadata:
   name: irule-policy
 spec:
   iRules:
-    insecure: /Common/sorry-page
+    insecure: /Common/sorry_page
 ---
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
@@ -182,10 +196,6 @@ Create the Application deployment and service:
 kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
 Change the working directory to `PolicyCRD`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
@@ -199,7 +209,7 @@ kubectl apply -f vs-with-policy-irule.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 ```
 
 On the BIGIP we created an iRule  called **sorry-page**, on the Common Partition, that responds to the user with a "Sorry the page is under maintainance" This iRule has been reference on the PolicyCRD.
@@ -258,10 +268,6 @@ Create the Application deployment and service:
 kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
 Change the working directory to `PolicyCRD`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
@@ -275,14 +281,14 @@ kubectl apply -f vs-with-policy-waf.yml
 
 Confirm that the VS CRD is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
-kubectl get vs 
+kubectl get f5-vs 
 ```
 
 On the BIGIP we created a WAF policy **basic_waf_policy** to block HTTP attacks, so we expect BIGIP to mitigate any L7 attack (according to the WAF policy) that is executed to the services running in K8S. This WAF policy has been reference on the PolicyCRD.
 
 Access the service using the following example that contains a XSS violations. 
 ```
-curl -v "http://waf.f5demo.local/index.php?parameter=<script/>" --resolve waf.f5demo.local:80:10.1.10.65
+curl "http://waf.f5demo.local/index.php?parameter=<script/>" --resolve waf.f5demo.local:80:10.1.10.65
 ```
 
 Verify that the  transaction that contains the attack gets blocked by BIGIP WAF.

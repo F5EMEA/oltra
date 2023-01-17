@@ -52,21 +52,10 @@ Confirm that the VirtualServer resource is deployed correctly. You should see `O
 kubectl get f5-vs wildcard-vs
 ```
 
-Try accessing the service with curl as per the examples below. 
-```
-curl http://test.example.local/ --resolve test.example.local:80:10.1.10.72
-
-```
-In the above example you should see a reset connection as it didnt match the configured Host parameter.
-`curl: (56) Recv failure: Connection reset by peer`
-
-
-Try again with the examples below
+Try accessing the service with the examples below
 ```
 curl http://test1.f5demo.local/ --resolve test1.f5demo.local:80:10.1.10.72
 curl http://test2.f5demo.local/ --resolve test2.f5demo.local:80:10.1.10.72
-...
-...
 curl http://test10.f5demo.local/ --resolve test10.f5demo.local:80:10.1.10.72
 ```
 
@@ -153,21 +142,10 @@ Confirm that the VirtualServer resource is deployed correctly. You should see `O
 kubectl get f5-vs wildcard-tls-vs
 ```
 
-Try accessing the service with curl as per the examples below. 
-```
-curl -k https://test.example.local/ --resolve test.example.local:80:10.1.10.73
-
-```
-In the above example you should see a reset connection as it didnt match the configured Host parameter.
-`curl: (56) Recv failure: Connection reset by peer`
-
-
-Try again with the examples below
+Try accessing the service with the examples below
 ```
 curl -k https://test1.f5test.local/ --resolve test1.f5test.local:443:10.1.10.73
 curl -k https://test2.f5test.local/ --resolve test2.f5test.local:443:10.1.10.73
-...
-...
 curl -k https://test10.f5test.local/ --resolve test10.f5test.local:443:10.1.10.73
 ```
 

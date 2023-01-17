@@ -55,7 +55,7 @@ spec:
 
 Change the working directory to `httpTaffic`.
 ```
-cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/httpTaffic
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/httpTraffic
 ```
 
 Create the TLSProfile and VirtualServer resources.

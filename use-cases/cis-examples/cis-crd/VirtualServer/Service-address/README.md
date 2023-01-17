@@ -38,7 +38,7 @@ cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Service-address
 
 Create the VirtualServer resource. 
 ```
-kubectl apply -f service-address-vs.yml
+kubectl apply -f service-address.yml
 ```
 
 Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
@@ -48,5 +48,5 @@ kubectl get f5-vs service-address-vs
 
 ***Clean up the environment (Optional)***
 ```
-kubectl delete -f service-address-vs.yml
+kubectl delete -f service-address.yml
 ```

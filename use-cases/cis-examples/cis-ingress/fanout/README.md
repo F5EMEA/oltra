@@ -36,13 +36,16 @@ spec:
               number: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `fanout`
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/fanout
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
 Create the Ingress resource.
@@ -53,8 +56,10 @@ kubectl apply -f fanout.yml
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ingress fanout
+```
 
-------------------------   OUTPUT   ------------------------
+Expected Output
+```
 Name:             fanout
 Labels:           <none>
 Namespace:        default
@@ -73,7 +78,6 @@ Events:
   Type    Reason              Age   From            Message
   ----    ------              ----  ----            -------
   Normal  ResourceConfigured  8s    k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-50_80 for the Ingress.
-------------------------------------------------------------
 ```
 
 Notice on **Rules** section the output value of Host is now defined as "**fanout.f5demo.local**" and on the Path level there are 2 entries; __app1__ that points to `app1-svc` and __/app2__ that points to `app2-svc`.
@@ -98,8 +102,6 @@ curl http://fanout.f5demo.local/app2 --resolve fanout.f5demo.local:80:10.1.10.50
 In all cases you should see similar outputs but from different backend pods (__app1__ and __app2__ pods) depending on the path.
 
 ```cmd
-~/oltra/use-cases/cis-examples/cis-ingress/fanout$ curl http://fanout.f5demo.local/app2 --resolve fanout.f5demo.local:80:10.1.10.50
-
 Server address: 10.244.140.66:8080
 Server name: app2-78c95bccb5-jvfnr              <======  app2 pods
 Date: 11/Jul/2022:15:54:39 +0000

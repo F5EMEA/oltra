@@ -1,5 +1,5 @@
 # Secure TLS Virtual Server
-This section demonstrates the three option to configure VirtualServer TLS termination:
+This section demonstrates the four options to configure VirtualServer TLS termination:
  - [Edge TLS](#edge-tls-termination)
  - [Re-Encrypt TLS](#re-encrypt-tls-termination)
  - [Passthrough TLS](#passthrough-tls-termination)
@@ -70,6 +70,32 @@ Access the `echo-svc` service using the following example.
 curl -vk https://edge.f5demo.local/ --resolve edge.f5demo.local:443:10.1.10.68
 ```
 
+Verify that the Pod that we are load balancing listens on HTTP and not HTTPS
+```
+< HTTP/1.1 200 OK
+< Date: Tue, 17 Jan 2023 13:25:24 GMT
+< Server: Apache/2.4.51 (Debian)
+< X-Powered-By: PHP/8.1.0
+< Content-Length: 389
+< Content-Type: application/json
+< Set-Cookie: BIGipServer~cis-crd~Shared~echo_svc_80_default_edge_f5demo_local=2044457994.20480.0000; path=/; Httponly; Secure
+< 
+{
+  "Server Name": "edge.f5demo.local",
+  "Server Address": "10.244.219.121",
+  "Server Port": "80",                    <========  Plain HTTP 
+  "Request Method": "GET",
+  "Request URI": "/",
+  "Query String": "",
+  "Headers": [{"host":"edge.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Remote Address": "10.1.20.5",
+  "Remote Port": "33955",
+  "Timestamp": "1673961924",
+  "Data": "0"
+}
+
+```
+
 ***Clean up the environment (Optional)***
 ```
 kubectl delete -f edge-tls.yml
@@ -77,7 +103,7 @@ kubectl delete -f edge-vs.yml
 ```
 
 ## Re-Encrypt TLS Termination
-This section demonstrates how to configure VirtualServer with re-encrypt TLS termination.
+This section demonstrates how to configure VirtualServer with re-encrypt TLS termination. Please notice that the pod listens on port `8443` that runs on top of SSL.
 For this configuration we will need 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
 
 Eg: re-encrypt-tls.yml / re-encrypt-vs.yml
@@ -109,14 +135,14 @@ spec:
   virtualServerAddress: 10.1.10.69
   virtualServerName: "reencrypt-tls-vs"
   pools:
-      path: /
-      service: echo-svc
-      servicePort: 80
+  - path: /
+    service: secure-app
+    servicePort: 8443
 ```
 
 Create the Application deployment and service: 
 ```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+kubectl apply -f ~/oltra/setup/apps/secure-app.yaml
 ```
 
 Change the working directory to `TLS-Termination`.
@@ -138,6 +164,11 @@ kubectl get f5-vs reencrypt-tls-vs
 Access the `secure-app` service using the following example. 
 ```
 curl -vk https://reencrypt.f5demo.local/ --resolve reencrypt.f5demo.local:443:10.1.10.69
+```
+
+Verify that the pod responded with the following text 
+```
+hello from pod secure-app-8cb576989-vnvh7
 ```
 
 ***Clean up the environment (Optional)***
@@ -176,14 +207,14 @@ spec:
   virtualServerAddress: 10.1.10.70
   virtualServerName: "passthrough-tls-vs"
   pools:
-      path: /
-      service: echo-svc
-      servicePort: 80
+  - path: /
+    service: secure-app
+    servicePort: 8443
 ```
 
 Create the Application deployment and service: 
 ```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+kubectl apply -f ~/oltra/setup/apps/secure-app.yaml
 ```
 
 Change the working directory to `TLS-Termination`.
@@ -207,13 +238,18 @@ Access the `echo-svc` service using the following example.
 curl -vk https://passthrough.f5demo.local/ --resolve passthrough.f5demo.local:443:10.1.10.70
 ```
 
+Verify that the pod responded with the following text 
+```
+hello from pod secure-app-8cb576989-vnvh7
+```
+
 ***Clean up the environment (Optional)***
 ```
 kubectl delete -f passthrough-tls.yml
 kubectl delete -f passthrough-vs.yml
 ```
 
-## Certificate as K8s secret
+## Certificate as K8s secret with TLS Edge
 This section demonstrates how to configure VirtualServer with edge TLS termination and the certificate stored as K8s secret.
 For this configuration we will need 1 secret to hold the TLS certificate and 2 custom resources; TLSProfile and VirtualServer. Please find the yaml examples below
 
@@ -282,6 +318,34 @@ Access the `echo-svc` service using the following example.
 ```
 curl -vk https://k8s.f5demo.local/ --resolve k8s.f5demo.local:443:10.1.10.71
 ```
+
+Verify that the Pod that we are load balancing listens on HTTP and not HTTPS
+
+```
+< HTTP/1.1 200 OK
+< Date: Tue, 17 Jan 2023 13:25:24 GMT
+< Server: Apache/2.4.51 (Debian)
+< X-Powered-By: PHP/8.1.0
+< Content-Length: 389
+< Content-Type: application/json
+< Set-Cookie: BIGipServer~cis-crd~Shared~echo_svc_80_default_edge_f5demo_local=2044457994.20480.0000; path=/; Httponly; Secure
+< 
+{
+  "Server Name": "edge.f5demo.local",
+  "Server Address": "10.244.219.121",
+  "Server Port": "80",                    <========  Plain HTTP 
+  "Request Method": "GET",
+  "Request URI": "/",
+  "Query String": "",
+  "Headers": [{"host":"edge.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Remote Address": "10.1.20.5",
+  "Remote Port": "33955",
+  "Timestamp": "1673961924",
+  "Data": "0"
+}
+
+```
+
 
 ***Clean up the environment (Optional)***
 ```

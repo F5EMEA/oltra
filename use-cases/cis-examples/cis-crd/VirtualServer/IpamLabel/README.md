@@ -31,7 +31,7 @@ kubectl -n bigip describe deployment f5-ipam
       /app/bin/f5-ipam-controller
     Args:
       --orchestration=kubernetes
-      --ip-range='{"dev":"10.1.10.181-10.1.10.190","prod":"10.1.10.191-10.1.10.200"}'
+      --ip-range='{"dev":"10.1.10.150-10.1.10.169","prod":"10.1.10.170-10.1.10.189","tenant1":"10.1.10.190-10.1.10.192","tenant2":"10.1.10.193-10.1.10.195"}'
       --log-level=DEBUG
 ...
 ...

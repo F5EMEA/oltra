@@ -37,14 +37,14 @@ spec:
 
 > *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/apps.yml
-```
-
 Change the working directory to `HealthMonitor`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HealthMonitor
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
 ```
 
 Create the VirtualServer resource.

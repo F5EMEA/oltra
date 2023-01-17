@@ -42,13 +42,16 @@ spec:
             pathType: Prefix
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `rewrite`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/rewrite
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
 ```
 
 Create the Ingress resource.
@@ -56,12 +59,13 @@ Create the Ingress resource.
 kubectl apply -f rewrite-app-root.yml
 ```
 
-
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ingress rewrite-app-root
+```
 
-------------------------   OUTPUT   ------------------------
+Expected Output
+```
 Name:             rewrite-app-root
 Labels:           <none>
 Namespace:        default
@@ -80,7 +84,6 @@ Events:
   Type    Reason              Age   From            Message
   ----    ------              ----  ----            -------
   Normal  ResourceConfigured  5s    k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-50_80 for the Ingress.
-------------------------------------------------------------
 ```
 
 Try accessing the service.
@@ -91,7 +94,6 @@ curl -v http://rewrite2.f5demo.local/ --resolve rewrite2.f5demo.local:80:10.1.10
 ```
 
 The output should be similar to the following:
-
 ```cmd
 * Added rewrite1.f5demo.local:80:10.1.10.50 to DNS cache
 * Hostname rewrite1.f5demo.local was found in DNS cache
@@ -127,13 +129,16 @@ kubectl delete -f basic-ingress.yml
 ## URL-Rewrite
 In the following example we deploy an Ingress resource that rewrites the URL from `lab.f5demo.local/mylab` to `laboratory.f5demo.local/mylaboratory`.
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `rewrite`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/rewrite
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
 ```
 
 Create the Ingress resource.
@@ -145,8 +150,10 @@ kubectl apply -f url-rewrite-ingress.yml
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ingress url-rewrite-ingress
+```
 
-------------------------   OUTPUT   ------------------------
+Expected Output
+```
 Name:             url-rewrite-ingress
 Labels:           <none>
 Namespace:        default
@@ -163,7 +170,6 @@ Events:
   Type    Reason              Age   From            Message
   ----    ------              ----  ----            -------
   Normal  ResourceConfigured  22s   k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-50_80 for the Ingress.
-------------------------------------------------------------
 ```
 
 Try accessing the service.

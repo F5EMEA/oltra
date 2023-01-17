@@ -37,13 +37,16 @@ spec:
         pathType: Prefix
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `health-monitor`
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/health-monitor
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my_app.yml
 ```
 
 Create the Ingress resource.
@@ -54,8 +57,10 @@ kubectl apply -f health-monitor.yml
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ing health-monitor
+```
 
-------------------------   OUTPUT   ------------------------
+Expected Output
+```
 Name:             health-monitor
 Labels:           <none>
 Namespace:        default
@@ -80,8 +85,6 @@ Events:
   Type    Reason              Age   From            Message
   ----    ------              ----  ----            -------
   Normal  ResourceConfigured  8s    k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-50_80 for the Ingress.
-
-------------------------------------------------------------
 
 ```
 Notice the annotation section where the health monitors have been defined.

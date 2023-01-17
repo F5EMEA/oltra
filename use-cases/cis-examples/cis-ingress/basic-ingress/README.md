@@ -20,13 +20,16 @@ spec:
         number: 80
 ```
 
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `basic-ingress`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/basic-ingress
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/my-echo.yml
 ```
 
 Create the Ingress resource.
@@ -35,12 +38,12 @@ kubectl apply -f basic-ingress.yml
 ```
 
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress  
-
 ```
 kubectl describe ingress basic-ingress
+```
 
-------------------------   OUTPUT   ------------------------
-
+Expected Output
+```
 Name:             basic-ingress
 Labels:           <none>
 Namespace:        default
@@ -59,7 +62,6 @@ Events:
   ----    ------              ----               ----            -------
   Normal  ResourceConfigured  21s (x2 over 21s)  k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-49_80 for the Ingress
 
-------------------------------------------------------------
 ```
 
 Notice that:
@@ -75,22 +77,20 @@ curl http://10.1.10.49/test.php
 curl http://test.f5demo.local --resolve test.f5demo.local:80:10.1.10.49
 ```
 
-In all cases you should see similar output:
-```cmd
-$ curl http://test.f5demo.local --resolve test.f5demo.local:80:10.1.10.49
-
+In all cases you should see similar output to:
+```json
 {
-    "Server Name": "test.f5demo.local",
-    "Server Address": "10.244.140.87",
-    "Server Port": "80",
-    "Request Method": "GET",
-    "Request URI": "/",
-    "Query String": "",
-    "Headers": [{"host":"test.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
-    "Remote Address": "10.1.20.5",
-    "Remote Port": "52656",
-    "Timestamp": "1657553826",
-    "Data": "0"
+  "Server Name": "test.f5demo.local",
+  "Server Address": "10.244.140.87",
+  "Server Port": "80",
+  "Request Method": "GET",
+  "Request URI": "/",
+  "Query String": "",
+  "Headers": [{"host":"test.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Remote Address": "10.1.20.5",
+  "Remote Port": "52656",
+  "Timestamp": "1657553826",
+  "Data": "0"
 }
 ```
 

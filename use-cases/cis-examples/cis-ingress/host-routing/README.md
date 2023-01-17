@@ -40,13 +40,17 @@ spec:
                number: 80
 
 ```
-Access the terminal on the VS Code.
 
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
 Change the working directory to `host-routing`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-ingress/host-routing
+```
+
+Create the Application deployment and service: 
+```
+kubectl apply -f ~/oltra/setup/apps/apps.yml
 ```
 
 Create the Ingress resource.
@@ -57,8 +61,10 @@ kubectl apply -f host-routing.yml
 Confirm that the Ingress is deployed correctly. Run the describe command to get more information on the ingress.
 ```
 kubectl describe ingress fqdn-based-routing
+```
 
-------------------------   OUTPUT   ------------------------
+Expected Output
+```
 Name:             fqdn-based-routing
 Labels:           <none>
 Namespace:        default
@@ -79,7 +85,6 @@ Events:
   Type    Reason              Age   From            Message
   ----    ------              ----  ----            -------
   Normal  ResourceConfigured  5s    k8s-bigip-ctlr  Created a ResourceConfig ingress_10-1-10-50_80 for the Ingress.
-------------------------------------------------------------
 ```
 
 > Notice that the value of Host is now defined ("fqdn1.f5demo.local" / "fqdn2.f5demo.local").
@@ -102,8 +107,6 @@ curl http://fqdn2.f5demo.local/ --resolve fqdn2.f5demo.local:80:10.1.10.50
 In both cases you should see that similar output but from different backend pods (app1 and app2 pods):
 
 ```cmd
-~/oltra/use-cases/cis-examples/cis-ingress/fanout$ curl http://fqdn2.f5demo.local/ --resolve fqdn2.f5demo.local:80:10.1.10.50
-
 Server address: 10.244.140.66:8080
 Server name: app2-78c95bccb5-jvfnr              <======  app2 pods
 Date: 11/Jul/2022:15:54:39 +0000
