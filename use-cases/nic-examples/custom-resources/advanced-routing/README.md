@@ -28,6 +28,48 @@ Create the VirtualServer resource:
 kubectl apply -f cafe-virtual-server.yaml
 ```
 
+Eg: udp-transport-server.yml
+```yml
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: cafe
+spec:
+  host: cafe.example.com
+  upstreams:
+  - name: tea-post
+    service: tea-post-svc
+    port: 80
+  - name: tea
+    service: tea-svc
+    port: 80
+  - name: coffee-v1
+    service: coffee-v1-svc
+    port: 80
+  - name: coffee-v2 
+    service: coffee-v2-svc
+    port: 80
+  routes:
+  - path: /tea
+    matches:
+    - conditions:
+      - variable: $request_method.  
+        value: POST
+      action:
+        pass: tea-post
+    action:
+      pass: tea
+  - path: /coffee
+    matches:
+    - conditions:
+      - cookie: version
+        value: v2
+      action:
+        pass: coffee-v2
+    action:
+      pass: coffee-v1
+```
+
 ## Step 3 - Test the Configuration
 
 Check that the configuration has been successfully applied by inspecting the events of the VirtualServer:
