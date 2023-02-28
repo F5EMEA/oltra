@@ -68,7 +68,7 @@ spec:
           - -report-ingress-status
           - -nginx-status-allow-cidrs=10.0.0.0/8
           - -nginx-status
-          - -disable-ipv6
+         # - -disable-ipv6
          #- -external-service=nginx-ingress
           - -enable-prometheus-metrics
          #- -global-configuration=$(POD_NAMESPACE)/nginx-configuration
