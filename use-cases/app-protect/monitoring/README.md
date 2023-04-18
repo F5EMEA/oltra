@@ -161,7 +161,7 @@ The expected output  for all the previous requests is the following:
 
 ### Step 3. Review Logs 
 
-Login to Grafana (credentials **admin/IngressLab123**)
+Login to Grafana (credentials **admin/Ingresslab123**)
 <p align="left">
   <img src="images/login.png" style="width:50%">
 </p>
