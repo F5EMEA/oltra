@@ -10,9 +10,9 @@ Lets try some "mistakes"
 
 1. Open the VScode and open a WebSSH session to Master.
 
-2. Go to directory `~/oltra/workshop/warsaw/day1/`.
+2. Go to directory `~/oltra/use-cases/workshops/warsaw/day1`.
 ```
-cd ~/oltra/workshop/warsaw/day1/
+cd ~/oltra/use-cases/workshops/warsaw/day1
 ```
 
 3. Review the `mistake-1.yaml`.
