@@ -18,7 +18,7 @@ kubectl get deploy -n bigip
 
 4. Review the deployment configuration for CIS. 
 ```
-kubectl get x.x.x.x.
+kubectl get deploy f5-cis-crd -n bigip -o yaml
 ```
 
 5. Let's find the deployment for NGINX
@@ -28,7 +28,7 @@ kubectl get deploy -n nginx
 
 6. Review the deployment configuration for CIS. 
 ```
-kubectl describe deploy -n y.y.y.y.
+kubectl describe deploy nginx-plus -n nginx
 ```
 
 ## Ingress examples with CIS
