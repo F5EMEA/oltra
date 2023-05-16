@@ -8,6 +8,13 @@ We will first install the NGINX Plus instance with App Protect on an Ubuntu 20.0
 
 1. Open the VScode and open a WebSSH session to Master.
 
+
+1.1. Go to directory `~/oltra/workshop/warsaw/day1/`.
+```
+cd ~/oltra/
+git pull
+```
+
 2. Go to directory `~/oltra/workshop/warsaw/day1/`.
 ```
 cd ~/oltra/workshop/warsaw/day1/
