@@ -6,6 +6,6 @@ metadata:
     f5cr: "true"
 spec:
   hosts:
-    - passthrough.f5demo.local
+    - passthrough.f5k8s.net
   tls:
     termination: passthrough

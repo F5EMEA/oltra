@@ -7,7 +7,7 @@ metadata:
 spec:
   virtualServerAddress: 10.1.10.64
   virtualServerName: "persistence-policy-vs"
-  host: persistence.f5demo.local
+  host: persistence.f5k8s.net
   policyName: persistence-policy
   snat: auto
   pools:

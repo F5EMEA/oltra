@@ -7,14 +7,14 @@ metadata:
 spec:
   virtualServerAddress: "10.1.10.58"
   virtualServerName: "health-vs"
-  host: health.f5demo.local
+  host: health.f5k8s.net
   pools:
   - path: /app1
     service: app1-svc
     servicePort: 8080
     monitor:
       type: http
-      send: "GET /app1/index.html HTTP/1.1\r\nHost: health.f5demo.local\r\nConnection: Close\r\n\r\n"
+      send: "GET /app1/index.html HTTP/1.1\r\nHost: health.f5k8s.net\r\nConnection: Close\r\n\r\n"
       recv: "200 OK"
       interval: 3
       timeout: 10
@@ -23,7 +23,7 @@ spec:
     servicePort: 8080
     monitor:
       type: http
-      send: "GET /app2/index.html HTTP/1.1\r\nHost: health.f5demo.local\r\nConnection: Close\r\n\r\n"
+      send: "GET /app2/index.html HTTP/1.1\r\nHost: health.f5k8s.net\r\nConnection: Close\r\n\r\n"
       recv: "200 OK"
       interval: 3
       timeout: 10

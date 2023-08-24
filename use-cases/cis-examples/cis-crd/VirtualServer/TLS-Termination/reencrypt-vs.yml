@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: reencrypt-tls-vs
 spec:
-  host: reencrypt.f5demo.local
+  host: reencrypt.f5k8s.net
   tlsProfileName: reencrypt-tls
   virtualServerAddress: 10.1.10.69
   virtualServerName: "reencrypt-tls-vs"

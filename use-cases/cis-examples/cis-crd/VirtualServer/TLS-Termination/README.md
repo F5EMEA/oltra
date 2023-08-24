@@ -21,7 +21,7 @@ metadata:
     f5cr: "true"
 spec:
   hosts:
-    - edge.f5demo.local
+    - edge.f5k8s.net
   tls:
     termination: edge
     clientSSL: /Common/clientssl
@@ -34,7 +34,7 @@ metadata:
     f5cr: "true"
   name: edge-tls-vs
 spec:
-  host: edge.f5demo.local
+  host: edge.f5k8s.net
   tlsProfileName: edge-tls
   virtualServerAddress: 10.1.10.68
   virtualServerName: "edge-tls-vs"
@@ -44,15 +44,11 @@ spec:
       servicePort: 80
 ```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
-
 Change the working directory to `TLS-Termination`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the TLSProfile and VirtualServer resources.
 ```
@@ -67,7 +63,7 @@ kubectl get f5-vs edge-tls-vs
 
 Access the `echo-svc` service using the following example. 
 ```
-curl -vk https://edge.f5demo.local/ --resolve edge.f5demo.local:443:10.1.10.68
+curl -vk https://edge.f5k8s.net/
 ```
 
 Verify that the Pod that we are load balancing listens on HTTP and not HTTPS
@@ -81,13 +77,13 @@ Verify that the Pod that we are load balancing listens on HTTP and not HTTPS
 < Set-Cookie: BIGipServer~cis-crd~Shared~echo_svc_80_default_edge_f5demo_local=2044457994.20480.0000; path=/; Httponly; Secure
 < 
 {
-  "Server Name": "edge.f5demo.local",
+  "Server Name": "edge.f5k8s.net",
   "Server Address": "10.244.219.121",
   "Server Port": "80",                    <========  Plain HTTP 
   "Request Method": "GET",
   "Request URI": "/",
   "Query String": "",
-  "Headers": [{"host":"edge.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Headers": [{"host":"edge.f5k8s.net","user-agent":"curl\/7.58.0","accept":"*\/*"}],
   "Remote Address": "10.1.20.5",
   "Remote Port": "33955",
   "Timestamp": "1673961924",
@@ -116,7 +112,7 @@ metadata:
     f5cr: "true"
 spec:
   hosts:
-    - reencrypt.f5demo.local
+    - reencrypt.f5k8s.net
   tls:
     termination: reencrypt
     clientSSL: /Common/clientssl
@@ -130,7 +126,7 @@ metadata:
     f5cr: "true"
   name: reencrypt-tls-vs
 spec:
-  host: reencrypt.f5demo.local
+  host: reencrypt.f5k8s.net
   tlsProfileName: reencrypt-tls
   virtualServerAddress: 10.1.10.69
   virtualServerName: "reencrypt-tls-vs"
@@ -140,15 +136,11 @@ spec:
     servicePort: 8443
 ```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/secure-app.yaml
-```
-
 Change the working directory to `TLS-Termination`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the TLSProfile and VirtualServer resources.
 ```
@@ -163,7 +155,7 @@ kubectl get f5-vs reencrypt-tls-vs
 
 Access the `secure-app` service using the following example. 
 ```
-curl -vk https://reencrypt.f5demo.local/ --resolve reencrypt.f5demo.local:443:10.1.10.69
+curl -k https://reencrypt.f5k8s.net/ 
 ```
 
 Verify that the pod responded with the following text 
@@ -191,7 +183,7 @@ metadata:
     f5cr: "true"
 spec:
   hosts:
-    - passthrough.f5demo.local
+    - passthrough.f5k8s.net
   tls:
     termination: passthrough
 ---
@@ -202,7 +194,7 @@ metadata:
     f5cr: "true"
   name: passthrough-tls-vs
 spec:
-  host: passthrough.f5demo.local
+  host: passthrough.f5k8s.net
   tlsProfileName: passthrough-tls
   virtualServerAddress: 10.1.10.70
   virtualServerName: "passthrough-tls-vs"
@@ -212,15 +204,12 @@ spec:
     servicePort: 8443
 ```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/secure-app.yaml
-```
-
 Change the working directory to `TLS-Termination`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
+
 
 Create the TLSProfile and VirtualServer resources.
 ```
@@ -235,7 +224,7 @@ kubectl get f5-vs passthrough-tls-vs
 
 Access the `echo-svc` service using the following example. 
 ```
-curl -vk https://passthrough.f5demo.local/ --resolve passthrough.f5demo.local:443:10.1.10.70
+curl -k https://passthrough.f5k8s.net/ 
 ```
 
 Verify that the pod responded with the following text 
@@ -277,7 +266,7 @@ spec:
     clientSSL: k8s-tls-secret
     reference: secret
   hosts:
-    - k8s.f5demo.local
+    - k8s-tls.f5k8s.net
 ---
 apiVersion: cis.f5.com/v1
 kind: VirtualServer
@@ -287,7 +276,7 @@ metadata:
   name: k8s-tls-vs
   namespace: default
 spec:
-  host: k8s.f5demo.local
+  host: k8s-tls.f5k8s.net
   virtualServerAddress: 10.1.10.71
   virtualServerName: "k8s-tls-vs"
   tlsProfileName: k8s-tls
@@ -296,11 +285,13 @@ spec:
       service: echo-svc
       servicePort: 80
 ```
+Change the working directory to `TLS-Termination`.
+```
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/TLS-Termination
+```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
+
 
 Create the K8s secret, TLSProfile and VirtualServer resources.
 ```
@@ -316,7 +307,7 @@ kubectl get f5-vs k8s-tls-vs
 
 Access the `echo-svc` service using the following example. 
 ```
-curl -vk https://k8s.f5demo.local/ --resolve k8s.f5demo.local:443:10.1.10.71
+curl -k https://k8s-tls.f5k8s.net/
 ```
 
 Verify that the Pod that we are load balancing listens on HTTP and not HTTPS
@@ -331,13 +322,13 @@ Verify that the Pod that we are load balancing listens on HTTP and not HTTPS
 < Set-Cookie: BIGipServer~cis-crd~Shared~echo_svc_80_default_edge_f5demo_local=2044457994.20480.0000; path=/; Httponly; Secure
 < 
 {
-  "Server Name": "edge.f5demo.local",
+  "Server Name": "k8s-tls.f5k8s.net",
   "Server Address": "10.244.219.121",
   "Server Port": "80",                    <========  Plain HTTP 
   "Request Method": "GET",
   "Request URI": "/",
   "Query String": "",
-  "Headers": [{"host":"edge.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Headers": [{"host":"k8s-tls.f5k8s.net","user-agent":"curl\/7.58.0","accept":"*\/*"}],
   "Remote Address": "10.1.20.5",
   "Remote Port": "33955",
   "Timestamp": "1673961924",

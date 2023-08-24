@@ -7,7 +7,7 @@ metadata:
 spec:
   virtualServerAddress: 10.1.10.63
   virtualServerName: "irule-policy-vs"
-  host: irule.f5demo.local
+  host: irule.f5k8s.net
   policyName: irule-policy
   snat: auto
   pools:

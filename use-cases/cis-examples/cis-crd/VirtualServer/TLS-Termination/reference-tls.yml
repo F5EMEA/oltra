@@ -10,4 +10,4 @@ spec:
     clientSSL: k8s-tls-secret
     reference: secret
   hosts:
-    - k8s.f5demo.local
+    - k8s-tls.f5k8s.net

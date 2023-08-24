@@ -4,15 +4,11 @@ This section demonstrates the F5 IPAM functionality, where teh VirtualServer IP 
 
 > *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
-Change the working directory to `IpamLabel`.
-```
-cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/IpamLabel
-```
-
 Verify that the IPAM is running.
 
 ```
 kubectl get po -n bigip | grep f5-ipam
+
 
 **************** Expected output ****************
 NAME                                      READY   STATUS    RESTARTS       AGE
@@ -36,12 +32,12 @@ kubectl -n bigip describe deployment f5-ipam
 ...
 ...
 ```
-
-Create the Application deployment and service: 
+Change the working directory to `IpamLabel`.
 ```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
+cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/IpamLabel
 ```
 
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 Create the VirtualServer resource. 
 ```
 kubectl apply -f virtual-with-ipamLabel.yml
@@ -59,19 +55,19 @@ IP=$(kubectl get f5-vs ipam-vs --output=jsonpath='{.status.vsAddress}')
 
 Try accessing the service as per the example below. 
 ```
-curl http://ipam.f5demo.local/ --resolve ipam.f5demo.local:80:$IP
+curl http://ipam.f5k8s.net/ --resolve ipam.f5k8s.net:80:$IP
 ```
 
 The output should be similar to:
 ```
 {
-    "Server Name": "ipam.f5demo.local",
+    "Server Name": "ipam.f5k8s.net",
     "Server Address": "10.244.196.135",
     "Server Port": "80",
     "Request Method": "GET",
     "Request URI": "/",
     "Query String": "",
-    "Headers": [{"host":"ipam.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+    "Headers": [{"host":"ipam.f5k8s.net","user-agent":"curl\/7.58.0","accept":"*\/*"}],
     "Remote Address": "10.1.20.5",
     "Remote Port": "58038",
     "Timestamp": "1657611589",

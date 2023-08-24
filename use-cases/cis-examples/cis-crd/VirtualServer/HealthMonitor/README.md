@@ -13,14 +13,14 @@ metadata:
     f5cr: "true"
 spec:
   virtualServerAddress: "10.1.10.58"
-  host: health.f5demo.local
+  host: health.f5k8s.net
   pools:
   - path: /app1
     service: app1-svc
     servicePort: 8080
     monitor:
       type: http
-      send: "GET /app1/index.html HTTP/1.1\r\nHost: health.f5demo.local\r\nConnection: Close\r\n\r\n"
+      send: "GET /app1/index.html HTTP/1.1\r\nHost: health.f5k8s.net\r\nConnection: Close\r\n\r\n"
       recv: "200 OK"
       interval: 3
       timeout: 10
@@ -29,7 +29,7 @@ spec:
     servicePort: 8080
     monitor:
       type: http
-      send: "GET /app2/index.html HTTP/1.1\r\nHost: health.f5demo.local\r\nConnection: Close\r\n\r\n"
+      send: "GET /app2/index.html HTTP/1.1\r\nHost: health.f5k8s.net\r\nConnection: Close\r\n\r\n"
       recv: "200 OK"
       interval: 3
       timeout: 10
@@ -41,11 +41,8 @@ Change the working directory to `HealthMonitor`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/HealthMonitor
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/apps.yml
-```
 
 Create the VirtualServer resource.
 ```
@@ -57,12 +54,25 @@ Confirm that the VirtualServer resource is deployed correctly. You should see `O
 kubectl get f5-vs health-vs  
 ```
 
+Expected output 
+```
+NAME        HOST               TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
+health-vs   health.f5k8s.net                                  10.1.10.58                                        3s
+```
+
+
 On the BIGIP UI, you should see the application pool marked as green and a custom monitor assigned to the pool
 
 | BIGIP Pool             |  Pool Details |
 :-------------------------:|:-------------------------:
 ![health-monitor-bigip-1](images/health-monitor-bigip-1.png)  |  ![health-monitor-bigip-2](images/health-monitor-bigip-2.png)
 
+
+Try accessing the service with curl as per the examples below. 
+```
+curl http://health.f5k8s.net/app1
+curl http://health.f5k8s.net/app2
+```
 
 ***Clean up the environment (Optional)***
 ```

@@ -5,7 +5,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  host: custom.f5demo.local
+  host: custom-port.f5k8s.net
   virtualServerAddress: "10.1.10.57"
   virtualServerName: "custom-port-http"
   virtualServerHTTPPort: 8080

@@ -5,7 +5,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  host: ipam.f5demo.local
+  host: ipam.f5k8s.net
   ipamLabel: "dev"
   virtualServerName: "ipam-vs"
   pools:

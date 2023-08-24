@@ -6,7 +6,7 @@ metadata:
     f5cr: "true"
 spec:
   hosts:
-    - edge.f5demo.local
+    - edge.f5k8s.net
   tls:
     termination: edge
     clientSSL: /Common/clientssl

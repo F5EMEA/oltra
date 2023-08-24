@@ -3,14 +3,14 @@ kind: VirtualServer
 metadata:
   labels:
     f5cr: "true"
-  name: coffee-vs
+  name: redirect-vs
   namespace: default
 spec:
-  tlsProfileName: redirect-tls-coffee
+  tlsProfileName: redirect-tls
   virtualServerAddress: 10.1.10.60
   virtualServerName: "redirect-tls-vs"
   httpTraffic: redirect
-  host: coffee.f5demo.local
+  host: redirect.f5k8s.net
   pools:
     - path: /lattee
       service: app1-svc

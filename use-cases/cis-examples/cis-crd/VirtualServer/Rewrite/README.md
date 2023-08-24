@@ -21,22 +21,18 @@ metadata:
 spec:
   virtualServerAddress: "10.1.10.61"
   rewriteAppRoot: /home
-  host: approot.f5demo.local
+  host: approot.f5k8s.net
   pools:
     - path: /
       service: app1-svc
       servicePort: 8080
 ```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/apps.yml
-```
-
 Change the working directory to `Rewrite`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Rewrite
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the CRD resource.
 ```
@@ -50,18 +46,18 @@ kubectl get f5-vs approot-vs
 
 Access the service using curl. 
 ```
-curl -v http://approot.f5demo.local/ --resolve approot.f5demo.local:80:10.1.10.61
+curl -v http://approot.f5k8s.net/
 ```
 
 You should receive a 302 redirect from BIGIP with Location Header set as `/home`. The output should be similar to:
 ```
-* Added approot.f5demo.local:80:10.1.10.61 to DNS cache
-* Hostname approot.f5demo.local was found in DNS cache
+* Added approot.f5k8s.net:80:10.1.10.61 to DNS cache
+* Hostname approot.f5k8s.net was found in DNS cache
 *   Trying 10.1.10.61...
 * TCP_NODELAY set
-* Connected to approot.f5demo.local (10.1.10.61) port 80 (#0)
+* Connected to approot.f5k8s.net (10.1.10.61) port 80 (#0)
 > GET / HTTP/1.1
-> Host: approot.f5demo.local
+> Host: approot.f5k8s.net
 > User-Agent: curl/7.58.0
 > Accept: */*
 > 
@@ -92,7 +88,7 @@ metadata:
     f5cr: "true"
 spec:
   virtualServerAddress: "10.1.10.62"
-  host: rewrite.f5demo.local
+  host: rewrite.f5k8s.net
   pools:
     - path: /lab
       service: svc-1
@@ -104,15 +100,12 @@ spec:
       rewrite: /library
 ```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/apps.yml
-```
-
 Change the working directory to `Rewrite`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Rewrite
 ```
+
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the CRD resource.
 ```
@@ -126,8 +119,8 @@ kubectl get f5-vs rewrite-vs
 
 Access the service using curl. 
 ```
-curl http://rewrite.f5demo.local/lab --resolve rewrite.f5demo.local:80:10.1.10.62
-curl http://rewrite.f5demo.local/lib --resolve rewrite.f5demo.local:80:10.1.10.62
+curl http://rewrite.f5k8s.net/lab
+curl http://rewrite.f5k8s.net/lib
 ```
 
 Note that the paths are rewritten from `/lib` to `/library` and from `/lab` to `/laboratory`.  The output should be similar to:

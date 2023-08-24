@@ -6,7 +6,7 @@ metadata:
   name: k8s-tls-vs
   namespace: default
 spec:
-  host: k8s.f5demo.local
+  host: k8s-tls.f5k8s.net
   virtualServerAddress: 10.1.10.71
   virtualServerName: "k8s-tls-vs"
   tlsProfileName: k8s-tls

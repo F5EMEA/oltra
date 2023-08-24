@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: edge-tls-vs
 spec:
-  host: edge.f5demo.local
+  host: edge.f5k8s.net
   tlsProfileName: edge-tls
   virtualServerAddress: 10.1.10.68
   virtualServerName: "edge-tls-vs"

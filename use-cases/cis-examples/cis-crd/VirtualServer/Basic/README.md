@@ -33,11 +33,8 @@ Change the working directory to `basic`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Basic
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
 
 Create the VirtualServer resource. 
 ```
@@ -51,26 +48,33 @@ Confirm that the VirtualServer resource is deployed correctly. You should see `O
 kubectl get f5-vs nohost-vs 
 ```
 
+Expected output 
+```
+NAME        HOST   TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
+nohost-vs                                         10.1.10.54               10.1.10.54      Ok       8s
+```
+
 Access the service as per the examples below. 
 ```
 curl http://10.1.10.54 
 curl http://10.1.10.54/test.php
-curl http://test.f5demo.local --resolve test.f5demo.local:80:10.1.10.54
+curl http://nohost.f5k8s.net
 ```
 
 In all cases you should be able to access the service running in K8s. The output should be similar to:
 ```json
 {
-    "Server Name": "test.f5demo.local",
-    "Server Address": "10.244.140.93",
+    "Project": "My Echo Project",
+    "Project": "https://github.com/skenderidis/docker-images/echo",
+    "Server Address": "10.244.140.117",
     "Server Port": "80",
     "Request Method": "GET",
     "Request URI": "/",
     "Query String": "",
-    "Headers": [{"host":"test.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+    "Headers": [{"accept":"*\/*","user-agent":"curl\/7.58.0","host":"nohost.f5k8s.net","content-length":"","content-type":""}],
     "Remote Address": "10.1.20.5",
-    "Remote Port": "39478",
-    "Timestamp": "1657610216",
+    "Remote Port": "54884",
+    "Timestamp": "1692858613",
     "Data": "0"
 }
 ```
@@ -94,7 +98,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  host: app1.f5demo.local
+  host: app1.f5k8s.net
   virtualServerAddress: "10.1.10.55"
   pools:
   - path: /
@@ -106,28 +110,31 @@ Change the working directory to `basic`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Basic
 ```
-
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the VS CRD resource. 
 ```
 kubectl apply -f virtual-single-pool.yml
 ```
 
-> **Note:** CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5demo.local`.   
+> **Note:** CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.55` and will attach a policy that forwards all traffic to pool echo-svc when the Host Header is equal to `app1.f5k8s.net`.   
 
 Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
 ```
 kubectl get f5-vs single-pool-vs
 ```
 
+Expected output 
+```
+NAME             HOST                    TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
+single-pool-vs   single-pool.f5k8s.net                                  10.1.10.55               10.1.10.55      Ok       6s
+```
+
+
 Try accessing the service with curl as per the examples below. 
 ```
 curl http://10.1.10.55
-curl http://app5.f5demo.local --resolve app5.f5demo.local:80:10.1.10.55
+curl http://single-pool.f5k8s.net
 ```
 
 In all the above examples you should see a reset connection as it didnt match the configured Host Header.
@@ -135,20 +142,20 @@ In all the above examples you should see a reset connection as it didnt match th
 
 Try again with the examples below
 ```
-curl http://app1.f5demo.local --resolve app1.f5demo.local:80:10.1.10.55
-curl http://app1.f5demo.local/test --resolve app1.f5demo.local:80:10.1.10.55
+curl http://single-pool.f5k8s.net 
+curl http://single-pool.f5k8s.net/test
 ```
 
 In both cases you should be able to access the service running in K8s. The output should be similar to:
 ```json
 {
-    "Server Name": "app1.f5demo.local",
+    "Server Name": "single-pool.f5k8s.net",
     "Server Address": "10.244.196.135",
     "Server Port": "80",
     "Request Method": "GET",
     "Request URI": "/test",
     "Query String": "",
-    "Headers": [{"host":"app1.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+    "Headers": [{"host":"single-pool.f5k8s.net","user-agent":"curl\/7.58.0","accept":"*\/*"}],
     "Remote Address": "10.1.20.5",
     "Remote Port": "34724",
     "Timestamp": "1657610340",
@@ -177,7 +184,7 @@ metadata:
     f5cr: "true"
 spec:
   virtualServerAddress: "10.1.10.56"
-  host: pools.f5demo.local
+  host: two-pools.f5k8s.net
   pools:
   - path: /svc1
     service: app1-svc
@@ -191,11 +198,7 @@ Change the working directory to `basic`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Basic
 ```
-
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/apps.yml
-```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the VirtualServer resource. 
 ```
@@ -208,9 +211,16 @@ Confirm that the VirtualServer resource is deployed correctly. You should see `O
 kubectl get f5-vs two-pools-vs
 ```
 
+Expected output 
+```
+NAME           HOST                  TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
+two-pools-vs   two-pools.f5k8s.net                                  10.1.10.56               10.1.10.56      Ok       2m55s
+```
+
+
 Try accessing the service with curl as per the examples below. 
 ```
-curl http://pools.f5demo.local/ --resolve pools.f5demo.local:80:10.1.10.56
+curl http://two-pools.f5k8s.net/
 
 ```
 In the above example you should see a reset connection as it didnt match the configured URI Path.
@@ -218,8 +228,8 @@ In the above example you should see a reset connection as it didnt match the con
 
 Try again with the examples below
 ```
-curl http://pools.f5demo.local/svc1 --resolve pools.f5demo.local:80:10.1.10.56
-curl http://pools.f5demo.local/svc2 --resolve pools.f5demo.local:80:10.1.10.56
+curl http://two-pools.f5k8s.net/svc1
+curl http://two-pools.f5k8s.net/svc2
 ```
 
 Verify that the traffic was forwarded to the right service depending on the path that was entered. The output should be similar to:

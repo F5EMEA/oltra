@@ -11,7 +11,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  host: service.f5demo.local
+  host: service.f5k8s.net
   virtualServerAddress: "10.1.10.67"
   virtualServerName: "service-address-vs"
   pools:
@@ -26,15 +26,12 @@ spec:
 
 > *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
 
 Change the working directory to `Service-address`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/Service-address
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the VirtualServer resource. 
 ```

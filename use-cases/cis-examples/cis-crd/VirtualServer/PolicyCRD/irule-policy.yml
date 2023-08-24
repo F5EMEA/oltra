@@ -6,4 +6,4 @@ metadata:
   name: irule-policy
 spec:
   iRules:
-    insecure: /Common/sorry_page
+    insecure: /Common/sorry-page

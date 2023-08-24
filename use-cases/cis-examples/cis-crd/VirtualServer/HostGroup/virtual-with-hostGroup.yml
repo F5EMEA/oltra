@@ -1,11 +1,11 @@
 apiVersion: "cis.f5.com/v1"
 kind: VirtualServer
 metadata:
-  name: app1-hostgroup-vs
+  name: hg1-hostgroup-vs
   labels:
     f5cr: "true"
 spec:
-  host: app1.f5demo.local
+  host: hg1.f5k8s.net
   virtualServerName: "hostgroup-vs"
   virtualServerAddress: "10.1.10.59"
   hostGroup: "apps"
@@ -17,11 +17,11 @@ spec:
 apiVersion: "cis.f5.com/v1"
 kind: VirtualServer
 metadata:
-  name: app2-hostgroup-vs
+  name: hg2-hostgroup-vs
   labels:
     f5cr: "true"
 spec:
-  host: app2.f5demo.local
+  host: hg2.f5k8s.net
   virtualServerName: "hostgroup-vs"
   virtualServerAddress: "10.1.10.59"
   hostGroup: "apps"

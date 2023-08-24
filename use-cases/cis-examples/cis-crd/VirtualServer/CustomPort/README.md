@@ -12,7 +12,7 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  host: custom.f5demo.local
+  host: custom-port.f5k8s.net
   virtualServerAddress: "10.1.10.57"
   virtualServerName: "custom-port-http-vs"
   virtualServerHTTPPort: 8080
@@ -30,18 +30,13 @@ Change the working directory to `CustomPort`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/CustomPort
 ```
-
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
-
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the VirtualServer resource.
 ```
 kubectl apply -f custom-http-port.yml
 ```
-CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.57` and attaches a policy which forwards all traffic to pool echo-svc when the Host Header is equal to `custom.f5demo.local`.   
+CIS will create a Virtual Server on BIG-IP with VIP `10.1.10.57` and attaches a policy which forwards all traffic to pool echo-svc when the Host Header is equal to `custom.f5k8s.net`.   
 
 
 Confirm that the VirtualServer resource is deployed correctly. You should see `Ok` under the Status column for the VirtualServer that was just deployed.
@@ -49,25 +44,33 @@ Confirm that the VirtualServer resource is deployed correctly. You should see `O
 kubectl get f5-vs custom-port-http-vs
 ```
 
+Expected output 
+```
+NAME                  HOST                    TLSPROFILENAME   HTTPTRAFFIC   IPADDRESS    IPAMLABEL   IPAMVSADDRESS   STATUS   AGE
+custom-port-http-vs   custom-port.f5k8s.net                                  10.1.10.57               10.1.10.57      Ok       7s
+```
+
 Try accessing the service with curl as per the examples below. 
 ```
-curl http://custom.f5demo.local:8080 --resolve custom.f5demo.local:8080:10.1.10.57
+curl http://custom-port.f5k8s.net:8080
 ```
 
 You should be able to access the service running in K8s. The output should be similar to:
-```
+```json
 {
-    "Server Name": "custom.f5demo.local",
-    "Server Address": "10.244.140.93",
-    "Server Port": "8080",
+    "Project": "My Echo Project",
+    "Project": "https://github.com/skenderidis/docker-images/echo",
+    "Server Address": "10.244.140.117",
+    "Server Port": "80",
     "Request Method": "GET",
     "Request URI": "/",
     "Query String": "",
-    "Headers": [{"host":"custom.f5demo.local:8080","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+    "Headers": [{"accept":"*\/*","user-agent":"curl\/7.58.0","host":"custom-port.f5k8s.net:8080","content-length":"","content-type":""}],
     "Remote Address": "10.1.20.5",
-    "Remote Port": "56414",
-    "Timestamp": "1657610679",
+    "Remote Port": "57524",
+    "Timestamp": "1692859065",
     "Data": "0"
+}
 ```
 
 ***Clean up the environment (Optional)***

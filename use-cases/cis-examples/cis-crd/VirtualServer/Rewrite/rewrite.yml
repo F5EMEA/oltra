@@ -7,7 +7,7 @@ metadata:
 spec:
   virtualServerAddress: "10.1.10.62"
   virtualServerName: "rewrite-vs"
-  host: rewrite.f5demo.local
+  host: rewrite.f5k8s.net
   pools:
     - path: /lab
       service: app1-svc

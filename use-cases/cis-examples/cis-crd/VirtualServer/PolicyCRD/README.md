@@ -34,7 +34,7 @@ metadata:
   name: xff-policy-vs
 spec:
   virtualServerAddress: 10.1.10.66
-  host: policy.f5demo.local
+  host: policy.f5k8s.net
   policyName: policy-xff
   snat: auto
   pools:
@@ -48,10 +48,7 @@ Change the working directory to `PolicyCRD`.
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
 ```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the PolicyCRD and VirtualServerCRD resources.
 ```
@@ -68,10 +65,27 @@ On the BIGIP we created a profile called `http-xff` on the common partition that
 
 Access the service using the following example. 
 ```
-curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.66
+curl http://policy.f5k8s.net/ 
 ```
 
 Verify that the `x-forwarded-for` Header exists and contains the client's actual IP
+```json
+
+{
+   "Project": "My Echo Project",
+   "Project": "https://github.com/skenderidis/docker-images/echo",
+   "Server Address": "10.244.140.117",
+   "Server Port": "80",
+   "Request Method": "GET",
+   "Request URI": "/",
+   "Query String": "",
+   "Headers": [{"x-forwarded-for":"10.1.10.4","accept":"*\/*","user-agent":"curl\/7.58.0","host":"policy.f5k8s.net","content-length":"","content-type":""}],  <-----x-forwarded-for
+   "Remote Address": "10.1.20.5",
+   "Remote Port": "51082",
+   "Timestamp": "1692863626",
+   "Data": "0"
+}
+```
 
 ***Clean up the environment (Optional)***
 ```
@@ -102,7 +116,7 @@ metadata:
   name: persistence-policy-vs
 spec:
   virtualServerAddress: 10.1.10.64
-  host: persistence.f5demo.local
+  host: persistence.f5k8s.net
   policyName: persistence-policy
   snat: auto
   pools:
@@ -110,15 +124,13 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
 
 Change the working directory to `PolicyCRD`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
 ```
+
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
@@ -133,21 +145,19 @@ kubectl get f5-vs
 
 Access the service few times using the following example.
 ```
-curl http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
-curl http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
-curl http://persistence.f5demo.local/ --resolve persistence.f5demo.local:80:10.1.10.64
+curl http://persistence.f5k8s.net/ 
 ```
 
 Verify that the transactions are actually going to multiple backend pods and they dont persist on a single one.
-```
+```json
 {
-  "Server Name": "persistence.f5demo.local",
-  "Server Address": "10.244.219.102",    <==  POD IP
+  "Server Name": "persistence.f5k8s.net",
+  "Server Address": "10.244.219.102",    <=========  POD IP
   "Server Port": "80",
   "Request Method": "GET",
   "Request URI": "/",
   "Query String": "",
-  "Headers": [{"host":"persistence.f5demo.local","user-agent":"curl\/7.58.0","accept":"*\/*"}],
+  "Headers": [{"host":"persistence.f5k8s.net","user-agent":"curl\/7.58.0","accept":"*\/*"}],
   "Remote Address": "10.1.20.5",
   "Remote Port": "55764",
   "Timestamp": "1673876853",
@@ -183,7 +193,7 @@ metadata:
   name: irule-policy-vs
 spec:
   virtualServerAddress: 10.1.10.63
-  host: irule.f5demo.local
+  host: irule.f5k8s.net
   policyName: irule-policy
   snat: auto
   pools:
@@ -191,15 +201,12 @@ spec:
     service: echo-svc
     servicePort: 80
 ```
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
 
 Change the working directory to `PolicyCRD`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
@@ -216,7 +223,7 @@ On the BIGIP we created an iRule  called **sorry-page**, on the Common Partition
 
 Access the service few times using the following example.
 ```
-curl -v http://policy.f5demo.local/ --resolve policy.f5demo.local:80:10.1.10.63
+curl http://irule.f5k8s.net/
 ```
 
 Verify that the sorry page is sent back from BIGIP.
@@ -254,7 +261,7 @@ metadata:
   name: waf-policy-vs
 spec:
   virtualServerAddress: 10.1.10.65
-  host: waf.f5demo.local
+  host: waf.f5k8s.net
   policyName: waf-policy
   snat: auto
   pools:
@@ -263,15 +270,11 @@ spec:
     servicePort: 80
 ```
 
-Create the Application deployment and service: 
-```
-kubectl apply -f ~/oltra/setup/apps/my-echo.yml
-```
-
 Change the working directory to `PolicyCRD`.
 ```
 cd ~/oltra/use-cases/cis-examples/cis-crd/VirtualServer/PolicyCRD
 ```
+> **Note:** Verify that the backend service is working. Otherwise go to `oltra/setup/apps` and deploy the service.
 
 Create the PolicyCRD and VirtualServerCRD resource.
 ```
@@ -288,7 +291,7 @@ On the BIGIP we created a WAF policy **basic_waf_policy** to block HTTP attacks,
 
 Access the service using the following example that contains a XSS violations. 
 ```
-curl "http://waf.f5demo.local/index.php?parameter=<script/>" --resolve waf.f5demo.local:80:10.1.10.65
+curl "http://waf.f5k8s.net/index.php?parameter=<script/>"
 ```
 
 Verify that the  transaction that contains the attack gets blocked by BIGIP WAF.

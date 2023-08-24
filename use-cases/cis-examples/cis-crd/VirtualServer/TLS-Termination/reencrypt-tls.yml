@@ -6,7 +6,7 @@ metadata:
     f5cr: "true"
 spec:
   hosts:
-    - reencrypt.f5demo.local
+    - reencrypt.f5k8s.net
   tls:
     termination: reencrypt
     clientSSL: /Common/clientssl

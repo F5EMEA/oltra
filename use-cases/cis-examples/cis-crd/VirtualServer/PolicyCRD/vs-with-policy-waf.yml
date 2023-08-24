@@ -7,7 +7,7 @@ metadata:
 spec:
   virtualServerAddress: 10.1.10.65
   virtualServerName: "waf-policy-vs"
-  host: waf.f5demo.local
+  host: waf.f5k8s.net
   policyName: waf-policy
   snat: auto
   pools:

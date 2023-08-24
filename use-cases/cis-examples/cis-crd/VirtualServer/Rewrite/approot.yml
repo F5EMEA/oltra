@@ -8,7 +8,7 @@ spec:
   virtualServerAddress: "10.1.10.61"
   virtualServerName: "approot-vs"
   rewriteAppRoot: /home
-  host: approot.f5demo.local
+  host: approot.f5k8s.net
   pools:
     - path: /
       service: app1-svc

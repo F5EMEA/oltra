@@ -5,7 +5,7 @@ metadata:
     f5cr: "true"
   name: passthrough-tls-vs
 spec:
-  host: passthrough.f5demo.local
+  host: passthrough.f5k8s.net
   tlsProfileName: passthrough-tls
   virtualServerAddress: 10.1.10.70
   virtualServerName: "passthrough-tls-vs"
