@@ -16,24 +16,6 @@ spec:
 
 ---
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-metrics-infra
-  namespace: nginx
-  labels:
-    type: nginx-metrics
-spec:
-  ports:
-  - port: 9113
-    protocol: TCP
-    targetPort: 9113
-    name: prometheus
-  selector:
-    app: nginx-infra
-
----
-
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

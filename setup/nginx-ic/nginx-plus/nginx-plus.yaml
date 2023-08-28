@@ -82,4 +82,5 @@ spec:
           - -enable-service-insight 
           - -external-service=nginx-plus
           - -enable-prometheus-metrics
+          - -enable-latency-metrics # this is required to get upstream/server location and latency metrics.
           - -global-configuration=$(POD_NAMESPACE)/nginx-configuration
