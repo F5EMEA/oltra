@@ -1,28 +1,27 @@
-sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/ns-and-sa.yaml
-sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/ns-and-sa.yaml
-sed -i '1, 5d' nginx_t1/rbac/ns-and-sa.yaml
-sed -i '1, 5d' nginx_t2/rbac/ns-and-sa.yaml
+sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/sa.yaml
+sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/sa.yaml
 
-sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/ap-rbac.yaml
-sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/ap-rbac.yaml
-sed -i '1, 16d' nginx_t1/rbac/ap-rbac.yaml
-sed -i '1, 16d' nginx_t2/rbac/ap-rbac.yaml
-sed -i '4s/name: nginx-ingress-app-protect/name: nginx-ingress-app-protect-tenant1/' nginx_t1/rbac/ap-rbac.yaml
-sed -i '4s/name: nginx-ingress-app-protect/name: nginx-ingress-app-protect-tenant2/' nginx_t2/rbac/ap-rbac.yaml
 
-sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/apdos-rbac.yaml
-sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/apdos-rbac.yaml
-sed -i '1, 16d' nginx_t1/rbac/apdos-rbac.yaml
-sed -i '1, 16d' nginx_t2/rbac/apdos-rbac.yaml
-sed -i '4s/name: nginx-ingress-app-protect-dos/name: nginx-ingress-app-protect-dos-tenant1/' nginx_t1/rbac/apdos-rbac.yaml
-sed -i '4s/name: nginx-ingress-app-protect-dos/name: nginx-ingress-app-protect-dos-tenant2/' nginx_t2/rbac/apdos-rbac.yaml
+sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/ap-rbac.yaml # Change the namespace to tenant1 on the ClusterRoleBinding
+sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/ap-rbac.yaml # Change the namespace to tenant2 on the ClusterRoleBinding
+sed -i -n '/^kind: ClusterRoleBinding$/,$p' nginx_t1/rbac/ap-rbac.yaml # Remove the ClusterRole but keep ClusterRoleBinding
+sed -i -n '/^kind: ClusterRoleBinding$/,$p' nginx_t2/rbac/ap-rbac.yaml # Remove the ClusterRole but keep ClusterRoleBinding
+sed -i '4s/name: nginx-ingress-app-protect/name: nginx-ingress-app-protect-tenant1/' nginx_t1/rbac/ap-rbac.yaml # change ClusterRoleBinding name (adding tenant1)
+sed -i '4s/name: nginx-ingress-app-protect/name: nginx-ingress-app-protect-tenant2/' nginx_t2/rbac/ap-rbac.yaml # change ClusterRoleBinding name (adding tenant2)
 
-sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/rbac.yaml
-sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/rbac.yaml
-sed -i '1, 126d' nginx_t1/rbac/rbac.yaml
-sed -i '1, 126d' nginx_t2/rbac/rbac.yaml
-sed -i '4s/name: nginx-ingress/name: nginx-ingress-tenant1/' nginx_t1/rbac/rbac.yaml
-sed -i '4s/name: nginx-ingress/name: nginx-ingress-tenant2/' nginx_t2/rbac/rbac.yaml
+sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/apdos-rbac.yaml # Change the namespace to tenant1 on the ClusterRoleBinding
+sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/apdos-rbac.yaml # Change the namespace to tenant2 on the ClusterRoleBinding
+sed -i -n '/^kind: ClusterRoleBinding$/,$p' nginx_t1/rbac/apdos-rbac.yaml # Remove the ClusterRole but keep ClusterRoleBinding
+sed -i -n '/^kind: ClusterRoleBinding$/,$p' nginx_t2/rbac/apdos-rbac.yaml # Remove the ClusterRole but keep ClusterRoleBinding
+sed -i '4s/name: nginx-ingress-app-protect-dos/name: nginx-ingress-app-protect-dos-tenant1/' nginx_t1/rbac/apdos-rbac.yaml # change ClusterRoleBinding name (adding tenant1)
+sed -i '4s/name: nginx-ingress-app-protect-dos/name: nginx-ingress-app-protect-dos-tenant2/' nginx_t2/rbac/apdos-rbac.yaml # change ClusterRoleBinding name (adding tenant2)
+
+sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/rbac/rbac.yaml # Change the namespace to tenant1 on the ClusterRoleBinding
+sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/rbac/rbac.yaml # Change the namespace to tenant2 on the ClusterRoleBinding
+sed -i -n '/^kind: ClusterRoleBinding$/,$p' nginx_t1/rbac/rbac.yaml # Remove the ClusterRole but keep ClusterRoleBinding
+sed -i -n '/^kind: ClusterRoleBinding$/,$p' nginx_t2/rbac/rbac.yaml # Remove the ClusterRole but keep ClusterRoleBinding
+sed -i '4s/name: nginx-ingress/name: nginx-ingress-tenant1/' nginx_t1/rbac/rbac.yaml # change ClusterRoleBinding name (adding tenant1)
+sed -i '4s/name: nginx-ingress/name: nginx-ingress-tenant2/' nginx_t2/rbac/rbac.yaml # change ClusterRoleBinding name (adding tenant2)
 
 sed -i 's/namespace: nginx/namespace: tenant1/' nginx_t1/resources/default-server-secret.yaml
 sed -i 's/namespace: nginx/namespace: tenant2/' nginx_t2/resources/default-server-secret.yaml
@@ -53,3 +52,7 @@ rm -R nginx_t1/publish
 rm -R nginx_t2/publish
 rm nginx_t1/nginx-plus/svc-plus.yaml
 rm nginx_t2/nginx-plus/svc-plus.yaml
+rm nginx_t1/rbac/ns.yaml
+rm nginx_t2/rbac/ns.yaml
+rm nginx_t1/README.md
+rm nginx_t2/README.md
