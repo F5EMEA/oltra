@@ -3,10 +3,20 @@ We will first install the NGINX Plus instance with App Protect on an Ubuntu 20.0
 
 ## 1.1 NGINX Plus Installation
 
-1. Verify that the NGINX SSL cert/key already exist on the host.
+1. Download the NGINX SSL cert/key
 ```
+git clone https://github.com/skenderidis/certs
+```
+When asked please use `skenderidis` as username and password `xxxx`
+
+2. Create NGINX ssl folder and move the NGINX keys. 
+```
+mkdir /etc/ssl/nginx/
+mv certs/nginx-repo.crt /etc/ssl/nginx/
+mv certs/nginx-repo.key /etc/ssl/nginx/
+```
+
 ls -la /etc/ssl/nginx/ 
-```
 > Note: We have predeployed the NGINX Plus keys on that particular host
 
 2. Install prerequisite packages.
