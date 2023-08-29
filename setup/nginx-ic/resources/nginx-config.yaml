@@ -9,3 +9,6 @@ data:
   worker-rlimit-nofile: "10240"
   keepalive: "100"
   keepalive-requests: "100000000"
+#  proxy-protocol: "True"
+#  real-ip-header: "proxy_protocol"
+#  set-real-ip-from: "0.0.0.0/0"  

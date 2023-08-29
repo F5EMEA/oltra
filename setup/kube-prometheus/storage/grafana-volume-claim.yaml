@@ -1,1 +1,12 @@
-k 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-storage-claim
+  namespace: monitoring
+spec:
+  storageClassName: local-path
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
