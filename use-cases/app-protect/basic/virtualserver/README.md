@@ -88,7 +88,7 @@ spec:
     securityLogs:
     - enable: true
       apLogConf: "logconf"
-      logDest: "syslog:server=10.1.1.7:515"
+      logDest: "syslog:server=10.1.20.20:8515"
 ```
 
 Create the NGINX policy to reference the AP Policy, the AP Log profile and the log destination.
