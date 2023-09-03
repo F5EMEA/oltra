@@ -1,26 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: cafe-ingress
+  name: cafe-ingress-coffee-minion
   annotations:
-    nginx.org/basic-auth-secret: "cafe-passwd"
-    nginx.org/basic-auth-realm: "Cafe App"
+#    kubernetes.io/ingress.class: "nginx"
+    nginx.org/mergeable-ingress-type: "minion"
+    nginx.org/basic-auth-secret: "coffee-passwd"
+    nginx.org/basic-auth-realm: "Coffee"    
 spec:
   ingressClassName: nginx-plus
-  tls:
-  - hosts:
-    - cafe.f5k8s.net
   rules:
   - host: cafe.f5k8s.net
     http:
       paths:
-      - path: /tea
-        pathType: Prefix
-        backend:
-          service:
-            name: tea-svc
-            port:
-              number: 80
       - path: /coffee
         pathType: Prefix
         backend:

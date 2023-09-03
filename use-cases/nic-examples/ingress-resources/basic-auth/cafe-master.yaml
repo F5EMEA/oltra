@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cafe-ingress-master
+  annotations:
+    nginx.org/mergeable-ingress-type: "master"
+spec:
+  ingressClassName: nginx-plus
+  tls:
+  - hosts:
+    - cafe.f5k8s.net
+  rules:
+  - host: cafe.f5k8s.net

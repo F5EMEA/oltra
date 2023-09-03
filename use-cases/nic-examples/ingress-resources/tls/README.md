@@ -4,8 +4,6 @@ In this example we deploy the NGINX or NGINX Plus Ingress Controller, a simple w
 
 ## Running the Example
 
-## 1. Deploy the Ingress Controller
-
 Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
 
 Change the working directory to `complete-example`.
