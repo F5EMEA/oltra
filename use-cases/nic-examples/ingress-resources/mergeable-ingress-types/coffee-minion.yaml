@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx-plus
   rules:
-  - host: cafe.example.com
+  - host: cafe.f5k8s.net
     http:
       paths:
       - path: /coffee

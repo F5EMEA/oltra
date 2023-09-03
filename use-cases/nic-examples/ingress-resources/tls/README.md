@@ -17,29 +17,29 @@ cd ~/oltra/use-cases/nic-examples/ingress-resources/complete-example
 
 Create the coffee and the tea deployments and services:
 ```
-kubectl apply -f cafe.yaml
+kubectl apply -f app.yaml
 ```
 
 ## 3. Configure Load Balancing
 
 Create a secret with an SSL certificate and a key:
 ```
-kubectl apply -f cafe-secret.yaml
+kubectl apply -f secret.yaml
 ```
 
 Create an Ingress resource:
 ```
-kubectl apply -f cafe-ingress.yaml
+kubectl apply -f ingress.yaml
 ```
 
 ## 4. Test the Application
 
-To access the application, curl the coffee and the tea services. We'll use ```curl```'s --insecure option to turn off certificate verification of our self-signed
-certificate and the --resolve option to set the Host header of a request with ```cafe.example.com```
+To access the application, curl the coffee and the tea services.
+
 
 To get coffee:
 ```
-curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/coffee --insecure
+curl https://tls.f5k8s.net:443/coffee
 
 ###########  Expected Output  ##########
 Server address: 10.244.196.136:8080
@@ -52,7 +52,7 @@ Request ID: 5ca5c11a263c4457ebb8194319fdc19e
 
 If your prefer tea:
 ```
-$ curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/tea --insecure
+curl https://tls.f5k8s.net:443/tea
 
 ###########  Expected Output  ##########
 Server address: 10.244.196.189:8080

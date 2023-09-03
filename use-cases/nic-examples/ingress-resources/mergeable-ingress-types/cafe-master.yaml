@@ -9,7 +9,7 @@ spec:
   ingressClassName: nginx-plus
   tls:
   - hosts:
-    - cafe.example.com
+    - cafe.f5k8s.net
     secretName: cafe-secret
   rules:
-  - host: cafe.example.com
+  - host: cafe.f5k8s.net

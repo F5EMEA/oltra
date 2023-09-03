@@ -6,10 +6,10 @@ spec:
   ingressClassName: nginx-plus
   tls:
   - hosts:
-    - cafe.example.com
-    secretName: cafe-secret
+    - tls.f5k8s.net
+    secretName: tls-secret
   rules:
-  - host: cafe.example.com
+  - host: tls.f5k8s.net
     http:
       paths:
       - path: /tea
