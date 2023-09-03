@@ -66,7 +66,7 @@ In this example we will configure NAP to work with Argo CD so that we follow a G
   - Project -> **default**
   - Sync Policy -> **Automatic**
   - Prune Resources -> **Enabled**
-  - Repository URL -> **https://git.f5demo.cloud/nap/argocd.git**
+  - Repository URL -> **https://git.f5k8s.net/nap/argocd.git**
   - Revision -> **HEAD**
   - Path -> **.**
   - Cluster URL -> **https://kubernetes.default.svc**
