@@ -127,10 +127,10 @@ Create the VirtualServer resource:
 kubectl apply -f virtual-server.yml
 ```
 
-Send a request to the application. We 'll use the --resolve option to set the Host header of a request with `nap-monitor.f5demo.cloud`
+Send a request to the application.
 
 ```
-curl http://nap-monitor.f5demo.cloud/
+curl http://nap-monitor.f5k8s.net/
 
 #####################  Expected output  #######################
 Server address: 10.244.140.109:8080
@@ -145,15 +145,15 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 Now, let's try to send a malicious request to the application:
 ```
 ####SQL Injection (encoded)####
-curl "http://nap-monitor.f5demo.cloud/index.php?password=0%22%20or%201%3D1%20%22%0A"
+curl "http://nap-monitor.f5k8s.net/index.php?password=0%22%20or%201%3D1%20%22%0A"
 ####SQL Injection####
-curl "http://nap-monitor.f5demo.cloud/index.php?password==0'%20or%201=1'"
+curl "http://nap-monitor.f5k8s.net/index.php?password==0'%20or%201=1'"
 ####SQL Injection####
-curl "http://nap-monitor.f5demo.cloud/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
+curl "http://nap-monitor.f5k8s.net/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
 ####Cross Site Scripting####
-curl "http://nap-monitor.f5demo.cloud/index.php?username=<script>"
+curl "http://nap-monitor.f5k8s.net/index.php?username=<script>"
 ####Command Injection####
-curl "http://nap-monitor.f5demo.cloud/index.php?id=0;%20ls%20-l"
+curl "http://nap-monitor.f5k8s.net/index.php?id=0;%20ls%20-l"
 ```
 
 The expected output  for all the previous requests is the following:

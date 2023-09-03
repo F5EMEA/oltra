@@ -5,8 +5,12 @@ metadata:
   namespace: nap
 spec:
   content:
-    format: default
-    max_message_size: 10k
+    format: user-defined
+    format_string: ",date_time=\"%date_time%\",is_truncated=\"%is_truncated%\",ip_client=\"%ip_client%\",src_port=\"%src_port%\",vs_name=\"%vs_name%\",dest_port=\"%dest_port%\",attack_type=\"%attack_type%\",json_log=\"%json_log%\",blocking_exception_reason=\"%blocking_exception_reason%\",method=\"%method%\",policy_name=\"%policy_name%\",protocol=\"%protocol%\",request_status=\"%request_status%\",response_code=\"%response_code%\",severity=\"%severity%\",sig_cves=\"%sig_cves%\",sig_ids=\"%sig_ids%\",sig_names=\"%sig_names%\",sig_set_names=\"%sig_set_names%\",sub_violations=\"%sub_violations%\",support_id=\"%support_id%\",threat_campaign_names=\"%threat_campaign_names%\",unit_hostname=\"%unit_hostname%\",uri=\"%uri%\",violation_rating=\"%violation_rating%\",x_forwarded_for_header_value=\"%x_forwarded_for_header_value%\",outcome=\"%outcome%\",outcome_reason=\"%outcome_reason%\",violations=\"%violations%\",violation_details=\"%violation_details%\",bot_signature_name=\"%bot_signature_name%\",bot_category=\"%bot_category%\",bot_anomalies=\"%bot_anomalies%\",enforced_bot_anomalies=\"%enforced_bot_anomalies%\",client_class=\"%client_class%\",client_application=\"%client_application%\",client_application_version=\"%client_application_version%\",request=\"%request%\""
+    max_message_size: 20k
     max_request_size: any
+    escaping_characters:
+    - from: "\""
+      to: "%22"
   filter:
-    request_type: all
+    request_type: illegal

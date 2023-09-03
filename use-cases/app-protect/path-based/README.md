@@ -61,7 +61,7 @@ metadata:
   name: nap-cafe
   namespace: nap-vs
 spec:
-  host: nap-cafe.f5demo.cloud
+  host: nap-cafe.f5k8s.net
   policies:
   - name: cocoa-policy     <----  Catch-all NAP Policy
   upstreams:
@@ -101,7 +101,7 @@ To access the application, curl the coffee and the tea services.
 
 Send a malicious request to the path /tea:
 ```
-curl "http://nap-cafe.f5demo.cloud/tea/?user=<script>"
+curl "http://nap-cafe.f5k8s.net/tea/?user=<script>"
 
 #####################  Expected output  #######################
 <html>
@@ -117,7 +117,7 @@ curl "http://nap-cafe.f5demo.cloud/tea/?user=<script>"
 
 Send a malicious request to the path /tea:
 ```
-curl "http://nap-cafe.f5demo.cloud/coffee/?user=<script>"
+curl "http://nap-cafe.f5k8s.net/coffee/?user=<script>"
 
 #####################  Expected output  #######################
 <html>
@@ -133,7 +133,7 @@ curl "http://nap-cafe.f5demo.cloud/coffee/?user=<script>"
 
 Send a malicious request to a path other than `/tea` or `/coffee`:
 ```
-curl "http://nap-cafe.f5demo.cloud/unknown/?user=<script>"
+curl "http://nap-cafe.f5k8s.net/unknown/?user=<script>"
 
 #####################  Expected output  #######################
 <html>

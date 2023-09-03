@@ -4,7 +4,7 @@ metadata:
   name: nap-cafe
   namespace: nap
 spec:
-  host: nap-cafe.f5demo.cloud
+  host: nap-cafe.f5k8s.net
   policies:
   - name: cocoa-policy
   upstreams:

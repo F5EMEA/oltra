@@ -107,7 +107,7 @@ metadata:
   name: webapp
   namespace: nap
 spec:
-  host: nap-vs.f5demo.cloud
+  host: nap-vs.f5k8s.net
   policies:
   - name: waf-policy
   upstreams:
@@ -127,11 +127,11 @@ kubectl apply -f virtual-server.yml
 
 ## Step 6 - Test the Application
 
-To access the application, curl the webapp service. We'll use the --resolve option to set the Host header of a request with `webapp-vs.f5demo.local`
+To access the application, curl the webapp service.
 
 Send a request to the application:
 ```
-curl http://nap-vs.f5demo.cloud/
+curl http://nap-vs.f5k8s.net/
 
 #####################  Expected output  #######################
 Server address: 10.244.140.109:8080
@@ -143,7 +143,7 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 
 Now, let's try to send a malicious request to the application:
 ```
-curl "http://nap-vs.f5demo.cloud/<script>"
+curl "http://nap-vs.f5k8s.net/<script>"
 
 #####################  Expected output  #######################
 <html>

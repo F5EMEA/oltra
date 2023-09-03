@@ -149,7 +149,7 @@ Find below the information that needs to inserted in the form.
   - Project -> **default**
   - Sync Policy -> **Automatic**
   - Prune Resources -> **Enabled**
-  - Repository URL -> **https://git.f5demo.cloud/devsecops/nap.git**
+  - Repository URL -> **https://git.f5k8s.net/devsecops/nap.git**
   - Revision -> **HEAD**
   - Path -> **.**
   - Cluster URL -> **https://kubernetes.default.svc**
@@ -169,7 +169,7 @@ Find below the information that needs to inserted in the form.
   - Project -> **default**
   - Sync Policy -> **Automatic**
   - Prune Resources -> **Enabled**
-  - Repository URL -> **https://git.f5demo.cloud/devsecops/apps.git**
+  - Repository URL -> **https://git.f5k8s.net/devsecops/apps.git**
   - Revision -> **HEAD**
   - Path -> **.**
   - Cluster URL -> **https://kubernetes.default.svc**
@@ -183,9 +183,9 @@ Press `Create` and wait to see that the Argo CD application being created.
 Verify that you can succesfully access the application. Go to VSCode and run the following commands
 
 ```
-curl "http://portal.f5demo.cloud/tea/"
-curl "http://portal.f5demo.cloud/coffee/"
-curl "http://portal.f5demo.cloud/"
+curl "http://portal.f5k8s.net/tea/"
+curl "http://portal.f5k8s.net/coffee/"
+curl "http://portal.f5k8s.net/"
 
 ###############################################################
 #####################  EXPECTED OUTPUT  #######################
@@ -199,26 +199,26 @@ Request ID: 0495d6a17797ea9776120d5f4af10c1a
 
 Run the following commands to execute some malicious requests towards the website.
 ```
-curl "http://portal.f5demo.cloud/index.php?pass=0%22%20or%201%3D1%20%22%0A"
-curl "http://portal.f5demo.cloud/tea/index.php?pass==0'%20or%205=5'"
-curl "http://portal.f5demo.cloud/tea/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
-curl "http://portal.f5demo.cloud/index.php?username=<script>"
-curl "http://portal.f5demo.cloud/coffee/index.php?id=0;%20ls%20-l"
-curl "http://portal.f5demo.cloud/index.php?pass=0%22%20or%201%3D1%20%22%0A"
-curl "http://portal.f5demo.cloud/index.php?pass==0'%20or%201=1'"
-curl "http://portal.f5demo.cloud/coffee/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
-curl "http://portal.f5demo.cloud/index.php?username=<script>"
-curl "http://portal.f5demo.cloud/index.php?id=0;%20ls%20-l"
-curl "http://portal.f5demo.cloud/index.php?pass=0%22%20or%201%3D1%20%22%0A"
-curl "http://portal.f5demo.cloud/tea/index.php?pass==0'%20or%205=5'"
-curl "http://portal.f5demo.cloud/tea/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
-curl "http://portal.f5demo.cloud/index.php?username=<script>"
-curl "http://portal.f5demo.cloud/coffee/index.php?id=0;%20ls%20-l"
-curl "http://portal.f5demo.cloud/index.php?pass=0%22%20or%201%3D1%20%22%0A"
-curl "http://portal.f5demo.cloud/index.php?pass==0'%20or%201=1'"
-curl "http://portal.f5demo.cloud/coffee/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
-curl "http://portal.f5demo.cloud/index.php?username=<script>"
-curl "http://portal.f5demo.cloud/index.php?id=0;%20ls%20-l"
+curl "http://portal.f5k8s.net/index.php?pass=0%22%20or%201%3D1%20%22%0A"
+curl "http://portal.f5k8s.net/tea/index.php?pass==0'%20or%205=5'"
+curl "http://portal.f5k8s.net/tea/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
+curl "http://portal.f5k8s.net/index.php?username=<script>"
+curl "http://portal.f5k8s.net/coffee/index.php?id=0;%20ls%20-l"
+curl "http://portal.f5k8s.net/index.php?pass=0%22%20or%201%3D1%20%22%0A"
+curl "http://portal.f5k8s.net/index.php?pass==0'%20or%201=1'"
+curl "http://portal.f5k8s.net/coffee/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
+curl "http://portal.f5k8s.net/index.php?username=<script>"
+curl "http://portal.f5k8s.net/index.php?id=0;%20ls%20-l"
+curl "http://portal.f5k8s.net/index.php?pass=0%22%20or%201%3D1%20%22%0A"
+curl "http://portal.f5k8s.net/tea/index.php?pass==0'%20or%205=5'"
+curl "http://portal.f5k8s.net/tea/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
+curl "http://portal.f5k8s.net/index.php?username=<script>"
+curl "http://portal.f5k8s.net/coffee/index.php?id=0;%20ls%20-l"
+curl "http://portal.f5k8s.net/index.php?pass=0%22%20or%201%3D1%20%22%0A"
+curl "http://portal.f5k8s.net/index.php?pass==0'%20or%201=1'"
+curl "http://portal.f5k8s.net/coffee/index.php?id=%'%20or%200=0%20union%20select%20null,%20version()%23"
+curl "http://portal.f5k8s.net/index.php?username=<script>"
+curl "http://portal.f5k8s.net/index.php?id=0;%20ls%20-l"
 ```
 
 Login to Grafana and review the above violations.
@@ -230,7 +230,7 @@ Now we will execute some requests that will be blocked by NGINX App Protect but 
 
 Run the following command.
 ```
-curl "http://portal.f5demo.cloud/phpinfo.php"
+curl "http://portal.f5k8s.net/phpinfo.php"
 ```
 
 The expected output is:
@@ -275,12 +275,12 @@ Log on to GitLab, go to  **devsecops/nap** repository and review the **Portal** 
 
 Run again the same transaction and verify that NAP is not blocking this request. 
 ```
-curl "http://portal.f5demo.cloud/phpinfo.php"
+curl "http://portal.f5k8s.net/phpinfo.php"
 ```
 
 Repeat the same process but with a different False positive.
 ```
-curl "http://portal.f5demo.cloud/index.php" -H "Header1;"
+curl "http://portal.f5k8s.net/index.php" -H "Header1;"
 ```
 
 Search with the supportID to find this particular transaction and then select `Disable` on the Violation section.
@@ -288,6 +288,6 @@ Search with the supportID to find this particular transaction and then select `D
 
 Once the change has been deployed re-run the transaction and verify that now it is not getting blocked from NAP.
 ```
-curl "http://portal.f5demo.cloud/index.php" -H "Header1;"
+curl "http://portal.f5k8s.net/index.php" -H "Header1;"
 ```
 

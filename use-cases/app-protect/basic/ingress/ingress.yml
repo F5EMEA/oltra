@@ -8,11 +8,11 @@ metadata:
     appprotect.f5.com/app-protect-enable: "True"
     appprotect.f5.com/app-protect-security-log-enable: "True"
     appprotect.f5.com/app-protect-security-log: "logconf"
-    appprotect.f5.com/app-protect-security-log-destination: "syslog:server=10.1.1.7:515"
+    appprotect.f5.com/app-protect-security-log-destination: "syslog:server=10.1.20.20:8515"
 spec:
   ingressClassName: nginx-plus
   rules:
-  - host: nap-ingress.f5demo.cloud
+  - host: nap-ingress.f5k8s.net
     http:
       paths:
       - path: /
