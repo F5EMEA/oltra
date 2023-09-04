@@ -29,27 +29,29 @@ kubectl apply -f cafe-ingress.yaml
 
 ## 4. Test the Application
 
-To access the application, curl the coffee and the tea services. We'll use ```curl```'s --insecure option to turn off certificate verification of our self-signed
-certificate and the --resolve option to set the Host header of a request with ```cafe.f5k8s.net```
+To access the application, we will use `curl`. 
 
-To get coffee:
 ```
-curl http://cafe.f5k8s.net/coffee 
+curl http://basic.f5k8s.net/ 
 ```
 
- Expected Output
+Expected Output
 ```
 Server address: 10.244.196.136:8080
-Server name: coffee-6f4b79b975-l8ht2
+Server name: tea-6fb46d899f-nsjhz
 Date: 16/Sep/2022:14:50:01 +0000
-URI: /coffee
+URI: /
 Request ID: 5ca5c11a263c4457ebb8194319fdc19e
 ```
 
-If your prefer tea: 
+Test will any other path. All requests should be forwarded to the ingress service that is `tea`. 
 
 ```
-curl http://cafe.f5k8s.net/tea 
+curl http://basic.f5k8s.net/test 
+curl http://basic.f5k8s.net/test/123 
+curl http://basic.f5k8s.net/app
+curl http://basic.f5k8s.net/demo 
+curl http://basic.f5k8s.net/123/123/123
 ```
 
 Expected Output
@@ -57,7 +59,7 @@ Expected Output
 Server address: 10.244.196.189:8080
 Server name: tea-6fb46d899f-nsjhz
 Date: 16/Sep/2022:14:50:45 +0000
-URI: /tea
+URI: /xyz
 Request ID: 76e835733e75a367455566e3cc31c9b5
 ```
 

@@ -30,7 +30,7 @@ The syntax of the *cookieName*, *expires*, *domain*, *httponly*, *secure* and *p
 
 Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
 
-Change the working directory to `basic`.
+Change the working directory to `persistence`.
 ```
 cd ~/oltra/use-cases/nic-examples/ingress-resources/persistence
 ```
@@ -51,31 +51,42 @@ kubectl apply -f ingress.yaml
 
 ## 4. Test the Application
 
-To access the application, curl the coffee and the tea services. We'll use ```-v``` option to inspect the HTTP headers
-
-To get coffee:
+Access the coffee service, validate that the `Set-Cookie` header exists and the `max-age` is set to 1 hour:
 ```
-curl http://cafe.f5k8s.net/coffee -v
+curl http://sticky.f5k8s.net/coffee -I
+```
+
+Expected Output
+```
+HTTP/1.1 200 OK
+Server: nginx/1.25.1
+Date: Mon, 04 Sep 2023 08:48:16 GMT
+Content-Type: text/plain
+Content-Length: 160
+Connection: keep-alive
+Set-Cookie: srv_id=6fe4ec8d2bbe8cd5338e4f31095affed; expires=Mon, 04-Sep-23 09:48:16 GMT; max-age=3600; path=/coffee
+Expires: Mon, 04 Sep 2023 08:48:15 GMT
+Cache-Control: no-cache
+```
+
+Access the tea service, validate that the `Set-Cookie` header exists and the `max-age` is set to 2 hours:
+```
+curl http://sticky.f5k8s.net/tea -I
 ```
 
  Expected Output
 ```
-< HTTP/1.1 200 OK
-< Server: nginx/1.25.1
-< Date: Sun, 03 Sep 2023 16:45:01 GMT
-< Content-Type: text/plain
-< Content-Length: 156
-< Connection: keep-alive
-< Set-Cookie: srv_id=a982a744ee40c846fe0addafff80fc92; expires=Sun, 03-Sep-23 18:45:01 GMT; max-age=7200; path=/tea.  <======== Set Cookie
-< Expires: Sun, 03 Sep 2023 16:45:00 GMT
-< Cache-Control: no-cache
-< 
-Server address: 10.221.23.127:8080
-Server name: tea-df5655878-7cgp4
-Date: 03/Sep/2023:16:45:01 +0000
-URI: /tea
-Request ID: 21f5a5f8fc5d1d9e7f29f346b5bb1e2a
+HTTP/1.1 200 OK
+Server: nginx/1.25.1
+Date: Mon, 04 Sep 2023 08:49:33 GMT
+Content-Type: text/plain
+Content-Length: 154
+Connection: keep-alive
+Set-Cookie: srv_id=35e80c4cacdfbafc67e984beb2614376; expires=Mon, 04-Sep-23 10:49:33 GMT; max-age=7200; path=/tea
+Expires: Mon, 04 Sep 2023 08:49:32 GMT
+Cache-Control: no-cache
 ```
+
 
 ***Clean up the environment (Optional)***
 ```

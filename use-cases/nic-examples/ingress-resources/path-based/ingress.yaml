@@ -1,17 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: cafe-ingress
-  annotations:
-    nginx.org/basic-auth-secret: "cafe-passwd"
-    nginx.org/basic-auth-realm: "Cafe App"
+  name: path-ingress
 spec:
   ingressClassName: nginx-plus
-  tls:
-  - hosts:
-    - cafe.f5k8s.net
   rules:
-  - host: cafe.f5k8s.net
+  - host: path.f5k8s.net
     http:
       paths:
       - path: /tea

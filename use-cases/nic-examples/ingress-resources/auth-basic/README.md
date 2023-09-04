@@ -11,9 +11,9 @@ The Ingress controller provides the following 2 annotations for configuring Basi
 
 Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
 
-Change the working directory to `complete-example`.
+Change the working directory to `auth-basic`.
 ```
-/home/ubuntu/oltra/use-cases/nic-examples/ingress-resources/basic-auth
+/home/ubuntu/oltra/use-cases/nic-examples/ingress-resources/auth-basic
 ```
 
 ## Step 1 - Deploy a Web Application
