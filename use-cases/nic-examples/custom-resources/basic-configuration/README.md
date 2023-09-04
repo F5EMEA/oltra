@@ -22,10 +22,7 @@ kubectl apply -f cafe.yaml
 
 ## Step 2 - Configure Load Balancing and TLS Termination
 
-Create the secret with the TLS certificate and key:
-```
-kubectl apply -f cafe-secret.yaml
-```
+> No need to create a secret as we will be using the default wildcard cert configured on NGINX:
 
 Create the VirtualServer resource:
 ```
@@ -46,11 +43,10 @@ Events:
     Normal  AddedOrUpdated  7s    nginx-ingress-controller  Configuration for default/cafe was added or updated
 ```
 
-Access the application using curl. We'll use curl's `--insecure` option to turn off certificate verification of our self-signed certificate and `--resolve` option to set the IP address and HTTPS port of the Ingress Controller to the domain name of the cafe application:
-    
+  
 To get coffee:
 ```
-curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/coffee --insecure
+curl https://cafe.f5k8s.net/coffee
 
 ###########  Expected Output  ##########
 Server address: 10.244.196.136:8080
@@ -63,7 +59,7 @@ Request ID: 5ca5c11a263c4457ebb8194319fdc19e
 
 If your prefer tea:
 ```
-curl --resolve cafe.example.com:443:10.1.10.10 https://cafe.example.com:443/tea --insecure
+curl https://cafe.f5k8s.net/tea
 
 
 ###########  Expected Output  ##########
@@ -80,5 +76,4 @@ Request ID: 76e835733e75a367455566e3cc31c9b5
 ***Clean up the environment (Optional)***
 ```
 kubectl delete -f cafe-virtual-server.yaml
-kubectl delete -f cafe-secret.yaml
 ```    

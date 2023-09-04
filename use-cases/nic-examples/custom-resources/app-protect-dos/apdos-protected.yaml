@@ -4,10 +4,10 @@ metadata:
   name: dos-protected
 spec:
   enable: true
-  name: "webapp.example.com"
+  name: "webapp.f5k8s.net"
   apDosPolicy: "dospolicy"
   apDosMonitor:
-    uri: "webapp.example.com"
+    uri: "webapp.f5k8s.net"
     protocol: "http1"
     timeout: 5
   dosAccessLogDest: "syslog-svc-2.default.svc.cluster.local:514"

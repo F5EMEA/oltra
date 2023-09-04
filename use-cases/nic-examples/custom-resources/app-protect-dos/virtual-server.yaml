@@ -3,7 +3,7 @@ kind: VirtualServer
 metadata:
   name: webapp
 spec:
-  host: webapp.example.com
+  host: webapp.f5k8s.net
   upstreams:
     - name: webapp
       service: webapp-svc
