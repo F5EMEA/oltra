@@ -61,5 +61,8 @@ curl http://sticky.f5k8s.net/tea -I
 ## CRD examples with NGINX
 
 VirtualServer CRD examples
-  - https://github.com/F5EMEA/oltra/blob/main/use-cases/nic-examples/custom-resources/basic-configuration/README.md
+- [Basic Ingress](https://github.com/F5EMEA/oltra/tree/main/use-cases/nic-examples/custom-resources/basic)
+- [Advanced Routing](https://github.com/F5EMEA/oltra/tree/main/use-cases/nic-examples/custom-resources/advanced-routing)
+- [Traffic Splitting](https://github.com/F5EMEA/oltra/tree/main/use-cases/nic-examples/custom-resources/traffic-splitting)
+- [Rate Limit](https://github.com/F5EMEA/oltra/tree/main/use-cases/nic-examples/custom-resources/rate-limit)
 
