@@ -1,0 +1,1 @@
+curl http://portal.f5k8s.net/phpinfo.php

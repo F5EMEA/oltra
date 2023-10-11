@@ -1,0 +1,4 @@
+portal.f5k8s.net
+www.f5k8s.net
+app1.f5k8s.net
+app2.f5k8s.net
