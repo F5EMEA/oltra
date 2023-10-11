@@ -1,18 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: cafe-ingress
+  name: sticky-ingress
   annotations:
-    nginx.org/basic-auth-secret: "cafe-passwd"
-    nginx.org/basic-auth-realm: "Cafe App"
+    nginx.com/sticky-cookie-services: "serviceName=coffee-svc srv_id expires=1h path=/coffee;serviceName=tea-svc srv_id expires=2h path=/tea"
 spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
-    - cafe.example.com
-    secretName: cafe-secret
   rules:
-  - host: cafe.example.com
+  - host: sticky.f5k8s.net
     http:
       paths:
       - path: /tea

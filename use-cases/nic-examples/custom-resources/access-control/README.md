@@ -39,7 +39,7 @@ kubectl apply -f virtual-server.yaml
 
 Let's access the application:
 ```
-curl --resolve webapp.example.com:80:10.1.10.10 http://webapp.example.com:80
+curl http://webapp.f5k8s.net
 ```
 
 The expected output is:
@@ -68,7 +68,7 @@ kubectl apply -f access-control-policy-allow.yaml
 
 Let's access the application again:
 ```
-curl --resolve webapp.example.com:80:10.1.10.10 http://webapp.example.com:80
+curl http://webapp.f5k8s.net
 ```
 
 The expected output is:

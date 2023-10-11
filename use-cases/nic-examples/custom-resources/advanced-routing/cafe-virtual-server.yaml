@@ -3,7 +3,7 @@ kind: VirtualServer
 metadata:
   name: cafe
 spec:
-  host: cafe.example.com
+  host: cafe.f5k8s.net
   upstreams:
   - name: tea-post
     service: tea-post-svc

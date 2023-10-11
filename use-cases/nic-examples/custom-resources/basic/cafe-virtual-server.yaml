@@ -3,9 +3,9 @@ kind: VirtualServer
 metadata:
   name: cafe
 spec:
-  host: cafe.example.com
-  tls:
-    secret: cafe-secret
+  host: cafe.f5k8s.net
+#  tls:
+#    secret: cafe-secret
   upstreams:
   - name: tea
     service: tea-svc
