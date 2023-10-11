@@ -1,4 +1,4 @@
-# Working with F5 and NGINX Ingresses
+# Working with F5 Ingress
 We already have CIS and NGINX+ running on our environment.
 
 ## Review the environment
@@ -13,22 +13,12 @@ You should see an ingress class with the name `f5` that corresponds to CIS and `
 
 3. Let's find the deployment for CIS
 ```
-kubectl get deploy -n bigip
+kubectl get deploy -n bigip -o 
 ```
 
 4. Review the deployment configuration for CIS. 
 ```
 kubectl get deploy f5-cis-crd -n bigip -o yaml
-```
-
-5. Let's find the deployment for NGINX
-```
-kubectl get deploy -n nginx
-```
-
-6. Review the deployment configuration for CIS. 
-```
-kubectl describe deploy nginx-plus -n nginx
 ```
 
 ## Ingress examples with CIS
@@ -37,8 +27,5 @@ Go to the following links for the 3 examples
  - https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/cis-ingress/host-routing/README.md
  - https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/cis-ingress/tls/README.md
 
-## Ingress examples with NGINX
 
-Go to the following link
-https://github.com/F5EMEA/oltra/tree/main/use-cases/nic-examples/ingress-resources/complete-example
 

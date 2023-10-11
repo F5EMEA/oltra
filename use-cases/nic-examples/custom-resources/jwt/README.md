@@ -45,7 +45,7 @@ Note that the VirtualServer references the policy `jwt-policy` created in Step 3
 
 If you attempt to access the application without providing a valid JWT, NGINX will reject your requests for that VirtualServer:
 ```
-curl --resolve webapp.example.com:80:10.1.10.10 http://webapp.example.com:80/
+curl http://webapp.f5k8s.net/
 ```
 
 The expected output is:
@@ -61,7 +61,7 @@ The expected output is:
 
 If you provide a valid JWT, your request will succeed:
 ```
-curl --resolve webapp.example.com:80:10.1.10.10 http://webapp.example.com:80/ -H "token: `cat token.jwt`"
+curl http://webapp.f5k8s.net/ -H "token: `cat token.jwt`"
 ```
 
 The expected output is:

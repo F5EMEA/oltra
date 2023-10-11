@@ -1,0 +1,10 @@
+user
+username
+pass
+id
+app
+loginname
+searchString
+passport
+view
+delete

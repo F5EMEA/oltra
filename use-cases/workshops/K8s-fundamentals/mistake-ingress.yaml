@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sticky-ingress
+  annotations:
+    nginx.com/sticky-cookie-service: "serviceName=coffee-svc srv_id expires=1h path=/coffee;serviceName=tea-svc srv_id expires=2h path=/tea"
+spec:
+  rules:
+  - host: sticky.f5k8s.net
+    http:
+      paths:
+      - path: /tea
+        pathType: Prefix
+        backend:
+          service:
+            name: tea-svc
+            port:
+              number: 80
+      - path: /coffee
+        pathType: Prefix
+        backend:
+          service:
+            name: coffee-svc
+            port:
+              number: 80

@@ -47,11 +47,11 @@ Note the reference to the DOS protected resource in the VirtualServer resource. 
 
 ## Step 4 - Test the Application
 
-To access the application, curl the Webapp service. We'll use the --resolve option to set the Host header of a request with `webapp.example.com`
+To access the application, curl the Webapp service. We'll use the --resolve option to set the Host header of a request with `webapp.f5k8s.net`
 
 Send a request to the application:
 ```
-curl --resolve webapp.example.com:80:10.1.10.10 http://webapp.example.com:80/
+curl http://webapp.f5k8s.net/
 ```
 
 The expected output is:

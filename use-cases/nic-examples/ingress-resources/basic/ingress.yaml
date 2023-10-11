@@ -1,20 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: cafe-ingress-coffee-minion
-  annotations:
-#    kubernetes.io/ingress.class: "nginx"
-    nginx.org/mergeable-ingress-type: "minion"
+  name: basic-ingress
 spec:
   ingressClassName: nginx-plus
   rules:
-  - host: cafe.f5k8s.net
+  - host: basic.f5k8s.net
     http:
       paths:
-      - path: /coffee
+      - path: /
         pathType: Prefix
         backend:
           service:
-            name: coffee-svc
+            name: tea-svc
             port:
               number: 80
+

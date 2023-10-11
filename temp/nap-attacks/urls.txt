@@ -1,0 +1,15 @@
+/faq
+/
+/product/view
+/product/details
+/product/archieve
+/product/purchase
+/product/review
+/contact
+/images/Hackazon.png
+/images/tent.png
+/images/jeep.png
+/images/amazon.png
+/images/handbag.png
+/cart/view
+/search
