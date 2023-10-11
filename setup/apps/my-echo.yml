@@ -29,3 +29,19 @@ spec:
     name: http
   selector:
     app: echo
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo-svc-nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    nodePort: 30880
+    protocol: TCP
+    name: http
+  selector:
+    app: echo
