@@ -21,7 +21,7 @@ spec:
       imagePullSecrets:
       - name: regcred
       containers:
-      - image: private-registry.nginx.com/nginx-ic-nap-dos/nginx-plus-ingress:3.2.1
+      - image: private-registry.nginx.com/nginx-ic-nap-dos/nginx-plus-ingress:3.3.2
         imagePullPolicy: IfNotPresent
         name: nginx-plus
         ports:

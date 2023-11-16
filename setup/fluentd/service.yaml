@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluentd-svc
+  namespace: fluentd
+spec:
+#  type: LoadBalancer
+  ports:
+  - port: 8514
+    protocol: UDP
+    name: access-logs
+  - port: 8513
+    protocol: UDP
+    name: error-logs
+  - port: 8515
+    protocol: TCP
+    name: nap-logs
+  - port: 8516
+    protocol: TCP
+    name: dos-logs    
+  selector:
+    app: fluentd
+

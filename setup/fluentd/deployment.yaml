@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+  namespace: fluentd
+  labels:
+    app: fluentd
+    version: v1
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+        version: v1
+    spec:
+      serviceAccount: fluentd
+      serviceAccountName: fluentd
+      containers:
+      - name: fluentd
+        #image: fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
+        image: skenderidis/nginx-fluentd:1.0
+        ports:
+        - name: error-logs
+          containerPort: 8513
+          protocol: UDP
+        - name: access-logs
+          containerPort: 8514
+          protocol: UDP
+        - name: nap-logs
+          containerPort: 8515
+          protocol: TCP
+        - name: dos-logs
+          containerPort: 8516
+          protocol: TCP
+        env:
+          - name: K8S_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name:  FLUENT_ELASTICSEARCH_HOST
+            value: "10.1.20.20"                  # Modify this accordingly
+          - name:  FLUENT_ELASTICSEARCH_PORT
+            value: "9200"                            # Modify this accordingly
+          - name: FLUENT_ELASTICSEARCH_SCHEME
+            value: "http"
+          # Option to configure elasticsearch plugin with self signed certs
+          # ================================================================
+          - name: FLUENT_ELASTICSEARCH_SSL_VERIFY
+            value: "false"
+          # Option to configure elasticsearch plugin with tls
+          # ================================================================
+          - name: FLUENT_ELASTICSEARCH_SSL_VERSION
+            value: "TLSv1_2"
+          # X-Pack Authentication
+          # =====================
+          - name: FLUENT_ELASTICSEARCH_USER
+            value: "elastic"                        # Modify this accordingly
+          - name: FLUENT_ELASTICSEARCH_PASSWORD
+            value: "changeme"                       # Modify this accordingly
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: config-source
+          mountPath: /fluentd/etc
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config-source
+        configMap:
+          name: fluentd-config

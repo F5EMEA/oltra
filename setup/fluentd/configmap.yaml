@@ -1,0 +1,330 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: fluentd
+  labels:
+    k8s-app: fluentd-logging
+    version: v1
+    kubernetes.io/cluster-service: "true"
+data:
+  fluent.conf: |
+    # Fluentd Configuration File Kostas
+    @include error.conf
+    @include access.conf
+    @include nap.conf
+
+  error.conf: |
+    # Fluentd Configuration for NGINX Error logs
+    <source>
+      @type syslog
+      port 8513
+      bind 0.0.0.0
+      <transport udp>
+      </transport>
+      tag nginx.error
+    </source>
+
+    <match nginx.error.local7.*>
+      @type elasticsearch
+      @id out_es_error
+      @log_level info
+      include_tag_key true
+      host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+      port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+      path "#{ENV['FLUENT_ELASTICSEARCH_PATH']}"
+      scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
+      ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'false'}"
+      ssl_version "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERSION'] || 'TLSv1_2'}"
+      user "#{ENV['FLUENT_ELASTICSEARCH_USER'] || use_default}"
+      password "#{ENV['FLUENT_ELASTICSEARCH_PASSWORD'] || use_default}"
+      reload_connections "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS'] || 'false'}"
+      reconnect_on_error "#{ENV['FLUENT_ELASTICSEARCH_RECONNECT_ON_ERROR'] || 'true'}"
+      reload_on_failure "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_ON_FAILURE'] || 'true'}"
+      log_es_400_reason "#{ENV['FLUENT_ELASTICSEARCH_LOG_ES_400_REASON'] || 'false'}"
+      logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'nginx-error'}"
+      logstash_dateformat "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_DATEFORMAT'] || '%Y.%m.%d'}"
+      logstash_format "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_FORMAT'] || 'true'}"
+      include_timestamp "#{ENV['FLUENT_ELASTICSEARCH_INCLUDE_TIMESTAMP'] || 'false'}"
+      template_name "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_NAME'] || use_nil}"
+      template_file "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_FILE'] || use_nil}"
+      template_overwrite "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_OVERWRITE'] || use_default}"
+      sniffer_class_name "#{ENV['FLUENT_SNIFFER_CLASS_NAME'] || 'Fluent::Plugin::ElasticsearchSimpleSniffer'}"
+      request_timeout "#{ENV['FLUENT_ELASTICSEARCH_REQUEST_TIMEOUT'] || '5s'}"
+      <buffer>
+        flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
+        flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
+        chunk_limit_size "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE'] || '2M'}"
+        queue_limit_length "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH'] || '32'}"
+        retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
+        retry_forever true
+      </buffer>
+    </match>
+
+  access.conf: |
+    # Fluentd Configuration for NGINX Access logs
+    <source>
+      @type syslog
+      port 8514
+      bind 0.0.0.0
+      <transport udp>
+      </transport>
+      tag nginx.access
+    </source>
+
+    <filter nginx.access.local7.info>
+      @type parser
+      key_name message
+      format json
+      reserve_data true
+    </filter>
+
+    # Match logs and duplicate them
+    <filter nginx.access.local7.info>
+      @type geoip
+      # Specify one or more geoip lookup field which has ip address (default: host)
+      geoip_lookup_keys  address
+
+      # Specify optional geoip database (using bundled GeoLiteCity databse by default)
+      # geoip_database    "/path/to/your/GeoIPCity.dat"
+      # Specify optional geoip2 database (using bundled GeoLite2 database by default)
+      # geoip2_database   "/path/to/your/GeoLite2-City.mmdb"
+      # Specify backend library (geoip2_c, geoip, geoip2_compat)
+      backend_library geoip2_c
+
+      # Set adding field with placeholder (more than one settings are required.)
+      <record>
+        geoip.latitude        ${location.latitude["address"]}
+        geoip.longitude       ${location.longitude["address"]}
+        geoip.country         ${country.iso_code["address"]}
+        geoip.country_name    ${country.names.en["address"]}
+        geoip.location        ${location.latitude["address"]},${location.longitude["address"]}
+
+        geoip.location_properties  '{ "lat" : ${location.latitude["address"]}, "lon" : ${location.longitude["address"]} }'
+        geoip.location_string      ${location.latitude["address"]},${location.longitude["address"]}
+        geoip.location_array       '[${location.longitude["address"]},${location.latitude["address"]}]'
+      </record>
+
+      # To avoid get stacktrace error with `[null, null]` array for elasticsearch.
+      skip_adding_null_record  true
+    </filter>
+
+
+    <match nginx.access.local7.info>
+      @type elasticsearch
+      @id out_es_access
+      @log_level info
+      include_tag_key true
+      host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+      port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+      path "#{ENV['FLUENT_ELASTICSEARCH_PATH']}"
+      scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
+      ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'false'}"
+      ssl_version "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERSION'] || 'TLSv1_2'}"
+      user "#{ENV['FLUENT_ELASTICSEARCH_USER'] || use_default}"
+      password "#{ENV['FLUENT_ELASTICSEARCH_PASSWORD'] || use_default}"
+      reload_connections "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS'] || 'false'}"
+      reconnect_on_error "#{ENV['FLUENT_ELASTICSEARCH_RECONNECT_ON_ERROR'] || 'true'}"
+      reload_on_failure "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_ON_FAILURE'] || 'true'}"
+      log_es_400_reason "#{ENV['FLUENT_ELASTICSEARCH_LOG_ES_400_REASON'] || 'false'}"
+      logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'nginx-access'}"
+      logstash_dateformat "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_DATEFORMAT'] || '%Y.%m.%d'}"
+      logstash_format "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_FORMAT'] || 'true'}"
+      include_timestamp "#{ENV['FLUENT_ELASTICSEARCH_INCLUDE_TIMESTAMP'] || 'false'}"
+      template_name "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_NAME'] || use_nil}"
+      template_file "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_FILE'] || use_nil}"
+      template_overwrite "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_OVERWRITE'] || use_default}"
+      sniffer_class_name "#{ENV['FLUENT_SNIFFER_CLASS_NAME'] || 'Fluent::Plugin::ElasticsearchSimpleSniffer'}"
+      request_timeout "#{ENV['FLUENT_ELASTICSEARCH_REQUEST_TIMEOUT'] || '5s'}"
+      <buffer>
+        flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
+        flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
+        chunk_limit_size "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE'] || '2M'}"
+        queue_limit_length "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH'] || '32'}"
+        retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
+        retry_forever true
+      </buffer>
+    </match>
+
+  nap.conf: |
+    # Fluentd Configuration for NGINX NAP logs
+    <source>
+      @type syslog
+      port 8515
+      bind 0.0.0.0
+      <transport tcp>
+      </transport>
+      tag nap.logs
+      <parse>
+        message_format rfc3164
+        time_format %Y-%m-%dT%H:%M:%S%:z
+        with_priority false
+      </parse>      
+    </source>
+
+    <filter nap.logs.local0.crit>
+      @type parser
+      key_name message
+      format json
+      reserve_data false
+    </filter>
+
+    <filter nap.logs.local0.crit>
+      @type record_transformer
+      enable_ruby
+      <record>
+        url-decode ${URI.encode_www_form_component(Base64.decode64(record["url"]))}
+        request-decode ${URI.encode_www_form_component(Base64.decode64(record["rawRequest"]["httpRequest"]))}
+        virtualServerName ${record["virtualServerName"].match(/^\d+-(.*?):/)[1]}
+      </record>
+    </filter>
+        #url-decode ${Base64.decode64(record["url"])}
+        #request-decode ${Base64.decode64(record["rawRequest"]["httpRequest"])}
+        #virtualServerName ${record["virtualServerName"].match(/^\d+-(.*?):/)[1]}
+        
+    <match nap.logs.local0.crit>
+      @type copy
+      <store>
+        @type relabel
+        @label @original
+      </store>
+      <store>
+        @type relabel
+        @label @decoded
+      </store>
+    </match>
+
+    //@data Label, you can perform desired filter and output file
+    <label @original>
+     
+      <filter nap.logs.local0.crit>
+        @type geoip
+        # Specify one or more geoip lookup field which has ip address (default: host)
+        geoip_lookup_keys  clientIp
+
+        # Specify optional geoip database (using bundled GeoLiteCity databse by default)
+        # geoip_database    "/path/to/your/GeoIPCity.dat"
+        # Specify optional geoip2 database (using bundled GeoLite2 database by default)
+        # geoip2_database   "/path/to/your/GeoLite2-City.mmdb"
+        # Specify backend library (geoip2_c, geoip, geoip2_compat)
+        backend_library geoip2_c
+
+        # Set adding field with placeholder (more than one settings are required.)
+        <record>
+          latitude        ${location.latitude["clientIp"]}
+          longitude       ${location.longitude["clientIp"]}
+          country         ${country.iso_code["clientIp"]}
+          country_name    ${country.names.en["clientIp"]}
+          region_name     ${subdivisions.0.names.en["clientIp"]}
+        </record>
+
+        # To avoid get stacktrace error with `[null, null]` array for elasticsearch.
+        skip_adding_null_record  true
+      </filter>
+
+
+      <match nap.logs.local0.crit>
+        @type elasticsearch
+        @id out_es_nap_logs
+        @log_level info
+        include_tag_key true
+        host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+        port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+        path "#{ENV['FLUENT_ELASTICSEARCH_PATH']}"
+        scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
+        ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'false'}"
+        ssl_version "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERSION'] || 'TLSv1_2'}"
+        user "#{ENV['FLUENT_ELASTICSEARCH_USER'] || use_default}"
+        password "#{ENV['FLUENT_ELASTICSEARCH_PASSWORD'] || use_default}"
+        reload_connections "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS'] || 'false'}"
+        reconnect_on_error "#{ENV['FLUENT_ELASTICSEARCH_RECONNECT_ON_ERROR'] || 'true'}"
+        reload_on_failure "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_ON_FAILURE'] || 'true'}"
+        log_es_400_reason "#{ENV['FLUENT_ELASTICSEARCH_LOG_ES_400_REASON'] || 'false'}"
+        logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'nginx-nap-logs'}"
+        logstash_dateformat "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_DATEFORMAT'] || '%Y.%m.%d'}"
+        logstash_format "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_FORMAT'] || 'true'}"
+        include_timestamp "#{ENV['FLUENT_ELASTICSEARCH_INCLUDE_TIMESTAMP'] || 'false'}"
+        template_name "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_NAME'] || use_nil}"
+        template_file "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_FILE'] || use_nil}"
+        template_overwrite "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_OVERWRITE'] || use_default}"
+        sniffer_class_name "#{ENV['FLUENT_SNIFFER_CLASS_NAME'] || 'Fluent::Plugin::ElasticsearchSimpleSniffer'}"
+        request_timeout "#{ENV['FLUENT_ELASTICSEARCH_REQUEST_TIMEOUT'] || '5s'}"
+        <buffer>
+          flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
+          flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
+          chunk_limit_size "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE'] || '2M'}"
+          queue_limit_length "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH'] || '32'}"
+          retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
+          retry_forever true
+        </buffer>
+      </match>
+
+    </label>
+
+    //@pi2 Label, you can perform desired filter and output file
+    <label @decoded>
+
+      <filter nap.logs.local0.crit>
+        @type nginx_nap_split
+        split_key violations
+      </filter>
+
+      <filter nap.logs.*.*>
+        @type nginx_nap_decode
+      </filter>
+
+      <filter nap.logs.*.*>
+        @type grep  
+        <regexp>
+          key $.violations.violation.name
+          pattern /^(VIOL_ATTACK_SIGNATURE|VIOL_PARAMETER_VALUE_METACHAR)$/  # include only specifc violation types starting with VIOL_
+        </regexp>
+      </filter>
+
+
+      <filter nap.logs.local0.crit>
+        @type record_transformer
+        remove_keys rawRequest,$.enforcementState.attackType,clientPort,request-decode,tag
+      </filter>
+      
+
+      <match nap.logs.local0.crit>
+        @type elasticsearch
+        @id out_es_nap_decoded
+        @log_level info
+        include_tag_key true
+        host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+        port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+        path "#{ENV['FLUENT_ELASTICSEARCH_PATH']}"
+        scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
+        ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'false'}"
+        ssl_version "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERSION'] || 'TLSv1_2'}"
+        user "#{ENV['FLUENT_ELASTICSEARCH_USER'] || use_default}"
+        password "#{ENV['FLUENT_ELASTICSEARCH_PASSWORD'] || use_default}"
+        reload_connections "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS'] || 'false'}"
+        reconnect_on_error "#{ENV['FLUENT_ELASTICSEARCH_RECONNECT_ON_ERROR'] || 'true'}"
+        reload_on_failure "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_ON_FAILURE'] || 'true'}"
+        log_es_400_reason "#{ENV['FLUENT_ELASTICSEARCH_LOG_ES_400_REASON'] || 'false'}"
+        logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'nginx-nap-decoded'}"
+        logstash_dateformat "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_DATEFORMAT'] || '%Y.%m.%d'}"
+        logstash_format "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_FORMAT'] || 'true'}"
+        include_timestamp "#{ENV['FLUENT_ELASTICSEARCH_INCLUDE_TIMESTAMP'] || 'false'}"
+        template_name "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_NAME'] || use_nil}"
+        template_file "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_FILE'] || use_nil}"
+        template_overwrite "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_OVERWRITE'] || use_default}"
+        sniffer_class_name "#{ENV['FLUENT_SNIFFER_CLASS_NAME'] || 'Fluent::Plugin::ElasticsearchSimpleSniffer'}"
+        request_timeout "#{ENV['FLUENT_ELASTICSEARCH_REQUEST_TIMEOUT'] || '5s'}"
+        <buffer>
+          flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
+          flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
+          chunk_limit_size "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE'] || '2M'}"
+          queue_limit_length "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH'] || '32'}"
+          retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
+          retry_forever true
+        </buffer>
+      </match>
+
+    </label>
+
+

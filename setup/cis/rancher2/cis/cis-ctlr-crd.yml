@@ -45,7 +45,7 @@ spec:
             "--bigip-username=$(BIGIP_USERNAME)",
             "--bigip-password=$(BIGIP_PASSWORD)",
             "--bigip-url=10.1.1.5",
-            "--bigip-partition=rancher2-cis-crd",
+            "--bigip-partition=rancher2-cis",
             "--node-poll-interval=30",
             "--verify-interval=30",
             "--pool-member-type=cluster",

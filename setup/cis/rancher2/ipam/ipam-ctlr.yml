@@ -18,7 +18,7 @@ spec:
       containers:
       - args:
         - --orchestration=kubernetes
-        - --ip-range='{"nginx-plus":"10.1.10.10-10.1.10.10", "dev":"10.1.10.220-10.1.10.229","prod":"10.1.10.230-10.1.10.239"}'
+        - --ip-range='{"nginx-plus":"10.1.10.11-10.1.10.11", "dev":"10.1.10.220-10.1.10.229","prod":"10.1.10.230-10.1.10.239"}'
         - --log-level=DEBUG
         command:
         - /app/bin/f5-ipam-controller

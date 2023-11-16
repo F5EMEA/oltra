@@ -1,0 +1,21 @@
+
+apiVersion: "cis.f5.com/v1"
+kind: TransportServer
+metadata:
+  name: awx
+  namespace: awx
+  labels:
+    f5cr: "true"
+spec:
+  virtualServerAddress: "10.1.10.19"
+  virtualServerPort: 80
+  virtualServerName: "awx-server"
+  mode: standard
+  snat: auto   
+  pool:
+    service: awx-demo-service
+    servicePort: 80
+    monitor:
+      type: tcp
+      interval: 3
+      timeout: 10
