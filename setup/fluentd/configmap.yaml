@@ -14,6 +14,7 @@ data:
     @include error.conf
     @include access.conf
     @include nap.conf
+    @include l7dos.conf
 
   error.conf: |
     # Fluentd Configuration for NGINX Error logs
@@ -95,15 +96,9 @@ data:
 
       # Set adding field with placeholder (more than one settings are required.)
       <record>
-        geoip.latitude        ${location.latitude["address"]}
-        geoip.longitude       ${location.longitude["address"]}
-        geoip.country         ${country.iso_code["address"]}
-        geoip.country_name    ${country.names.en["address"]}
-        geoip.location        ${location.latitude["address"]},${location.longitude["address"]}
-
-        geoip.location_properties  '{ "lat" : ${location.latitude["address"]}, "lon" : ${location.longitude["address"]} }'
-        geoip.location_string      ${location.latitude["address"]},${location.longitude["address"]}
-        geoip.location_array       '[${location.longitude["address"]},${location.latitude["address"]}]'
+        country         ${country.iso_code["address"]}
+        country_name    ${country.names.en["address"]}
+        geoip           '{ "lat" : ${location.latitude["address"]}, "lon" : ${location.longitude["address"]} }' 
       </record>
 
       # To avoid get stacktrace error with `[null, null]` array for elasticsearch.
@@ -174,14 +169,11 @@ data:
       @type record_transformer
       enable_ruby
       <record>
-        url-decode ${URI.encode_www_form_component(Base64.decode64(record["url"]))}
-        request-decode ${URI.encode_www_form_component(Base64.decode64(record["rawRequest"]["httpRequest"]))}
+        url-decode ${Base64.decode64(record["url"])}
+        request-decode ${Base64.decode64(record["rawRequest"]["httpRequest"])}
         virtualServerName ${record["virtualServerName"].match(/^\d+-(.*?):/)[1]}
       </record>
     </filter>
-        #url-decode ${Base64.decode64(record["url"])}
-        #request-decode ${Base64.decode64(record["rawRequest"]["httpRequest"])}
-        #virtualServerName ${record["virtualServerName"].match(/^\d+-(.*?):/)[1]}
         
     <match nap.logs.local0.crit>
       @type copy
@@ -212,11 +204,9 @@ data:
 
         # Set adding field with placeholder (more than one settings are required.)
         <record>
-          latitude        ${location.latitude["clientIp"]}
-          longitude       ${location.longitude["clientIp"]}
           country         ${country.iso_code["clientIp"]}
           country_name    ${country.names.en["clientIp"]}
-          region_name     ${subdivisions.0.names.en["clientIp"]}
+          geoip           '{ "lat" : ${location.latitude["clientIp"]}, "lon" : ${location.longitude["clientIp"]} }'
         </record>
 
         # To avoid get stacktrace error with `[null, null]` array for elasticsearch.
@@ -326,5 +316,64 @@ data:
       </match>
 
     </label>
+
+
+  l7dos.conf: |
+    # Fluentd Configuration for NGINX Access logs
+    <source>
+      @type tcp
+      port 8516
+      bind 0.0.0.0
+      tag nginx.dos
+      format none
+    </source>
+
+    <filter nginx.dos>
+      @type parser
+      key_name message
+      <parse>
+        @type ltsv
+        delimiter_pattern /\"\,\s+/
+        label_delimiter ="
+        types dos_attack_id:integer, baseline_dps:integer, incoming_dps:integer, incoming_rps:integer, successful_tps:integer, unsuccessful_rps:integer, incoming_datagrams:integer, incoming_requests:integer, successful_responses:integer, unsuccessful_requests:integer, active_connections:integer, mitigated_bad_actors:integer, redirect_bad_actor:integer, challenge_bad_actor:integer, block_bad_actor:integer, mitigated_by_signatures:integer, redirect_signature:integer, challenge_signature:integer, block_signature:integer, mitigated_by_global_rate:integer, redirect_global:integer, challenge_global:integer, block_global:integer, mitigated_slow:integer, redirect_slow:integer, challenge_slow:integer, block_slow:integer, mitigated_connections:integer, mitigated_bad_actors_l4:integer, mitigated_bad_actors_rps:integer, redirect_bad_actor_rps:integer, challenge_bad_actor_rps:integer, block_bad_actor_rps:integer, mitigated_by_signatures_rps:integer, redirect_signature_rps:integer, challenge_signature_rps:integer, block_signature_rps:integer, mitigated_slow_rps:integer, redirect_slow_rps:integer, challenge_slow_rps:integer, block_slow_rps:integer, mitigated_by_global_rate_rps:integer, redirect_global_rps:integer, challenge_global_rps:integer, block_global_rps:integer, mitigated_bad_actors_l4_rps:integer, mitigated_connections_rps:integer, impact_rps:integer, new_bad_actors_detected:integer, bad_actors:integer, signature_id:integer, stress_level:float, threshold_dps:float, threshold_conns:float, signature_efficiency:float, signature_accuracy:float
+
+      </parse>
+    </filter>
+
+    <match nginx.dos>
+      @type elasticsearch
+      @id out_es_dos
+      @log_level info
+      include_tag_key true
+      host "#{ENV['FLUENT_ELASTICSEARCH_HOST']}"
+      port "#{ENV['FLUENT_ELASTICSEARCH_PORT']}"
+      path "#{ENV['FLUENT_ELASTICSEARCH_PATH']}"
+      scheme "#{ENV['FLUENT_ELASTICSEARCH_SCHEME'] || 'http'}"
+      ssl_verify "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERIFY'] || 'false'}"
+      ssl_version "#{ENV['FLUENT_ELASTICSEARCH_SSL_VERSION'] || 'TLSv1_2'}"
+      user "#{ENV['FLUENT_ELASTICSEARCH_USER'] || use_default}"
+      password "#{ENV['FLUENT_ELASTICSEARCH_PASSWORD'] || use_default}"
+      reload_connections "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_CONNECTIONS'] || 'false'}"
+      reconnect_on_error "#{ENV['FLUENT_ELASTICSEARCH_RECONNECT_ON_ERROR'] || 'true'}"
+      reload_on_failure "#{ENV['FLUENT_ELASTICSEARCH_RELOAD_ON_FAILURE'] || 'true'}"
+      log_es_400_reason "#{ENV['FLUENT_ELASTICSEARCH_LOG_ES_400_REASON'] || 'true'}"
+      logstash_prefix "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_PREFIX'] || 'nginx-l7dos'}"
+      logstash_dateformat "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_DATEFORMAT'] || '%Y.%m.%d'}"
+      logstash_format "#{ENV['FLUENT_ELASTICSEARCH_LOGSTASH_FORMAT'] || 'true'}"
+      include_timestamp "#{ENV['FLUENT_ELASTICSEARCH_INCLUDE_TIMESTAMP'] || 'false'}"
+      template_name "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_NAME'] || use_nil}"
+      template_file "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_FILE'] || use_nil}"
+      template_overwrite "#{ENV['FLUENT_ELASTICSEARCH_TEMPLATE_OVERWRITE'] || use_default}"
+      sniffer_class_name "#{ENV['FLUENT_SNIFFER_CLASS_NAME'] || 'Fluent::Plugin::ElasticsearchSimpleSniffer'}"
+      request_timeout "#{ENV['FLUENT_ELASTICSEARCH_REQUEST_TIMEOUT'] || '5s'}"
+      <buffer>
+        flush_thread_count "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_THREAD_COUNT'] || '8'}"
+        flush_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_FLUSH_INTERVAL'] || '5s'}"
+        chunk_limit_size "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_CHUNK_LIMIT_SIZE'] || '2M'}"
+        queue_limit_length "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_QUEUE_LIMIT_LENGTH'] || '32'}"
+        retry_max_interval "#{ENV['FLUENT_ELASTICSEARCH_BUFFER_RETRY_MAX_INTERVAL'] || '30'}"
+        retry_forever true
+      </buffer>
+    </match>
 
 
