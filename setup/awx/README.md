@@ -3,6 +3,7 @@
 1. We will deploy AWX to the secondary Cluster (Rancher2).
 
 Install with Helm (default values)
+helm repo add awx-operator https://ansible.github.io/awx-operator/
 helm install -n awx --create-namespace ansible awx-operator/awx-operator
 
 
