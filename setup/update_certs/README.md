@@ -1,14 +1,12 @@
 # updating certs
 
 ## Gitlab
-update the f5k8s.net certs that are located on /srv/gitlab/ssl
-/srv/gitlab/ssl/git.f5k8s.net.crt
-/srv/gitlab/ssl/git.f5k8s.net.key
-/srv/gitlab/ssl/git.f5k8s.net.crt
-/srv/gitlab/ssl/f5k8s.key
-/srv/gitlab/ssl/f5k8s.crt
-/srv/gitlab/config/ssl/f5k8s.key 
-/srv/gitlab/config/ssl/f5k8s.crt 
+update the f5k8s.net certs that are located on 
+
+`/srv/gitlab/ssl`
+
+- /srv/gitlab/config/ssl/f5k8s.key 
+- /srv/gitlab/config/ssl/f5k8s.crt 
 
 docker exec gitlab_web_1 gitlab-ctl reconfigure
 docker exec gitlab_web_1 gitlab-ctl restart
