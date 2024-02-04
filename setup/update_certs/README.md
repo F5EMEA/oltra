@@ -9,6 +9,7 @@ update the f5k8s.net certs that are located on
 - /srv/gitlab/config/ssl/f5k8s.crt 
 
 docker exec gitlab_web_1 gitlab-ctl reconfigure
+
 docker exec gitlab_web_1 gitlab-ctl restart
 
 Redeploy gitlab
