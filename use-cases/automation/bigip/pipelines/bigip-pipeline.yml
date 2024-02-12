@@ -1,0 +1,144 @@
+default:
+  image: skenderidis/ansible-runner
+
+stages:
+  - changed_files
+  - validation
+  - update
+
+file_list_on_merge:
+  stage: changed_files
+  tags:
+    - shared  
+  script:
+    - echo Merge-Request-ID $CI_MERGE_REQUEST_IID	
+    - echo branch $CI_COMMIT_REF_NAME
+    - git diff-tree --stat --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA} -- $CI_COMMIT_REF_NAME
+    - git diff-tree --name-only --diff-filter=D --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA} -- $CI_COMMIT_REF_NAME
+    - git diff-tree --name-only --diff-filter=D --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA} -- $CI_COMMIT_REF_NAME > file_deleted_merge.txt    
+    - git diff-tree --name-only --diff-filter=ACMRTUXB* --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA} -- $CI_COMMIT_REF_NAME
+    - git diff-tree --name-only --diff-filter=ACMRTUXB* --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA} -- $CI_COMMIT_REF_NAME > file_added_merge.txt
+  artifacts:
+    paths:
+      - file_added_merge.txt
+      - file_deleted_merge.txt
+  only:
+    - merge_requests
+
+file_list_on_commit:
+  stage: changed_files
+  tags:
+    - shared  
+  script:
+    - echo Commit-ID $CI_COMMIT_SHA
+    - echo ProjectName $CI_PROJECT_NAME
+    - git diff --stat $CI_COMMIT_SHA^ $CI_COMMIT_SHA
+    - git diff --name-only --diff-filter=D $CI_COMMIT_SHA^ $CI_COMMIT_SHA
+    - git diff --name-only --diff-filter=D $CI_COMMIT_SHA^ $CI_COMMIT_SHA > files_deleted.txt 
+    - git diff --name-only --diff-filter=ACMRTUXB* $CI_COMMIT_SHA^ $CI_COMMIT_SHA    
+    - git diff --name-only --diff-filter=ACMRTUXB* $CI_COMMIT_SHA^ $CI_COMMIT_SHA > files_added.txt 
+  artifacts:
+    paths:
+      - files_added.txt
+      - files_deleted.txt
+  only:
+    - main
+
+validation:
+  stage: validation
+  tags:
+    - shared  
+  script:
+    - echo "ok"
+  only:
+    - merge_requests
+  
+validation_on_commit:
+  stage: validation
+  tags:
+    - shared  
+  script:
+    - echo "ok"
+  only:
+    - main
+
+delete_from_bigip:
+  stage: update
+  allow_failure: true
+  tags:
+    - shared  
+  script:
+    - file_count=$(wc -l < files_deleted.txt)
+    - echo "Number of declarations to be pushed on F5 are $file_count"
+    # Check if the file count is less than 1
+    - |
+      if [ "$file_count" -lt 1 ]; then
+        echo "There are no declarations to be pushed. Exiting the pipeline."
+        exit 1
+      else
+        # Read each line from the file and run a curl request
+        while IFS= read -r data; do
+          # Check if the line is not empty
+          if [[ "$data" == */* ]]; then
+            echo "Running as3 post request for $data"
+            partition=$(echo "$data" | cut -d'/' -f1)
+            app_name=$(basename "$data" .json)
+            url='https://10.1.1.5/mgmt/shared/appsvcs/declare/'$partition'/applications/path-'$app_name
+            echo "Sending Delete for the following $url"
+            HTTP_CODE=$(curl -ks --output temp.json --write-out '%{http_code}' --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' --header 'Content-Type: application/json' --request DELETE $url)
+            if [[ ${HTTP_CODE} -ne 200 ]] ; then
+              echo "ERROR - ${HTTP_CODE}"
+              echo "Deletion for $data failed"
+              cat temp.json
+            else
+              echo "Deletion for $data succeeded"
+            fi
+            cat temp.json
+          else
+            echo "Excluding (top-level file) $data"
+          fi
+        done < "files_deleted.txt"
+      fi
+  only:
+    - main
+
+
+
+
+add_to_bigip:
+  stage: update
+  allow_failure: true
+  tags:
+    - shared  
+  script:
+    - file_count=$(wc -l < files_added.txt)
+    - echo "Number of declarations to be pushed on F5 are $file_count"
+    # Check if the file count is less than 1
+    - |
+      if [ $file_count -lt 1 ]; then
+        echo "There are no declarations to be pushed. Exiting the pipeline."
+        exit 1  # Exit the pipeline with a failure
+      else
+        # Read each line from the file and run a curl request
+        while IFS= read -r data; do
+          # Check if the line is not empty
+          if [[ "$data" == */* ]]; then
+            echo "Running as3 post request for $data"
+            partition=$(echo "$data" | cut -d'/' -f1)
+            url='https://10.1.1.5/mgmt/shared/appsvcs/declare/'$partition'/applications'
+            HTTP_CODE=$(curl -ks --output temp.json --write-out '%{http_code}' --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' --header 'Content-Type: application/json' --data @$data --request POST $url)
+            if [[ ${HTTP_CODE} -ne 200 ]] ; then
+              echo "ERROR - ${HTTP_CODE}"
+              echo "Deployment for $data failed"
+              cat temp.json
+            else
+              echo "Deployment for $data succeeded"
+            fi
+            cat temp.json
+          else
+            echo "Excluding (top-level file) $data"
+          fi
+        done < "files_added.txt"
+      fi
+  only:
+    - main

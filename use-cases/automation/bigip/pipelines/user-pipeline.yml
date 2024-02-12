@@ -1,0 +1,242 @@
+default:
+  image: skenderidis/ansible-runner
+
+stages:
+  - Changes
+  - Validation
+  - Templates
+  - Update
+
+Detecting file changes:
+  stage: Changes
+  tags:
+    - shared  
+  script:
+    - echo Commit-ID $CI_COMMIT_SHA
+    - echo ProjectName $CI_PROJECT_NAME
+    - git diff --stat $CI_COMMIT_SHA^ $CI_COMMIT_SHA
+    - git diff --name-only --diff-filter=D $CI_COMMIT_SHA^ $CI_COMMIT_SHA
+    - git diff --name-only --diff-filter=D $CI_COMMIT_SHA^ $CI_COMMIT_SHA > files_deleted.txt 
+    - git diff --name-only --diff-filter=ACMRTUXB* $CI_COMMIT_SHA^ $CI_COMMIT_SHA    
+    - git diff --name-only --diff-filter=ACMRTUXB* $CI_COMMIT_SHA^ $CI_COMMIT_SHA > files_added.txt 
+  artifacts:
+    paths:
+      - files_added.txt
+      - files_deleted.txt
+  only:
+    - main
+
+Series of Validations:
+  stage: Validation
+  tags:
+    - shared  
+  script:
+    - echo "ok"
+    - yq eval '.' apac.yaml
+  only:
+    - main
+
+Create AS3:
+  stage: Templates
+  tags:
+    - shared  
+  script:
+    - mkdir as3 # create a folder to be saved as an artifact at the end of the stage
+    - mkdir waf # create a folder to be saved as an artifact at the end of the stage only for AS3 JSON that have WAF set to True
+    - files_added=$(wc -l < files_added.txt)  # Check if the "files_added.txt" (which is an artifact from stage A) has less 1 or more files in order to bypass the templating script
+    - |
+      if [ $files_added -ge 1 ]; then
+        curl -o create-per-app-as3.yml https://git.f5k8s.net/devsecops/automation_files/-/raw/main/create-per-app-as3.yml
+        mkdir templates
+        curl -o templates/http.j2 https://git.f5k8s.net/devsecops/automation_files/-/raw/main/templates/http.j2
+        curl -o templates/tcp.j2 https://git.f5k8s.net/devsecops/automation_files/-/raw/main/templates/tcp.j2      
+        # Go into a loop for every added file and save the output to as3 folder.
+        while IFS= read -r line; do
+        # Read and output lines ending with ".yml" or ".yaml"
+        if [[ "$line" == *.yml ]] || [[ "$line" == *.yaml ]]; then
+            echo "Running Ansible playbook for $line"
+            ansible-playbook -e @$line -e partition=$CI_PROJECT_NAME create-per-app-as3.yml
+        else
+            echo "Skipped file $line as it doesn't end with '.yml' or '.yaml'"    
+        fi
+        done < "files_added.txt"
+      else
+        echo "There are no added files in the directory. Skipping rest of the stage."
+      fi
+  only:
+    - main
+  artifacts:
+    paths:
+      - as3/
+      - waf/
+
+
+Create WAF policies:
+  stage: Templates
+  needs: ["Create AS3"]
+  tags:
+    - shared  
+  script:
+    - files_added=$(ls -1 waf | wc -l)
+    - echo "The number of files in the waf directory is $files_added"
+    - mkdir waf_files
+    - |
+      if [ $files_added -ge 1 ]; then
+        mkdir templates
+        curl -o templates/waf.j2 https://git.f5k8s.net/devsecops/automation_files/-/raw/main/templates/waf.j2
+        curl -o create-waf.yml https://git.f5k8s.net/devsecops/automation_files/-/raw/main/create-waf.yml
+
+        for file in waf/*; do
+          echo "Processing file: $file"
+          # get the name of the file
+          waf_name=$CI_PROJECT_NAME'_'$(basename "$file" .json)
+          echo "$waf_name"
+          # check if the file exists and if not then create a WAF policy
+          url="https://git.f5k8s.net/devsecops/waf_policies/-/raw/main/$waf_name"
+
+          # Make the HTTP request and store the response code in a variable
+          http_code=$(curl -o /dev/null -s -w "%{http_code}" "$url")
+
+          # Check if the HTTP response code is 200 (OK)
+          if [ "$http_code" -eq 200 ]; then            
+            echo "Policy $waf_name already exists"
+          else
+            #Create WAF policy with ansible that will save it on the waf_policies folder
+            echo "Returned Code $http_code"
+            echo "WAF Policy $waf_name does not exists, so we will create it."
+            ansible-playbook -e "name=$waf_name partition=$CI_PROJECT_NAME" create-waf.yml  
+          fi
+        done      
+      else
+        echo "There are no files in the directory. Skipping this stage."
+      fi
+  only:
+    - main
+  artifacts:
+    paths:
+      - waf_files/
+
+
+Push to WAF Repo:
+  stage: Update
+  tags:
+    - shared  
+  script:
+    - files_added=$(ls -1 waf_files | wc -l)
+    - echo "The number of files in the 'waf_files' directory is $files_added"
+    # Check if the file count is less than 1
+    - |
+    
+      if [ $files_added -lt 1 ]; then
+        echo "There are no files in the directory. Skipping the pipeline."
+      else
+        git clone https://root:glpat-oHzZNkcYUeZ8fhsVovTM@git.f5k8s.net/devsecops/waf_policies.git
+        ls -la waf_files
+        
+        for source_file in waf_files/*; do
+          target_file=$(basename "$source_file")
+          echo "Processing file: $target_file"
+          # get the name of the file
+          if [ -e "waf_policies/$target_file" ]; then
+
+            echo " ************************ "
+            echo " ************************ "
+            echo "Error - File ${target_file} already exists, so we will skip copying the new policy."
+            echo " ************************ "
+            echo " ************************ "
+          else
+            cp "$source_file" waf_policies/
+          fi
+        done
+        cd waf_policies
+        git config --global user.email skenderidis@gmail.com 
+        git config --global user.name Kostas Skenderidis
+        git add .
+        #git commit -m "JobID ($CI_JOB_ID) on PipelineID($CI_PIPELINE_ID) Added $files_added file(s)"
+        #git push -u origin HEAD
+        if ! git diff-index --quiet HEAD; then
+          git commit -m "JobID ($CI_JOB_ID) on PipelineID($CI_PIPELINE_ID) Added $files_added file(s)"
+          git push -u origin HEAD
+        fi
+      fi
+  only:
+    - main
+
+
+Push to BIGIP Repo:
+  stage: Update
+#  needs: ["Push to WAF Repo"]
+  tags:
+    - shared  
+  script:
+    - ls -la
+    - files_added=$(ls -1 as3 | wc -l)
+    - echo "The number of files in the as3 directory is $files_added"
+    - files_deleted=$(wc -l < files_deleted.txt)
+    - echo "The number of deleted files is $files_added"
+    # Check if the file count is less than 1
+    - |
+    
+      if [ $files_added -lt 1 ] && [ $files_deleted -lt 1 ]; then
+        echo "There are no files in the directory. Exiting the pipeline."
+        exit 1  # Exit the pipeline with a failure
+      fi
+    # clone bigip repo
+    - git clone https://root:glpat-JuqDo7L5aiah3196aApj@git.f5k8s.net/devsecops/bigip.git
+    - cd bigip
+    - |
+      exists=$(git ls-remote --heads origin $CI_PROJECT_NAME)
+      echo $exists
+      if [ -n "$exists" ]; then
+        echo $CI_PROJECT_NAME branch exists;
+        git branch -a
+        git checkout main
+        git pull
+        git switch $CI_PROJECT_NAME
+      else
+        echo $CI_PROJECT_NAME branch does NOT exist;
+        git branch -a
+        git checkout main
+        git pull
+        git checkout -b $CI_PROJECT_NAME
+      fi      
+    # copy changed files
+    -  git config --global user.email skenderidis@gmail.com 
+    -  git config --global user.name Kostas Skenderidis
+    - |
+      if [ $files_added -ge 1 ]; then
+        mkdir -p $CI_PROJECT_NAME
+        cp ../as3/* $CI_PROJECT_NAME
+      fi
+      if [ $files_deleted -ge 1 ]; then
+        while IFS= read -r line; do
+        # Read and output lines ending with ".yml" or ".yaml"
+        if [[ "$line" == *.yml ]] || [[ "$line" == *.yaml ]]; then
+            echo "Deleting file $line"
+            #converting the file name from "abc.yaml" to "project-name/abc.json" as this is the name that it is saved on the downstream diretor
+            modified_name="${line%.yaml}"
+            modified_name="${modified_name%.yml}.json"
+            echo "Actual file name is $modified_name"
+            rm -f $CI_PROJECT_NAME/$modified_name
+        else
+            echo "Skipped file $line as it doesn't end with '.yml' or '.yaml'"    
+        fi
+        done < "../files_deleted.txt"
+      fi
+    # Git Message and Commit
+    -  git add $CI_PROJECT_NAME
+    - |
+      if ! git diff-index --quiet HEAD; then
+        git commit -m "JobID ($CI_JOB_ID) on PipelineID($CI_PIPELINE_ID) Added $files_added file(s) and Deleted $files_deleted file(s)"
+        git push -u origin HEAD \
+          -o merge_request.create \
+          -o merge_request.title="New Merge Request $(git branch --show-current)" \
+          -o merge_request.description="This MR was create by the pipeline on repository $CI_PROJECT_NAME" \
+          -o merge_request.target=main \
+          -o merge_request.remove_source_branch \
+          -o merge_request.squash
+      fi    
+
+  only:
+    - main
+
