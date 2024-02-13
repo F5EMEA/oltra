@@ -1,0 +1,52 @@
+{
+  "path-{{name}}": {
+      "class": "Application",
+      "{{name}}": {
+          "class": "Service_HTTP",
+          "virtualAddresses": [
+               "{{vip}}"
+          ],
+          "virtualPort": {{port}},
+          {% if waf is defined and waf == true %}
+          "policyWAF": {
+              "use": "{{partition}}_{{name}}"
+          },{%- endif %}
+          "pool": "pool-{{name}}"
+      },
+      {% if waf is defined and waf == true %}
+      "{{partition}}_{{name}}": {
+          "class": "WAF_Policy",
+          "policy": {
+              "url": { "url": "https://git.f5k8s.net/devsecops/waf_policies/-/raw/main/{{partition}}_{{name}}.json", "skipCertificateCheck": true}
+          },
+          "ignoreChanges": true
+      },
+      {%- endif %}      
+      "pool-{{name}}": {
+          "class": "Pool",
+          {% if monitor -%}
+          "monitors": [
+              {% if monitor == "tcp" -%}
+              "tcp"
+              {% elif monitor == "http" -%}
+              "http"
+              {%- endif %}       
+           ],{%- endif %}
+          "members": [
+            {% for entry in members -%}
+            {
+            "servicePort": {{entry.port}},
+            "shareNodes": true,
+            {% if entry.ratio is defined %}
+            "ratio": {{entry.ratio}},
+            {%- endif %}
+            {% if entry.connectionlimit is defined %}
+            "connectionLimit": {{entry.connectionlimit}},
+            {%- endif %}
+            "serverAddresses": ["{{entry.ip}}"]
+        }{{ "," if not loop.last }}
+        {% endfor -%}
+          ]}
+
+  }
+}

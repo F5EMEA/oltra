@@ -1,0 +1,13 @@
+---
+- name: Create AS3 configurations
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Create per-App AS3 config
+      ansible.builtin.template:
+        src: templates/http.j2
+        dest: temp_as3
+
+    - name: Pretty Print AS3
+      shell: jq . temp_as3 > as3/{{name}}.json

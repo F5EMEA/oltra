@@ -1,0 +1,11 @@
+---
+- name: Create WAF configurations
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+    - name: Create WAF config
+      ansible.builtin.template:
+        src: templates/waf.j2
+        dest: waf/{{name}}.json
+
