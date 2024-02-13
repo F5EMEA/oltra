@@ -1,7 +1,7 @@
 # updating certs
 
 ## Gitlab
-update the f5k8s.net certs that are located on 
+update the f5k8s.net certs that are located on https://github.com/skenderidis/certs (private repo)
 
 `/srv/gitlab/ssl`
 
@@ -14,6 +14,15 @@ docker exec gitlab_web_1 gitlab-ctl restart
 
 Redeploy gitlab
 
+## NGINX Ingress
 
-1. Update app-ssl-1.yaml and app-ssl-2.yaml with the f5demo and f5k8s certs. The location is on `oltra/use-cases/nic-examples/custom-resources/tls-passthrough``
-1. Update NGINX
+Get the base64 for the certificate and the key 
+cat f5k8s.key | base64  | tr -d '\n'
+cat f5k8s.crt | base64  | tr -d '\n'
+
+Replace the values on the following files
+
+- setup/nginx-ic/resources/default-server-secret.yaml
+- use-cases/nic-examples/ingress-resources/tls/secret.yaml
+- setup/apps/apps.yml
+
