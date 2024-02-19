@@ -13,6 +13,9 @@ spec:
   - name: coffee
     service: coffee-svc
     port: 80
+  - name: echo
+    service: echo-svc
+    port: 80    
   routes:
   - path: /tea
     action:
@@ -20,3 +23,6 @@ spec:
   - path: /coffee
     action:
       pass: coffee
+  - path: /
+    action:
+      pass: echo      

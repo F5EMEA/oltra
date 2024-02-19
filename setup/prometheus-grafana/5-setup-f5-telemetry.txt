@@ -87,7 +87,7 @@ curl -k --location --request POST 'https://10.1.1.5/mgmt/shared/appsvcs/declare'
 
 
 curl -k --location --request POST 'https://10.1.1.5/mgmt/shared/telemetry/declare' \
---header 'Authorization: Basic YWRtaW46Q0lTbGFiMTIz' \
+--header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "class": "Telemetry",
