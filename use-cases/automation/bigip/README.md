@@ -172,13 +172,13 @@ In this use-case, the WAF repository does not feature any pipelines for updating
 
 ## Demo
 In order to successfully go through the demo below you will need to go through the following simple steps
-  - Review the repositories on Group `bigip`.
-  - Create a YAML file with the required key value pairs.
-  - Review the pipeline stages on `customer-a` repository
-  - Review the WAF repository
-  - Approve the merge request on `prod` repository.
-  - Review the pipeline stages on `prod` repository.
-  - Login on the BIGIP to check the Virtual Server and WAF policy deployed.
+  1. Review the repositories on Group `bigip`.
+  2. Create a YAML file with the required key value pairs.
+  3. Review the pipeline stages on `customer-a` repository
+  4. Review the WAF repository
+  5. Review the Merge Request (MR) on `prod` repository.
+  6. Approve the MR and review the pipeline stages on `prod` repository.
+  7. Log on to BIGIP to check the Virtual Server and WAF policy deployed.
 
 
 ### Step 1. Review the repositories
@@ -238,4 +238,34 @@ Once the pipeline completes successfully go to the `waf` repository and review t
 
 <p align="center">
   <img src="images/step4.gif" style="width:75%">
+</p>
+
+
+### Step 4. Review the WAF repository
+Once the pipeline completes successfully go to the `waf` repository and review the AWAF declarative policy that has just been created. 
+
+<p align="center">
+  <img src="images/step4.gif" style="width:75%">
+</p>
+
+
+### Step 5. Review the merge request on `prod` repository.
+Go to the `Merge Request` on the `prod` repository and check what has changed on the repository and the details of the MR. Was the MR pipeline successful, what was added/modified/removed? 
+
+<p align="center">
+  <img src="images/step5.gif" style="width:75%">
+</p>
+
+### Step 6. Approve the MR and review the pipeline stages on `prod` repository.
+Once you have a complete understand of what are the proposed changes of the MR, approve it and go to the pipeline to review the details.
+
+<p align="center">
+  <img src="images/step6.gif" style="width:75%">
+</p>
+
+### Step 6. Log on to BIGIP to check the Virtual Server and WAF policy deployed.
+Once the pipeline completes successfully go to **BIGIP** and review the configuration that has been applied with AS3 (Virtual Server, Pool, Pool members and WAF policies). 
+
+<p align="center">
+  <img src="images/step7.gif" style="width:75%">
 </p>
