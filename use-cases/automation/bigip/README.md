@@ -155,7 +155,6 @@ Within the BIG-IP repository, we've implemented two pipelines:
 
   - **AS3 Pipeline**. The purpose of the this pipeline, is to identify the new AS3 declarations and push them down to the corresponding BIGIP. The pipeline is split in 3 stages
     - **Changes Detection**: This initial stage identifies AS3 declarations that have been added, modified, or deleted. The filenames are recorded for subsequent processing in later stages.
-    - **Validation**: Here, the pipeline verifies the correctness of the committed configurations and validates the values for accuracy and integrity. In our example, no validation is performed.
     - **Update**: In the final stage, the pipeline adds or removes the AS3 declarations from the respective BIG-IP devices, ensuring consistent configuration across the infrastructure.
  
 <p align="center">
@@ -172,3 +171,71 @@ In this use-case, the WAF repository does not feature any pipelines for updating
 
 
 ## Demo
+In order to successfully go through the demo below you will need to go through the following simple steps
+  - Review the repositories on Group `bigip`.
+  - Create a YAML file with the required key value pairs.
+  - Review the pipeline stages on `customer-a` repository
+  - Review the WAF repository
+  - Approve the merge request on `prod` repository.
+  - Review the pipeline stages on `prod` repository.
+  - Login on the BIGIP to check the Virtual Server and WAF policy deployed.
+
+
+### Step 1. Review the repositories
+In our environment we are using GitLab. The design is fairly straightforward and it is based on 5 repositories. 
+- `customer-A` and `customer-B` are the two repos that are used to save the highlevel VirtualServer configuraiton in a YAML format.
+- `waf_policies` is the repo that holds the AWAF policies that will be created through AS3
+- `prod` is the repository that holds all the AS3 JSON files that serve as the source of truth for the BIG-IP.
+- `automation_files` is the repo that holds all the pipelines, Ansible playbooks and JINJA2 templates
+
+For this step you need to log on to GitLab and go through the 5 repositories
+
+<p align="center">
+  <img src="images/step1.gif" style="width:75%">
+</p>
+
+### Step 2. Create the YAML file with the required key value pairs
+
+We will create a new file on the `customer-a` repository called **`app01.yaml`** and the file will contain the following configuration
+
+<p align="center">
+  <img src="images/step2.gif" style="width:75%">
+</p>
+
+
+Click on add new file and copy&paste the following configuration
+
+```yaml
+name: app01
+vip: 10.1.1.215
+port: 80
+template: http
+waf: true
+monitor: http
+comments: This is a new web server for testing
+members:
+- ip: 10.10.10.10
+  port: 80
+- ip: 10.10.10.11
+  port: 80
+```
+
+
+### Step 3. Review the pipeline stages on `customer-a` repository
+
+Select "Pipelines" on the left side of the GitLab page and review the pipeline that was just executed from your latest commit
+
+
+Log on to GitLab and review the manifests for both repos. 
+
+<p align="center">
+  <img src="images/step3.gif" style="width:75%">
+</p>
+
+
+### Step 4. Review the WAF repository
+Once the pipeline completes successfully go to the `waf` repository and review the AWAF declarative policy that has just been created. 
+
+<p align="center">
+  <img src="images/step4.gif" style="width:75%">
+</p>
