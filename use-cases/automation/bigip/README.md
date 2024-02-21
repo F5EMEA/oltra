@@ -50,7 +50,7 @@ name: app01
 fqdn: app01.test.com
 vip: 10.1.4.52
 port: 80
-template: http    #<------ this refers to the JINJA2 Template that we will be using.
+template: http                                    #<------ this refers to the JINJA2 Template that we will be using.
 waf: true
 members:
   - ip: 10.10.10.11
