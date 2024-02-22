@@ -98,7 +98,6 @@ Depending on the template the user will select, AWX  provides the user predefine
   <img src="images/awx-signatures.png" style="width:60%">
 </p>
 
-Once the user confirms the details and the AWX will execute the Ansible playbook to to pull the NAP policy from GitLab, make the required changes on the policy’s YAML file and push it back to GitLab, creating a merge request in the process.
 
 
 ### CI/CD tool
@@ -188,9 +187,9 @@ Press `Create` and wait to see that the Argo CD application being created.
 Verify that you can succesfully access the application. Go to VSCode and run the following commands
 
 ```
-curl "http://web.f5k8s.net/tea/"
-curl "http://web.f5k8s.net/coffee/"
-curl "http://web.f5k8s.net/"
+curl -H "X-Forwarded-For:27.27.5.56" "http://web1.f5k8s.net/tea/"
+curl -H "X-Forwarded-For:89.71.5.56" "http://web2.f5k8s.net/coffee/"
+curl -H "X-Forwarded-For:71.89.5.56" "http://web3.f5k8s.net/"
 
 ###############################################################
 #####################  EXPECTED OUTPUT  #######################
@@ -235,7 +234,7 @@ Now we will execute some requests that will be blocked by NGINX App Protect but 
 
 Run the following command.
 ```
-curl "http://web.f5k8s.net/phpinfo.php"
+curl "http://web1.f5k8s.net/phpinfo.php"
 ```
 
 The expected output is:
@@ -259,11 +258,12 @@ Go to Resources->Templates and launch the template called `NAP - Signature Globa
   <img src="images/awx.png" style="width:60%">
 </p>
 
-Put the name of the policy ***(without adding the extension .yaml)*** along with the SignatureID and **run** the template.
+Put the name of the policy ***(without adding the extension .yaml)*** along with the SignatureID and **run** the template.\
 <p align="center">
   <img src="images/awx-signatures.png" style="width:40%">
 </p>
 
+AWX should execute the Ansible playbook to to pull the NAP policy from GitLab, make the required changes on the policy’s YAML file and push it back to GitLab, creating a merge request in the process.
 Review the logs from the template's playbook.
 <p align="center">
   <img src="images/awx-playbook.png" style="width:50%">
