@@ -41,7 +41,7 @@ cd ~/oltra/use-cases/app-protect/attacks
 
 6. Test the application by sending a legitimate request to it:
   ```
-  curl http://nap.f5demo.cloud/
+  curl http://nap.f5k8s.net/
 
   ###############   expected result   ###############
   Server address: 10.244.140.114:80
@@ -54,7 +54,7 @@ cd ~/oltra/use-cases/app-protect/attacks
 
 7. Verify that the WAF has been applied by sending a malicious request to the application. 
   ```
-  curl "http://nap.f5demo.cloud/?test=<script>"
+  curl "http://nap.f5k8s.net/?test=<script>"
 
   ###############   expected result   ###############
 
@@ -72,7 +72,7 @@ To review the signature sets that have included on the Base policy please visit 
 ### Disabling Signatures
 We will send one request that contains High Accuracy Signature which is in blocking mode.
 ```
-curl "http://nap.f5demo.cloud/index.php?id=0;%20ls%20-l"
+curl "http://nap.f5k8s.net/index.php?id=0;%20ls%20-l"
 ```
 
 Verify that the response has been blocked.
@@ -114,14 +114,14 @@ EOF
 
 Wait few seconds (5-10 sec) and then run the same request and verify that the transaction is not getting blocked.
 ```
-curl "http://nap.f5demo.cloud/index.php?id=0;%20ls%20-l"
+curl "http://nap.f5k8s.net/index.php?id=0;%20ls%20-l"
 ```
 
 ### Enabling Signatures
 We will try now to trigger a Medium accuracy signature (phpinfo.php) that has been configured, as per the base policy, to be in Alarm mode. 
 
 ```
-curl "http://nap.f5demo.cloud/phpinfo.php"
+curl "http://nap.f5k8s.net/phpinfo.php"
 ```
 
 The transaction should be successfull and should not get blocked from NGINX App Protect.
@@ -157,7 +157,7 @@ EOF
 
 Wait few seconds (5-10 sec) and then execute the same transaction again. We expect that the transaction will be blocked by **NGINX App Protect**.
 ```
-curl "http://nap.f5demo.cloud/phpinfo.php"
+curl "http://nap.f5k8s.net/phpinfo.php"
 ```
 
 Now let's change the configuration by enabling all Medium accuracy signatures.
@@ -185,7 +185,7 @@ EOF
 
 Execute the same transaction again and we expect that the transaction will be again blocked by **NGINX App Protect** since all Medium accuracy signatures are now in blocking mode.
 ```
-curl "http://nap.f5demo.cloud/phpinfo.php"
+curl "http://nap.f5k8s.net/phpinfo.php"
 ```
 
 
@@ -194,7 +194,7 @@ curl "http://nap.f5demo.cloud/phpinfo.php"
 
 Now lets try to access the application with an HTTP method that is not defined on the above list (LINK). 
 ```
-curl -X LINK "http://nap-vs.f5demo.cloud"
+curl -X LINK "http://nap.f5k8s.net"
 ```
 Since the violation is on Alarm only mode, the expected result is
 ```
@@ -240,4 +240,3 @@ Run the `curl` command again and verify that the transaction is getting blocked.
 ```
 <html><head><title>Custom Reject Page</title></head><body>Blocked from NAP. <br><br>Your support ID is: 16449695111642865737<br><br></body></html>
 ```
-

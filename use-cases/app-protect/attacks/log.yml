@@ -5,8 +5,12 @@ metadata:
   namespace: nap
 spec:
   content:
-    format: default
-    max_message_size: 10k
-    max_request_size: any
+    format: user-defined
+    format_string: "%json_log%"
+    max_message_size: 20k
+    max_request_size: "500"
+    escaping_characters:
+    - from: "%22%22"
+      to: "%22"
   filter:
-    request_type: all
+    request_type: illegal
