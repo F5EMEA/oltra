@@ -27,7 +27,9 @@ To establish a GitOps environment for automation, we leverage a suite of technol
 
 - **YAML.** YAML serves as a lightweight, human-readable data serialization format, ideal for expressing structured data in an intuitive manner. Its simplicity and readability make it well-suited for defining the intended configurations of our customers' services.
 
-- **Jinja2.** Jinja2 empowers us with a fast, expressive templating engine, streamlining the AS3 configuration process. By crafting templates for AS3 configuration files, we can effortlessly generate configurations by supplying the requisite data from the YAML files created by our customers.
+- **Ansible & Jinja2.** When leveraging Ansible alongside Jinja2 templates, administrators harness the power of Jinja2's expressive syntax to dynamically generate configuration files and scripts. Ansible seamlessly integrates with Jinja2, allowing for the creation of reusable templates that incorporate conditional logic, loops, and variables. This integration enables us with a fast, expressive templating engine, streamlining the AS3 configuration process. By crafting templates for AS3 configuration files, we can effortlessly generate configurations by supplying the requisite data from the YAML files created by our customers.
+
+Jinja2 empowers us with a fast, expressive templating engine, streamlining the AS3 configuration process. By crafting templates for AS3 configuration files, we can effortlessly generate configurations by supplying the requisite data from the YAML files created by our customers.
 
 - **Git.** Git serves as the backbone of our GitOps approach, acting as the repository for storing desired configurations. It not only serves as the source of truth for AS3 configurations but also provides an audit trail and history of all changes made throughout the application lifecycle. In this use-case, organizations maintain separate Git repositories for different aspects of the automation workflow:
   - ***Customer repositories***: Customers have their dedicated repositories for creating and managing YAML configuration files. This segregation ensures security and isolation of customer configurations.
