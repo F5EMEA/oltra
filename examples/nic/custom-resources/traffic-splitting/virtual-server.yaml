@@ -1,0 +1,22 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: traffic-splitting
+spec:
+  host: ab.f5k8s.net
+  upstreams:
+  - name: app-v1
+    service: app-v1-svc
+    port: 80
+  - name: app-v2 
+    service: app-v2-svc
+    port: 80
+  routes:
+  - path: /app
+    splits:
+    - weight: 80
+      action:
+        pass: app-v1
+    - weight: 20
+      action:
+        pass: app-v2

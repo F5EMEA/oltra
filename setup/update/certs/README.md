@@ -28,3 +28,4 @@ Replace the values on the following files
 - use-cases/nic-examples/ingress-resources/tls/secret.yaml
 - setup/apps/apps.yml
 
+- /home/ubuntu/oltra/use-cases/nic-examples/custom-resources/tls/cafe-secret.yaml
