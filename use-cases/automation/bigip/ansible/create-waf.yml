@@ -8,4 +8,3 @@
       ansible.builtin.template:
         src: templates/waf.j2
         dest: waf/{{name}}.json
-

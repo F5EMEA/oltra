@@ -45,7 +45,7 @@ file_list_on_commit:
   only:
     - main
 
-validation_on_merge:
+dry_run:
   stage: validation
   tags:
     - shared  
@@ -54,14 +54,7 @@ validation_on_merge:
   only:
     - merge_requests
   
-validation:
-  stage: validation
-  tags:
-    - shared  
-  script:
-    - echo "ok"
-  only:
-    - main
+
 
 Delete from BIGIP:
   stage: update
@@ -81,10 +74,10 @@ Delete from BIGIP:
             echo "Running as3 post request for $data"  # Just FYI
             partition=$(echo "$data" | cut -d'/' -f1)  # extracting the partition name out of the filename
             app_name=$(basename "$data" .json) # extracting the app name out of the filename
-            url='https://10.1.1.5/mgmt/shared/appsvcs/declare/'$partition'/applications/path-'$app_name # set the URL
+            url="https://${bigip_ip}/mgmt/shared/appsvcs/declare/"$partition"/applications/path-"$app_name # set the URL
             echo "Sending DELETE request to the following $url"  # Just FYI
             start_time=$(date +%s)  # Get the start time
-            HTTP_CODE=$(curl -ks --output temp.json --write-out '%{http_code}' --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' --header 'Content-Type: application/json' --request DELETE $url)
+            HTTP_CODE=$(curl -ks --output temp.json --write-out "%{http_code}" --header "Authorization: Basic ${bigip_auth}" --header "Content-Type: application/json" --request DELETE $url)
             end_time=$(date +%s) # Get the end time
             elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
             echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time
@@ -122,6 +115,8 @@ Add to BIGIP:
   script:
     - file_count=$(wc -l < files_added.txt)
     - echo "Number of declarations to be pushed on F5 are $file_count"
+    - start_time=$(date +%s)  # Get the start time
+    - echo $start_time
     # Check if the file count is less than 1
     - |
       count=0
@@ -132,10 +127,10 @@ Add to BIGIP:
           if [[ "$data" == */* ]]; then
             echo "Running as3 post request for $data"
             partition=$(echo "$data" | cut -d'/' -f1)
-            url='https://10.1.1.5/mgmt/shared/appsvcs/declare/'$partition'/applications'
+            url="https://${bigip_ip}/mgmt/shared/appsvcs/declare/"$partition"/applications"
             echo "Sending POST request to the following $url"  # Just FYI
             start_time=$(date +%s)  # Get the start time
-            HTTP_CODE=$(curl -ks --output temp.json --write-out '%{http_code}' --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' --header 'Content-Type: application/json' --data @$data --request POST $url)
+            HTTP_CODE=$(curl -ks --output temp.json --write-out "%{http_code}" --header "Authorization: Basic ${bigip_auth}" --header "Content-Type: application/json" --data @$data --request POST $url)
             end_time=$(date +%s) # Get the end time
             elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
             echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time

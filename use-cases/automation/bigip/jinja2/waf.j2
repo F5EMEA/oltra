@@ -1,18 +1,17 @@
 {
-   "policy" : {
-      "applicationLanguage" : "auto-detect",
-      "caseInsensitive" : false,
-      "description" : "Fundamental Policy",
-      "enablePassiveMode" : false,
-      "enforcementMode" : "blocking",
-      "fullPath" : "/{{partition}}/{{name}}",
-      "name" : "{{name}}",
-      "protocolIndependent" : false,
-      "softwareVersion" : "16.1.0",
-      "template" : {
-         "name" : "POLICY_TEMPLATE_FUNDAMENTAL"
-      },
-      "type" : "security"
-   }
+  "policy" : {
+    "applicationLanguage" : "utf-8",
+    "caseInsensitive" : false,
+    "description" : "Default Policy for Automation",
+    "enablePassiveMode" : false,
+    "enforcementMode" : "blocking",
+    "fullPath" : "/{{partition}}/{{name}}",
+    "name" : "{{name}}",
+    "protocolIndependent" : false,
+    "softwareVersion" : "16.1.0",
+    "template" : {
+      "name" : "Automation"
+    },
+    "type" : "security"
+  }
 }
-

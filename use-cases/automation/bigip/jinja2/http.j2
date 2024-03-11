@@ -10,7 +10,12 @@
           {% if waf is defined and waf == true %}
           "policyWAF": {
               "use": "{{partition}}_{{name}}"
-          },{%- endif %}
+          },
+          "securityLogProfiles": [
+              {"bigip":"/Common/elastic"}, 
+              {"bigip":"/Common/Log illegal requests"}
+          ],
+          {%- endif %}
           "pool": "pool-{{name}}"
       },
       {% if waf is defined and waf == true %}
