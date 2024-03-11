@@ -171,14 +171,7 @@ In this use-case, the WAF repository does not feature any pipelines for updating
 
 
 ## Demo
-In order to successfully go through the demo below you will need to go through the following simple steps
-  1. Review the repositories on Group `bigip`.
-  2. Create a YAML file with the required key value pairs.
-  3. Review the pipeline stages on `customer-a` repository
-  4. Review the WAF repository
-  5. Review the Merge Request (MR) on `prod` repository.
-  6. Approve the MR and review the pipeline stages on `prod` repository.
-  7. Log on to BIGIP to check the Virtual Server and WAF policy deployed.
+In order to successfully go through the demo below you will need to go through the following 7 steps:
 
 
 ### Step 1. Review the repositories
@@ -207,17 +200,15 @@ Click on add new file and copy&paste the following configuration
 
 ```yaml
 name: app01
-vip: 10.1.1.215
+vip: 10.1.10.215
 port: 80
 template: http
 waf: true
 monitor: http
 comments: This is a new web server for testing
 members:
-- ip: 10.10.10.10
-  port: 80
-- ip: 10.10.10.11
-  port: 80
+- ip: 10.1.20.21
+  port: 30880
 ```
 
 
@@ -230,14 +221,6 @@ Log on to GitLab and review the manifests for both repos.
 
 <p align="center">
   <img src="images/step3.gif" style="width:75%">
-</p>
-
-
-### Step 4. Review the WAF repository
-Once the pipeline completes successfully go to the `waf` repository and review the AWAF declarative policy that has just been created. 
-
-<p align="center">
-  <img src="images/step4.gif" style="width:75%">
 </p>
 
 
@@ -263,9 +246,18 @@ Once you have a complete understand of what are the proposed changes of the MR, 
   <img src="images/step6.gif" style="width:75%">
 </p>
 
-### Step 6. Log on to BIGIP to check the Virtual Server and WAF policy deployed.
+### Step 7. Log on to BIGIP to check the Virtual Server and WAF policy deployed.
 Once the pipeline completes successfully go to **BIGIP** and review the configuration that has been applied with AS3 (Virtual Server, Pool, Pool members and WAF policies). 
 
 <p align="center">
   <img src="images/step7.gif" style="width:75%">
 </p>
+
+
+### Step 8. (OPTIONAL) Make a change and repeat the process.
+Open the **`app01.yaml`** file and change the IP address from 10.1.10.215 to 10.1.10.216. Apply the change and go through the same process
+
+
+## Next Step. DevSecOps
+
+Go to the [DevSecOps lab](https://github.com/F5EMEA/oltra/tree/main/use-cases/devsecops/bigip-tmos) for BIGIP and find out how you can manage your secuirty policies in an automated way.
