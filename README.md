@@ -40,31 +40,30 @@ The use-case build for OLTRA can be found below:
 - [**Building Multi-tenant Ingress services**](use-cases/two-tier-architectures/multi-tenancy/)
 - [**Deploying Multi-cluster services K8s with CIS and NGINX**](use-cases/two-tier-architectures/multi-cluster)
 - [**Building a 2 Tier Architecture with with CIS and NGINX**](use-cases/two-tier-architectures)
-- [**Building Custom Templates for NGINX Ingress Controller**](use-cases/nic-examples/custom-templates/)
 - [**Using GitOps to publish NGINX Ingress Controller with BIGIP**](use-cases/two-tier-architectures/gitops)
-- [**Building a K8s DevSecOps infrastructure with NGINX App Protect**](use-cases/app-protect/devsecops-k8s/)
-- [**Using Argo CD to provide continuous delivery for NGINX App Protect**](use-cases/app-protect/argocd/)
+- [**Building a K8s DevSecOps infrastructure with NGINX App Protect**](use-cases/devsecops/k8s/)
 
 ## Demos
 The demos build for OLTRA can be found below:
 
-- [**Monitoring BIGIP services with Prometheus, Grafana and Elastic**](use-cases/bigip-monitoring)
-- [**Monitoring NGINX+ Ingress services with Prometheus, Grafana and Elastic**](use-cases/nginx-monitoring)
-- [**Monitoring NGINX App Protect with Grafana**](use-cases/app-protect/monitoring/)
+- [**Monitoring BIGIP services with Prometheus, Grafana and Elastic**](monitoring/bigip)
+- [**Monitoring NGINX+ Ingress services with Prometheus, Grafana and Elastic**](monitoring/nginx)
+- [**Monitoring NGINX App Protect with Grafana**](monitoring/app-protect/)
 
 
 ## Examples
 The examples build for OLTRA can be found below:
 
-- [**Ingress resource examples with NGINX+**](use-cases/nic-examples/ingress-resources/)
-- [**CRD examples with NGINX+**](use-cases/nic-examples/custom-resources/)
-- [**Publishing NGINX with IngressLink**](use-cases/cis-examples/cis-crd/IngressLink/)
-- [**Service Type LoadBalancer with CIS**](use-cases/cis-examples/cis-crd/serviceTypeLB/)
-- [**NGINX App protect examples**](use-cases/app-protect/)
-- [**Service Type LoadBalancer with CIS**](use-cases/cis-examples/cis-crd/serviceTypeLB/)
-- [**Ingress resource examples with CIS**](use-cases/cis-examples/cis-ingress/)
-- [**CRD examples with CIS**](use-cases/cis-examples/cis-crd/)
-- [**DNS Publishing of K8s services with CIS**](use-cases/cis-examples/cis-crd/ExternalDNS/)
+- [**Ingress resource examples with NGINX+**](examples/nic/ingress-resources/)
+- [**CRD examples with NGINX+**](examples/nic/custom-resources/)
+- [**Publishing NGINX with IngressLink**](examples/cis/crd/IngressLink/)
+- [**Service Type LoadBalancer with CIS**](examples/cis/crd/serviceTypeLB/)
+- [**NGINX App protect examples**](examples/app-protect/)
+- [**Service Type LoadBalancer with CIS**](examples/cis/crd/serviceTypeLB/)
+- [**Ingress resource examples with CIS**](examples/cis/ingress/)
+- [**CRD examples with CIS**](examples/cis/crd/)
+- [**DNS Publishing of K8s services with CIS**](examples/cis/crd/ExternalDNS/)
+- [**Using Argo CD to provide continuous delivery for NGINX App Protect**](examples/app-protect/argocd/)
 
 
 <br>
