@@ -66,16 +66,16 @@ For further insights, refer to the NAP Dashboard lab.
   <img src="images/dashboard.png" style="width:70%">
 </p>
 
-More information regarding NAP Grafana Dashboard can be found on the [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/use-cases/app-protect/monitoring) lab
+More information regarding NAP Grafana Dashboard can be found on the [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/monitoring/app-protect) lab
 
 
 ### Managing NAP policies
-Managing NAP policies is integral to the WAF policy lifecycle, especially in addressing potential false positives. While NAP algorithms strive to minimize false positives, readiness is key for SecOps teams. The observability platform aids in identifying false positives by aggregating and visualizing metrics/events from multiple NAP Pods. SecOps teams can then adjust NAP policies accordingly, excluding specific signatures or any other configuration as needed.
+Managing NAP policies is integral to the WAF policy lifecycle, especially in addressing potential false positives. While NAP algorithms strive to minimize false positives, readiness is key for SecOps teams. The observability platform aids in identifying false positives by aggregating and visualizing metrics/events from multiple NAP Pods and SecOps teams can then adjust NAP policies accordingly, excluding specific signatures or any other configuration as needed.
 
 There are mulitple ways for the NAP policies to be fine-tuned based on the events that have been identified as false positive. These are:
 - **Manual**. SecOps teams can edit manually the JSON/YAML files that are stored on GitLab.
 - **Automated**. Tools like Ansible, Puppet, Terraform and many others can provide an automated procedure for the SecOps to make the necessary changes on the YAML policies stored on GitLab
-- **Purpose-built**. The other alternative is to develop or use an opensource project that is designed specifically for modifying NAP policies based on the recorded events. 
+
 
 To convert a violation into a false positive exception on the NAP configurations, the SecOps teams have to modify the NAP policy with the required YAML key/value pairs. The example below shows how a policy needs to be modified to exclude particular signatures from a policy.
 
@@ -111,8 +111,8 @@ Each customer is using different methodologies and potentially different tools t
 
 ## Demo
 In order to successfully go through the demo below, we suggest you first complete the following labs that will help you become familiar with the NAP-Dashboard and Argo CD.
-- [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/use-cases/app-protect/monitoring)
-- [**Argo CD**](https://github.com/F5EMEA/oltra/tree/main/use-cases/app-protect/argocd)
+- [**NAP Dashboard**](https://github.com/F5EMEA/oltra/tree/main/monitoring/app-protect)
+- [**Argo CD**](https://github.com/F5EMEA/oltra/tree/main/examples/app-protect/argocd)
 
 
 ### Step 1. Manifests stored on GitLab 

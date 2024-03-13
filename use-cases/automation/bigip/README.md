@@ -140,7 +140,7 @@ Each customer creates their configuration files in YAML format on their reposito
   <img src="images/user-pipeline.png" style="width:85%">
 </p>
 
-The pipeline configuration for the user repos can be found on the following [file](https://github.com/f5emea/oltra/use-cases/automation/bigip/pipelines/user-pipeline.yml)
+The pipeline configuration for the user repos can be found on the following [**file**](https://github.com/f5emea/oltra/use-cases/automation/bigip/pipelines/user-pipeline.yml)
 
 
 ### BIGIP Repositories and pipeline
@@ -150,7 +150,7 @@ Changes to the BIG-IP repositories are exclusively propagated from the upstream 
 
 Within the BIG-IP repository, we've implemented two pipelines:
 
-  - **Merge Pipeline**. his pipeline is designed to prevent the merging of code that could potentially fail upon deployment to BIG-IP. Therefore, the pipeline must succeed before allowing administrators to merge the branch to the main branch. To mitigate the risk of failures in AS3 configurations, the pipeline executes a "dry-run" against the BIG-IP (or a UAT environment) to ensure that the final pipeline will consistently succeed post-merger. 
+  - **Merge Pipeline**. This pipeline is designed to prevent the merging of code that could potentially fail upon deployment to BIG-IP. Therefore, the pipeline must succeed before allowing administrators to merge the branch to the main branch. To mitigate the risk of failures in AS3 configurations, the pipeline executes a "dry-run" against the BIG-IP (or a UAT environment) to ensure that the final pipeline will consistently succeed post-merger. 
     > Note: Per-App dry-run configuration has been removed as a bug was identified. Once it is fixed, we will include the "dry-run" configuration.
 
   - **AS3 Pipeline**. The purpose of the this pipeline, is to identify the new AS3 declarations and push them down to the corresponding BIGIP. The pipeline is split in 3 stages
@@ -161,13 +161,13 @@ Within the BIG-IP repository, we've implemented two pipelines:
   <img src="images/bigip-pipeline.png" style="width:65%">
 </p>
 
-The pipeline configuration for the bigip repos can be found on the following [file](https://github.com/f5emea/oltra/use-cases/automation/bigip/pipelines/bigip-pipeline.yml)
+The pipeline configuration for the bigip repos can be found on the following [**file**](https://github.com/f5emea/oltra/use-cases/automation/bigip/pipelines/bigip-pipeline.yml)
 
 
 ### WAF Repository
 The WAF repository functions as the storage location for declarative WAF policies. After an AS3 declaration is created on BIG-IP, BIG-IP retrieves the WAF policy from this repository. To ensure efficient operation, we have enabled the "ignoreChanges": true flag on the AS3 policies. This setting ensures that the WAF policy is only pulled once, and subsequent changes to the AS3 declaration will not trigger a re-download of the WAF policy.
 
-In this use-case, the WAF repository does not feature any pipelines for updating the WAF policies. Instead, we anticipate that the SecOps team will utilize the BIG-IP UI to manage the WAF policies directly. For customers seeking to manage WAF policies in a DevSecOps manner, we recommend reviewing the following use-case, which enhances this use-case with DevSecOps practices.
+In this use-case, the WAF repository does not feature any pipelines for updating the WAF policies. Instead, we anticipate that the SecOps team will utilize the BIG-IP UI to manage the WAF policies directly. For customers seeking to manage WAF policies in a DevSecOps manner, we recommend reviewing the following [**use-case**](https://github.com/f5emea/oltra/use-cases/devsecops/bigip), which enhances this use-case with DevSecOps practices.
 
 
 ## Demo

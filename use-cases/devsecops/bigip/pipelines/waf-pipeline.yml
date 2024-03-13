@@ -1,0 +1,228 @@
+default:
+  image: skenderidis/ansible-runner
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_MESSAGE !~ /PipelineID/ && $CI_COMMIT_MESSAGE !~ /ignore/' # Skip pipeline if commit is from the upstream "users-repo" or has the word "ignore"
+      when: always
+
+stages:
+  - changed_files
+  - validation
+  - update
+
+file_list_on_merge:
+  stage: changed_files
+  tags:
+    - shared  
+  script:
+    - echo Merge-Request-ID $CI_MERGE_REQUEST_IID	
+    - echo branch $CI_COMMIT_REF_NAME
+    - git diff-tree --stat --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA}
+    - git diff-tree --name-only --diff-filter=D --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA}
+    - git diff-tree --name-only --diff-filter=D --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA} > file_deleted_merge.txt    
+    - git diff-tree --name-only --diff-filter=ACMRTUXB* --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA}
+    - git diff-tree --name-only --diff-filter=ACMRTUXB* --no-commit-id -r ${CI_MERGE_REQUEST_DIFF_BASE_SHA}..${CI_COMMIT_SHA} > file_added_merge.txt
+  artifacts:
+    paths:
+      - file_added_merge.txt
+      - file_deleted_merge.txt
+      
+  only:
+    - merge_requests
+
+file_list_on_commit:
+  stage: changed_files
+  tags:
+    - shared  
+  script:
+    - echo Commit-ID $CI_COMMIT_SHA
+    - echo ProjectName $CI_PROJECT_NAME
+    - git diff --stat $CI_COMMIT_SHA^ $CI_COMMIT_SHA
+    - git diff --name-only --diff-filter=D $CI_COMMIT_SHA^ $CI_COMMIT_SHA
+    - git diff --name-only --diff-filter=D $CI_COMMIT_SHA^ $CI_COMMIT_SHA > files_deleted.txt 
+    - git diff --name-only --diff-filter=ACMRTUXB* $CI_COMMIT_SHA^ $CI_COMMIT_SHA    
+    - git diff --name-only --diff-filter=ACMRTUXB* $CI_COMMIT_SHA^ $CI_COMMIT_SHA > files_added.txt 
+  artifacts:
+    paths:
+      - files_added.txt
+      - files_deleted.txt
+  only:
+    - main
+
+validation_on_merge:
+  stage: validation
+  tags:
+    - shared  
+  script:
+    - echo "ok"
+  only:
+    - merge_requests
+  
+validation:
+  stage: validation
+  tags:
+    - shared  
+  script:
+    - echo "ok"
+  only:
+    - main
+
+update_waf_policy:
+  stage: update
+  tags:
+    - shared  
+  script:
+    - file_count=$(wc -l < files_added.txt)
+    - echo "Number of WAF Policies to be pushed on F5 are $file_count"
+    - import_failure=0
+    - apply_failure=0
+    - |
+      if [ $file_count -ge 1 ]; then # Check if the file count is equal or more than 1
+        # Read each line from the file and run a curl request
+        while IFS= read -r line; do
+          # Check if the line is not empty
+          if [[ "$line" == *.json ]]; then
+            echo "Running ASM import request for $line"
+            #partition=$(echo "$data" | cut -d'/' -f1)
+            partition="${line%%_*}"  # Keep only the partition name
+            waf_name="${line#*_}"     # Remove the prefix up to and including the first underscore
+            waf_name="${waf_name%.*}" # Remove the suffix from the last dot to the end
+            echo $partition
+            echo $waf_name
+
+            data='{"fileReference":{"link":"https://git.f5k8s.net/bigip/waf_policies/-/raw/main/'$line'"},"policy":{"fullPath":"/'$partition'/path-'$waf_name'/'$partition'_'$waf_name'"}}'
+            url='https://10.1.1.5/mgmt/tm/asm/tasks/import-policy'
+            echo $url   # print URL
+            echo $data  # print payload
+
+            start_time=$(date +%s)  # Get the start time
+            HTTP_CODE=$(curl -ks --output temp.json --write-out '%{http_code}' --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' --header 'Content-Type: application/json' --data $data --request POST $url)
+            end_time=$(date +%s) # Get the end time
+            elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
+            echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time
+
+            if [[ ${HTTP_CODE} -ne 201 ]] ; then
+              echo "ERROR - ${HTTP_CODE}"
+              echo "Deployment for $data failed"
+              cat temp.json
+              ((import_failure++))
+            else
+              #id=$(jq -r '.id' temp.json)
+              id=$(cat temp.json | jq -r '.id')
+              echo "HTTP_CODE - ${HTTP_CODE}"
+              echo "Deployment for $line succeeded. We will poll F5 BIGIP to get the status of the WAF policy every 5 seconds. The import-ID is $id"
+              cat temp.json
+              status="IN_PROGRESS"
+              # Initialize the loop counter
+              count=1
+              url='https://10.1.1.5/mgmt/tm/asm/tasks/import-policy/'$id
+              echo $url
+              echo "Getting into a Loop to Import Policy"
+              # Loop until the status is "COMPLETED" or a timeout occurs
+              while [ "$status" != "COMPLETED" ]  && [ $count -lt 10 ]; do
+
+                start_time=$(date +%s)  # Get the start time
+                # Send the curl GET request to check the status of the policy creation
+                response=$(curl -ks --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' $url)
+                echo $reponse
+                echo "...."
+                end_time=$(date +%s) # Get the end time
+                elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
+                echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time
+                
+                status=$(echo "$response" | jq -r '.status') # Extract the "status" and "id" from the JSON response using jq
+
+                echo "Current status -  $status" # Print the current status
+                echo "Retry ($count)"
+                
+                let "count++"   # Increment the loop counter
+                echo "Sleep for 5 sec"
+                sleep 5    # Sleep for a few seconds before checking again
+              done
+              
+              # When the loop exits, the status is "COMPLETED" or a timeout occurred
+              if [ "$status" != "COMPLETED" ]; then
+                echo "Timeout occurred after 10 retries."
+                ((import_failure++))
+                # You can add additional error handling here if needed
+              else
+                echo "Policy $line Imported and now we are going to apply the policy"
+                data='{"policy":{"fullPath":"/'$partition'/path-'$waf_name'/'$partition'_'$waf_name'"}}'
+                url='https://10.1.1.5/mgmt/tm/asm/tasks/apply-policy'
+                echo $url   # print url
+                echo $data  # print payload
+
+                start_time=$(date +%s)  # Get the start time
+                HTTP_CODE=$(curl -ks --output temp.json --write-out '%{http_code}' --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' --header 'Content-Type: application/json' --data $data --request POST $url)
+                end_time=$(date +%s) # Get the end time
+                elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
+                echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time
+
+                if [[ ${HTTP_CODE} -ne 201 ]] ; then
+                  echo "ERROR - ${HTTP_CODE}"
+                  echo "Deployment for $data failed"
+                  cat temp.json
+                  ((apply_failure++))
+                else
+                  id=$(cat temp.json | jq -r '.id')
+                  #id=$(jq -r '.id' temp.json)
+                  echo "HTTP_CODE - ${HTTP_CODE}"
+                  echo "Deployment for $line succeeded. We will poll F5 BIGIP to get the status of the apply-process every 5 seconds (for a maximum 10 times). The apply-ID is $id"
+                  cat temp.json
+
+                  status="IN_PROGRESS"
+                  # Initialize the loop counter
+                  count=1
+                  # Loop until the status is "COMPLETED" or a timeout occurs
+                  while [ "$status" != "COMPLETED" ]  && [ $count -lt 10 ]; do
+
+                    
+                    url='https://10.1.1.5/mgmt/tm/asm/tasks/apply-policy/'$id # Send the curl GET request to check the status of the policy creation
+                    start_time=$(date +%s)  # Get the start time
+                    reponse=$(curl -ks --header 'Authorization: Basic YWRtaW46SW5ncmVzc2xhYjEyMw==' $url)
+                    echo $reponse
+                    echo "..."
+                    end_time=$(date +%s) # Get the end time
+                    elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
+                    echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time
+
+                    status=$(echo "$response" | jq -r '.status') # Extract the "status" and "id" from the JSON response using jq
+                    echo "Current status: $status" # Print the current status
+                   
+                    ((count++))  # Increment the loop counter
+
+                    sleep 5  # Sleep for a few seconds before checking again
+                  done
+
+                  # When the loop exits, the status is "COMPLETED" or a timeout occurred
+                  if [ "$status" != "COMPLETED" ]; then
+                    echo "Timeout occurred after 10 retries."
+                    ((apply_failure++))
+                    # You can add additional error handling here if needed
+                  else
+                    echo "Policy ($waf_name) Imported and applied!!!"
+                  fi
+                fi
+              fi
+            fi
+          else
+            echo "Excluding file $data as it doesn't end with '.json'"
+          fi
+        done < "files_added.txt"
+      else
+        echo "There are no declarations to be pushed. Skipping the pipeline."
+      fi
+
+      if [ "$apply_failure" -ge 1 ] || [ "$import_failure" -ge 1 ]; then
+        if [ "$import_failure" -ge 1 ]; then
+          echo "There were $import_failure Import Failures. Please review the logs"
+        fi
+        if [ "$apply_failure" -ge 1 ]; then
+          echo "There were $apply_failure Apply Failures. Please review the logs"
+        fi
+        exit 1 # exit the pipeline
+      fi
+
+  only:
+    - main
