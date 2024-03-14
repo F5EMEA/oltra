@@ -1,0 +1,15 @@
+username
+password
+email
+age
+country
+city
+zipcode
+role
+language
+timezone
+currency
+phone
+subscription
+status
+gender

@@ -247,7 +247,7 @@ Your support ID is: 4045204596866416688 <br><br>
 
 Assuming this is a `False Positive` we will use the NAP-FPM UI to modify the policy.
 
-Login to the AWX console (Credentials: **admin/Ingresslab123**). AWX UI can be found under `bigip-01` on the `Access` drop-down menu.
+Logon to AWX console (Credentials: **nginx/123**). AWX UI can be found under `bigip-01` on the `Access` drop-down menu.
 
 <p align="center">
   <img src="images/awx-login.png" style="width:45%">

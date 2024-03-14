@@ -1,44 +1,53 @@
-# Establishing a DevSecOps Framework with BIGIP
-
-With the BIGIP automation [use-case](https://github.com/F5EMEA/oltra/tree/main/use-cases/automation/bigip) we already streamlined the deployment of VirtualServers and WAF policies to our BIGIP devices. In this use-case we are establishing a DevSecOps framework that the SecOps teams can use to automate the operational aspect of the WAF policies (Day 2 operations). 
-It is essential that you review the use-case [Automating BIG-IP with Per-App AS3 and GitOps](https://github.com/F5EMEA/oltra/tree/main/automation/bigip) as this use-case is an extension of that use-case
+# Implementing DevSecOps Framework for BIGIP
+With the successful deployment of Virtual Servers and WAF policies streamlined through [BIGIP automation use-case](https://github.com/F5EMEA/oltra/tree/main/use-cases/automation/bigip), our focus now shifts to establishing a robust DevSecOps framework. This framework empowers SecOps teams to automate Day 2 operations related to WAF policies, enhancing operational efficiency and security posture.
 
 
-In order for the SecOps team to be successful on the Day 2 operations of the WAF policies the following components are required:
-  - Automating the deployment of Virtual Servers
-  - Git to store the WAF declarations
-  - CI/CD tool to deploy the changes/updates
-  - Observability platform
-  - WAF Policy Management Tool
+Before delving into the details, it's imperative to familiarize yourself with the foundational [use-case](https://github.com/F5EMEA/oltra/tree/main/use-cases/automation/bigip), Automating BIG-IP with Per-App AS3 and GitOps, as this initiative extends upon its principles.
+
+
+To ensure the effectiveness of the DevSecOps framework for Day 2 operations of WAF policies, the following components are indispensable:
+
+- **Automated Virtual Server Deployment**: Building upon the BIGIP automation use-case, automating the deployment of Virtual Servers remains a cornerstone prerequisite for our DevSecOps framework.
+- **Git Repository for WAF Declarations**: Utilizing Git to store WAF declarations allows for version control, collaboration, and streamlined management of policy changes.
+- **CI/CD Toolchain for Deployment**: Introducing a CI/CD toolchain facilitates seamless deployment of WAF policy updates, ensuring rapid and reliable implementation of changes across the infrastructure.
+- **Observability Platform Integration**: Integrating an observability platform provides critical insights into the performance and security posture of deployed WAF policies, enabling proactive monitoring and response.
+- **WAF Policy Management Tool**: Implementing a dedicated WAF policy management tool simplifies the orchestration and administration of policies, enhancing governance and compliance efforts.
 
 
 ### VirtualServer Automation
-Automating the deployment of Virtual Servers on BIGIP has already been covered on the BIGIP automation [**use-case**](https://github.com/F5EMEA/oltra/tree/main/automation/bigip) and it is a pre-requisite for the DevSecOps framework.
+As highlighted, automating the deployment of Virtual Servers on BIGIP has already been addressed in the foundational [BIGIP automation use-case](https://github.com/F5EMEA/oltra/tree/main/use-cases/automation/bigip), serving as a fundamental prerequisite for our DevSecOps framework.
+
+
 
 ### Git and CI/CD
-Git stands as the definitive source of truth for storing both SecOps and DevOps code. As the most popular and widely used version control system today, Git boasts numerous advantages: code changes are seamlessly committed, version branches effortlessly compared and merged, and code optimization facilitated.
-As described on the **Automation use-case**, during the deployment of the VirtualServer, the WAF policies have already been created and stored on a separate WAF repository from which, AS3 will intially pull the confguration. 
-While the customer has the option to use the BIGIP UI to manage the WAF policies, once created via AS3, in this scenario we will be discussing the option of using Git as the source of truth of WAF.
+Git serves as the authoritative source for storing both SecOps and DevOps code, offering unparalleled capabilities in version control and collaboration. Leveraging Git as the foundation for our DevSecOps workflows provides a centralized platform for managing code changes, facilitating seamless collaboration, and ensuring the integrity of our infrastructure.
 
-In order to this to be feasible the SecOps will have to save their updated WAF configuration in a new Branch where the configuration will be validated and once it is approved the WAF policy will be pushed down to the BIGIP.
+In the context of the **Automation use-case**, WAF policies are initially created and stored in a dedicated repository separate from the VirtualServer configurations. Utilizing AS3, these policies are retrieved from the WAF repository during VirtualServer deployment. While manual management via the BIGIP UI remains an option, we advocate for Git as the primary source of truth for WAF configurations.
 
-Within the WAF repository, we've implemented two pipelines:
+To operationalize Git as the source of truth for WAF configurations, the SecOps team follows a structured workflow:
 
-  - **Merge Pipeline**. This pipeline is designed to prevent the merging of code that could potentially fail upon deployment to BIG-IP. Therefore, the pipeline must succeed before allowing administrators to merge the branch to the main branch. To mitigate the risk of failures in WAF configurations, the pipeline validates the WAF policies that have been modified with the OpenAPI spec of the BIGIP WAF to ensure that the final pipeline will consistently succeed post-merger. 
+**Branching Strategy**: SecOps save updated WAF configurations in dedicated branches for validation and review. Upon approval, these configurations are merged into the main branch, ensuring controlled and auditable changes.
 
-<p align="center">
-  <img src="images/merge-pipeline.png" style="width:45%">
-</p>
+**Pipeline Implementation**: Within the WAF repository, we've established two pipelines to automate the validation and deployment of WAF policies:
 
-  - **WAF Pipeline**. The purpose of the this pipeline, is to identify the modified WAF policies and push them down to the corresponding BIGIP. The pipeline is split in 3 stages
-    - **Changes Detection**: This initial stage identifies WAF declarations that have been added, modified, or deleted. The filenames are recorded for subsequent processing in later stages.
-    - **Update**: In the final stage, the pipeline pushes down the new WAF policy to the respective BIG-IP devices, ensuring consistent configuration across the infrastructure.
- 
-<p align="center">
-  <img src="images/waf-pipeline.png" style="width:65%">
-</p>
+  - **Merge Pipeline**: This pipeline enforces rigorous validation of code changes before merging into the main branch. By leveraging the OpenAPI spec of the BIGIP WAF, it ensures that merged configurations will consistently succeed upon deployment, mitigating the risk of failures.
 
-The pipeline configuration for the WAF repo can be found on the following [**file**](https://github.com/f5emea/oltra/use-cases/devsecops/bigip/pipelines/waf-pipeline.yml)
+    <p align="center">
+      <img src="images/merge-pipeline.png" style="width:45%">
+    </p>
+
+
+  - **WAF Pipeline**: Designed to identify and deploy modified WAF policies to the corresponding BIGIP devices, this pipeline comprises three stages:
+    - **Changes Detection**: Identifies WAF declarations that have been added, modified, or deleted, preparing them for subsequent processing.
+    - **Validation**: Validates the identified changes to ensure compliance with predefined standards and configurations.
+    - **Deployment**: Pushes validated WAF policies to the respective BIGIP devices, ensuring consistent configuration across the infrastructure.
+
+    <p align="center">
+      <img src="images/waf-pipeline.png" style="width:65%">
+    </p>
+
+
+The configuration details of the WAF pipeline can be accessed in the following [**file**](https://github.com/f5emea/oltra/use-cases/devsecops/bigip/pipelines/waf-pipeline.yml), providing transparency and reproducibility in our CI/CD processes.
 
 
 ### Observabilty platform
@@ -87,25 +96,92 @@ Depending on the template the user will select, AWX  provides the user predefine
 ## Demo
 
 ### Step 1-8. Automation Lab 
-In order to successfully go through the demo below, you must first complete the Automation labs that will deploy the VirtualServer and WAF policy that we will be using.
-- [**BIGIP Automation**](https://github.com/F5EMEA/oltra/tree/main/automation/bigip)
+In order to successfully go through the demo below, you must first complete the [**BIGIP Automation lab**](https://github.com/F5EMEA/oltra/tree/main/use-cases/automation/bigip) that will deploy the VirtualServer and WAF policy that we will be using.
+
+### Step 9. Generate attacks and a false positive
+We will use the terminal on VS Code to generate traffic and a **False-Positive** transaction. VS Code is under the bigip-01 on the Access drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how to access it.
+
+Change the working directory to `devsecops/bigip`.
+```
+cd ~/oltra/use-cases/devsecops/bigip
+```
+
+Run the script `traffic.sh` that will create both legal and illegal transactions towards the VirtualServer that has been created from the Automation Lab (10.1.10.215). The script `traffic.sh` that will generate between 800 and 1000 different type of attacks from different sources in about 60 seconds.
+
+> [Note]
+> If you have changed the IP address of the VirtualServer please update it accordingly
+```
+sh attacks.sh 10.1.10.215
+```
+
+### Step 10. Review the illegal transactions on Grafana
+
+Login to Grafana (credentials **admin/Ingresslab123**)
+<p align="left">
+  <img src="images/login.png" style="width:50%">
+</p>
 
 
-### Step 9. Generate an Attack
+Go to **Dashboards->Browse**
+
+<p align="left">
+  <img src="images/browse.png" style="width:22%">
+</p>
 
 
+Select the ASM Dashboards that can be located under the BIGIP folder
 
-### Step 10. Review Attack on Grafana
+<p align="left">
+  <img src="images/dashboards.png" style="width:40%">
+</p>
+
+Navigate through the different Dashboards to review the attacks.
+
+### Step 12. Create a False Positive transaction
+
+As a next step we will simulate a **False Positive** transaction. Go to the VSCode and execute the following transaction.
+```
+curl 10.1.10.215/phpinfo.php
+```
+
+The expected result is the following
+
+```html
+<html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 1357814220837637984<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
+```
+
+Using the support ID and review the log on Grafana.
+
+### Step 13. Create a WAF rule exception using the Signature IDs
+Logon to AWX console (Credentials: **bigip/123**). AWX UI can be found under `bigip-01` on the `Access` drop-down menu.
+
+<p align="center">
+  <img src="images/awx-login.png" style="width:45%">
+</p>
+
+Go to Resources->Templates and launch the template called `ASM - Signature Global`.
+<p align="center">
+  <img src="images/awx.png" style="width:60%">
+</p>
+
+Put the name of the policy ***(without adding the extension .yaml)*** along with the SignatureID and **run** the template.\
+<p align="center">
+  <img src="images/awx-signatures.png" style="width:40%">
+</p>
+
+AWX should execute the Ansible playbook to to pull the ASM policy from GitLab, make the required changes on the policy’s JSON file and push it back to GitLab, creating a merge request in the process.
+Review the logs from the template's playbook.
+<p align="center">
+  <img src="images/awx-playbook.png" style="width:50%">
+</p>
+
+### Step 14. Review and Accept changes on GitLab
+Go to WAF repository on GitLab, review the Merge Request (MR) and then approve the change.
+
+<p align="center">
+  <img src="images/merge.gif" style="width:55%">
+</p>
 
 
-
-### Step 11. Make an exeption for the Signature IDs
-
-
-
-### Step 12. Review and Accept changes on GitLab
-
-
-
-### Step 13. Repeat the Attack
-
+### Step 13. Repeat the process
+From AWX console, make additional modifications to the policy as per your requirements and follow the same process

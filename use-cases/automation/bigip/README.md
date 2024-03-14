@@ -176,7 +176,7 @@ In order to successfully go through the demo below you will need to go through t
 
 ### Step 1. Review the repositories
 In our environment we are using GitLab. The design is fairly straightforward and it is based on 5 repositories. 
-- `customer-A` and `customer-B` are the two repos that are used to save the highlevel VirtualServer configuraiton in a YAML format.
+- `customer-a` and `customer-b` are the two repos that are used to save the highlevel VirtualServer configuraiton in a YAML format.
 - `waf_policies` is the repo that holds the AWAF policies that will be created through AS3
 - `prod` is the repository that holds all the AS3 JSON files that serve as the source of truth for the BIG-IP.
 - `automation_files` is the repo that holds all the pipelines, Ansible playbooks and JINJA2 templates
@@ -191,13 +191,6 @@ For this step you need to log on to GitLab and go through the 5 repositories
 
 We will create a new file on the `customer-a` repository called **`app01.yaml`** and the file will contain the following configuration
 
-<p align="center">
-  <img src="images/step2.gif" style="width:75%">
-</p>
-
-
-Click on add new file and copy&paste the following configuration
-
 ```yaml
 name: app01
 vip: 10.1.10.215
@@ -211,13 +204,14 @@ members:
   port: 30880
 ```
 
+<p align="center">
+  <img src="images/step2.gif" style="width:75%">
+</p>
+
 
 ### Step 3. Review the pipeline stages on `customer-a` repository
 
 Select "Pipelines" on the left side of the GitLab page and review the pipeline that was just executed from your latest commit
-
-
-Log on to GitLab and review the manifests for both repos. 
 
 <p align="center">
   <img src="images/step3.gif" style="width:75%">
@@ -240,7 +234,7 @@ Go to the `Merge Request` on the `prod` repository and check what has changed on
 </p>
 
 ### Step 6. Approve the MR and review the pipeline stages on `prod` repository.
-Once you have a complete understand of what are the proposed changes of the MR, approve it and go to the pipeline to review the details.
+Once you have a complete understanding of what are the proposed changes of the MR, approve it and go to the pipeline to review the details.
 
 <p align="center">
   <img src="images/step6.gif" style="width:75%">
@@ -254,8 +248,9 @@ Once the pipeline completes successfully go to **BIGIP** and review the configur
 </p>
 
 
-### Step 8. (OPTIONAL) Make a change and repeat the process.
-Open the **`app01.yaml`** file and change the IP address from 10.1.10.215 to 10.1.10.216. Apply the change and go through the same process
+### Step 8. (OPTIONAL) Repeat the process.
+ - Open the **`app01.yaml`** file and change the IP address from 10.1.10.215 to 10.1.10.216. Apply the change and go through the same process
+ - Create a new application on `customer-b` file and go through the same process
 
 
 ## Next Step. DevSecOps
