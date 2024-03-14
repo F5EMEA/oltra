@@ -255,4 +255,4 @@ Once the pipeline completes successfully go to **BIGIP** and review the configur
 
 ## Next Step. DevSecOps
 
-Go to the [DevSecOps lab](https://github.com/F5EMEA/oltra/tree/main/use-cases/devsecops/bigip-tmos) for BIGIP and find out how you can manage your secuirty policies in an automated way.
+Go to the [DevSecOps lab](https://github.com/F5EMEA/oltra/tree/main/use-cases/devsecops/bigip) for BIGIP and find out how you can manage your secuirty policies in an automated way.
