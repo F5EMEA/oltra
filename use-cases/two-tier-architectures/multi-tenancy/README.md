@@ -66,12 +66,14 @@ More information on CIS and IPAM can be found on the following links:
 
 ## Demo 
 
+> *To run the demos, use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how.*
+
+Change the working directory to `multi-tenancy`.
+```
+cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
+```
+
 ### Step 1. Create Tentants
-
-Access the terminal on the VS Code.
-
-<img src="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png" style="width:40%">
-
 Create the namespace for each tenant (Tenant-1, Tenant-2)
 ```
 kubectl create namespace tenant1
@@ -79,27 +81,20 @@ kubectl create namespace tenant2
 ```
 
 ### Step 2. Deploy NGINX+ Ingress Controller
+For each tenant we will deploy the required NGINX resources by our Helm that are `nginx-config` and the `default secret`.
 
-For each tenant we will deploy a separate NGINX+ Ingress Controller. 
-
-Change the working directory to `multi-tenancy`.
 ```
-cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
-```
-
-
-Copy the NGINX plus deployment from the setup folder
-```
-cd ~/oltra/use-cases/two-tier-architectures/multi-tenancy
-mkdir nginx_t1
-mkdir nginx_t2
-cp -R ~/oltra/setup/nginx-ic/* nginx_t1
-cp -R ~/oltra/setup/nginx-ic/* nginx_t2
+kubectl apply -f /home/ubuntu/oltra/setup/helm/nic/default-server-secret.yaml -n tenant1
+kubectl apply -f /home/ubuntu/oltra/setup/helm/nic/nginx-config.yaml -n tenant1
+kubectl apply -f /home/ubuntu/oltra/setup/helm/nic/default-server-secret.yaml -n tenant2
+kubectl apply -f /home/ubuntu/oltra/setup/helm/nic/nginx-config.yaml -n tenant2
 ```
 
-3. Replace the namespace `nginx` with `tenant1` and `tenant2` for the required manifests
+For each tenant we will deploy a separate NGINX+ Ingress Controller with the use of Helm.
+
 ```
-./rename.sh
+helm install tenant1  nginx-stable/nginx-ingress --namespace tenant1 --set controller.replicaCount=1 --set controller.ingressClass.name=nginx-tenant1-plus  --set controller.service.annotations."cis\.f5\.com/ipamLabel"=tenant1 -f /home/ubuntu/oltra/setup/helm/nic/values.yml
+helm install tenant2  nginx-stable/nginx-ingress --namespace tenant2 --set controller.replicaCount=1 --set controller.ingressClass.name=nginx-tenant2-plus  --set controller.service.annotations."cis\.f5\.com/ipamLabel"=tenant2 -f /home/ubuntu/oltra/setup/helm/nic/values.yml
 ```
 
 4. Deploy NGNINX+ IC for each tenant.
@@ -120,14 +115,9 @@ kubectl get pods -n tenant2
 ```
 ```
 ####################################      Expected Output   ######################################
-NAME                            READY   STATUS    RESTARTS   AGE
-nginx-tenant1-74fd9b786-hqm6k   1/1     Running   0          22s
+NAME                                         READY   STATUS    RESTARTS   AGE
+tenant1-nginx-ingress-prod-8fc7d9f9c-f8cbd   1/1     Running   0          22s
 ##################################################################################################
-```
-
-Deploy the NGINX+ service with Type LoadBalancer so that BIGIP will publish the service externally
-```cmd
-kubectl apply -f svc.yml
 ```
 
 Confirm that Service Type LB has received and IP from F5 IPAM and being deployed on BIGIP.
@@ -136,18 +126,18 @@ kubectl get svc -n tenant1
 kubectl get svc -n tenant2
 
 ####################################      Expected Output   ######################################
-NAME            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-nginx-tenant1   LoadBalancer   10.105.30.253   10.1.10.190   80:32151/TCP,443:32062/TCP   33m
+NAME                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+tenant1-nginx-ingress-prod   LoadBalancer   10.105.30.253   10.1.10.190   80:32151/TCP,443:32062/TCP   33m
 
-NAME            TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
-nginx-tenant2   LoadBalancer   10.105.188.239   10.1.10.193   80:32658/TCP,443:31926/TCP   34m
+NAME                         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+tenant2-nginx-ingress-prod   LoadBalancer   10.105.188.239   10.1.10.193   80:32658/TCP,443:31926/TCP   34m
 ##################################################################################################
 ```
 
 Save the IP addresses that was assigned by the IPAM for each tenant NGINX services
 ```
-IP_tenant1=$(kubectl get svc nginx-tenant1 -n tenant1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-IP_tenant2=$(kubectl get svc nginx-tenant2 -n tenant2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+IP_tenant1=$(kubectl get svc tenant1-nginx-ingress-prod -n tenant1 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+IP_tenant2=$(kubectl get svc tenant2-nginx-ingress-prod -n tenant2 --output=jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 Try accessing the service as per the example below. 
@@ -196,38 +186,6 @@ curl http://tenant2.f5demo.local/app2 --resolve tenant2.f5demo.local:80:$IP_tena
 Setup scraping for the new NGINX instances
 ```yml
 cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-metrics-tenant1
-  namespace: tenant1
-  labels:
-    type: nginx-metrics
-spec:
-  ports:
-  - port: 9113
-    protocol: TCP
-    targetPort: 9113
-    name: prometheus
-  selector:
-    app: nginx-tenant1
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-metrics-tenant2
-  namespace: tenant2
-  labels:
-    type: nginx-metrics
-spec:
-  ports:
-  - port: 9113
-    protocol: TCP
-    targetPort: 9113
-    name: prometheus
-  selector:
-    app: nginx-tenant2
----
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -307,6 +265,4 @@ Delete the namespaces that were created during this demo to remove all configura
 ```
 kubectl delete ns tenant1
 kubectl delete ns tenant2
-rm -R nginx_t1
-rm -R nginx_t2
 ```
