@@ -103,7 +103,7 @@ We will use the terminal on VS Code to generate traffic and a **False-Positive**
 
 Change the working directory to `devsecops/bigip`.
 ```
-cd ~/oltra/use-cases/devsecops/bigip
+cd ~/oltra/use-cases/devsecops/bigip/script
 ```
 
 Run the script `traffic.sh` that will create both legal and illegal transactions towards the VirtualServer that has been created from the Automation Lab (10.1.10.215). The script `traffic.sh` that will generate between 800 and 1000 different type of attacks from different sources in about 60 seconds.
@@ -111,7 +111,7 @@ Run the script `traffic.sh` that will create both legal and illegal transactions
 > [Note]
 > If you have changed the IP address of the VirtualServer please update it accordingly
 ```
-sh attacks.sh 10.1.10.215
+sh traffic.sh 10.1.10.215
 ```
 
 ### Step 10. Review the illegal transactions on Grafana
