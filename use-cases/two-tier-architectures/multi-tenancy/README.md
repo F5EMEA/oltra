@@ -97,17 +97,7 @@ helm install tenant1  nginx-stable/nginx-ingress --namespace tenant1 --set contr
 helm install tenant2  nginx-stable/nginx-ingress --namespace tenant2 --set controller.replicaCount=1 --set controller.ingressClass.name=nginx-tenant2-plus  --set controller.service.annotations."cis\.f5\.com/ipamLabel"=tenant2 -f /home/ubuntu/oltra/setup/helm/nic/values.yml
 ```
 
-4. Deploy NGNINX+ IC for each tenant.
-```
-kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1/rbac
-kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/rbac
-kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1/resources
-kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/resources
-kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t1/nginx-plus
-kubectl apply -f ~/oltra/use-cases/two-tier-architectures/multi-tenancy/nginx_t2/nginx-plus
-```
-
-5. Verify that the NGINX pods are up and running on each tenant
+Verify that the NGINX pods are up and running on each tenant
 
 ```
 kubectl get pods -n tenant1
