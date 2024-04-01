@@ -81,7 +81,7 @@ kubectl create namespace tenant2
 ```
 
 ### Step 2. Deploy NGINX+ Ingress Controller
-For each tenant we will deploy the required NGINX resources by our Helm that are `nginx-config` and the `default secret`.
+For each tenant we will create all required NGINX resources like `nginx-config` and `default secret`.
 
 ```
 kubectl apply -f /home/ubuntu/oltra/setup/helm/nic/default-server-secret.yaml -n tenant1
