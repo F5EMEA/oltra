@@ -43,9 +43,9 @@ Tenants, have at least one NGINX IC service running on their environment and som
 
 | Type | Functionality |
 |---|---|
-| VirtualServer CRD | With VS CRD you can enable multiple functionalities such as **Reverse Proxy**, **DDoS**, **BoT mitigation**, **SSL offloading**, **HTTP/HTTP2 profiles**, **L4/7 iRules**, **WAF policies**, **SNAT pools** , **Cookie/IP Persistence**, **EDNS**. <br> Examples on VirtualServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#virtualserver-crd-examples">here</a> |
-| TransportServer CRD |  With TS CRD you can enable primarily L4 functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence**.<br> Examples on TransportServer CRD can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#transportserver-crd-examples">here</a> |
-| Service Type LB | With service type LB you can enable primarily L4 functionalities like TS CRD such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/blob/main/use-cases/cis-examples/README.md#service-type-loadbalancer-examples">here</a> |
+| VirtualServer CRD | With VS CRD you can enable multiple functionalities such as **Reverse Proxy**, **DDoS**, **BoT mitigation**, **SSL offloading**, **HTTP/HTTP2 profiles**, **L4/7 iRules**, **WAF policies**, **SNAT pools** , **Cookie/IP Persistence**, **EDNS**. <br> Examples on VirtualServer CRD can be found <a href="https://github.com/F5EMEA/oltra/tree/main/examples/cis#virtualserver-crd-examples">here</a> |
+| TransportServer CRD |  With TS CRD you can enable L4 functionalities such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP Persistence**.<br> Examples on TransportServer CRD can be found <a href="https://github.com/F5EMEA/oltra/tree/main/examples/cis#transportserver-crd-examples">here</a> |
+| Service Type LB | With service type LB you can enable L4 functionalities similar with TS CRD such as **Reverse Proxy**,  **L4 DDoS**, **L4 iRules**, **SNAT pools**, **IP persistence**.<br> The differences between `TS` and `Service Type LB` is that with TS you have the option of a manual IP address and you can enable EDNS, while service Type LB is a Kubernetes native object. <br> Examples on Service Type LB can be found <a href="https://github.com/F5EMEA/oltra/tree/main/examples/cis#service-type-loadbalancer-examples">here</a> |
 
 
 **Separation** 
