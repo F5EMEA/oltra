@@ -16,4 +16,5 @@ We have created three two tier architectures that demonstrate how you can use BI
  - [Layer 4 Deployments](layer-4)
  - [Security on the Edge](edge-security)
  - [GitOps](gitops)
+
  

@@ -1,4 +1,4 @@
-# Establishing a DevSecOps Framework with NGINX Ingress Controller
+# Implementing a DevSecOps Framework with NGINX Ingress Controller
 As organizations migrate their application workloads to Kubernetes, there's a growing imperative to integrate security controls, such as Web Application Firewall (WAF), within the Kubernetes environment. This facilitates a seamless modernization journey, fostering agility, elasticity, and distributed infrastructure while upholding robust security measures.
 
 To realize this vision, organizations are fostering closer collaboration between SecOps and DevOps teams, enabling them to maintain their distinct objectives and responsibilities effectiv 

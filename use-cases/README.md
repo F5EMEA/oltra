@@ -5,5 +5,7 @@ The use-case build for OLTRA can be found below:
 - [**Deploying Multi-cluster services K8s with CIS and NGINX**](two-tier-architectures/multi-cluster)
 - [**Building a 2 Tier Architecture with with CIS and NGINX**](two-tier-architectures)
 - [**Using GitOps to publish NGINX Ingress Controller with BIGIP**](two-tier-architectures/gitops)
-- [**Building a K8s DevSecOps infrastructure with NGINX App Protect**](devsecops/k8s/)
+- [**Automating BIG-IP with Per-App AS3 and GitOps**](automation/bigip/)
+- [**Implementing a DevSecOps Framework with BIGIP**](devsecops/bigip/)
+- [**Implementing a DevSecOps Framework with NGINX Ingress Controller**](devsecops/k8s/)
 
