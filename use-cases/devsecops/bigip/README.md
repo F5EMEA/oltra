@@ -111,7 +111,7 @@ Run the script `traffic.sh` that will create both legal and illegal transactions
 > [Note]
 > If you have changed the IP address of the VirtualServer please update it accordingly
 ```
-sh traffic.sh 10.1.10.215
+./traffic.sh 10.1.10.215
 ```
 
 ### Step 10. Review the illegal transactions on Grafana
