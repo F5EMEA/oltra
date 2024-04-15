@@ -6,8 +6,8 @@ metadata:
 spec:
   content:
     format: user-defined
-    format_string: "%json_log%"
-    max_message_size: 20k
+    format_string: "{\"campaign_names\":\"%threat_campaign_names%\",\"bot_signature_name\":\"%bot_signature_name%\",\"bot_category\":\"%bot_category%\",\"bot_anomalies\":\"%bot_anomalies%\",\"enforced_bot_anomalies\":\"%enforced_bot_anomalies%\",\"client_class\":\"%client_class%\",\"client_application\":\"%client_application%\",\"json_log\":%json_log%}"
+    max_message_size: 30k
     max_request_size: "500"
     escaping_characters:
     - from: "%22%22"

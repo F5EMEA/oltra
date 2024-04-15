@@ -165,14 +165,33 @@ data:
       reserve_data false
     </filter>
 
+
     <filter nap.logs.local0.crit>
       @type record_transformer
-      enable_ruby
+      enable_ruby true
       <record>
-        url-decode ${Base64.decode64(record["url"])}
-        request-decode ${Base64.decode64(record["rawRequest"]["httpRequest"])}
-        virtualServerName ${record["virtualServerName"].match(/^\d+-(.*?):/)[1]}
+        id                ${record["json_log"]["id"]}
+        violations        ${record["json_log"]["violations"]}
+        enforcementAction ${record["json_log"]["enforcementAction"]}
+        method            ${record["json_log"]["method"].nil? ? "N/A" : record["json_log"]["method"]}
+        clientPort        ${record["json_log"]["clientPort"]}
+        clientIp          ${record["json_log"]["clientIp"]}
+        host              ${record["json_log"]["host"]}
+        responseCode      ${record["json_log"]["responseCode"]}
+        serverIp          ${record["json_log"]["serverIp"]}
+        serverPort        ${record["json_log"]["serverPort"]}
+        requestStatus     ${record["json_log"]["requestStatus"]}
+        url               ${record["json_log"]["url"]}
+        url-decode        ${Base64.decode64(record["json_log"]["url"])}
+        virtualServerName ${record["json_log"]["virtualServerName"].match(/^\d+-(.*?):/)[1]}
+        geoCode           ${record["json_log"]["geolocationCountryCode"]}
+        enforcementState  ${record["json_log"]["enforcementState"]}
+        requestDatetime   ${record["json_log"]["requestDatetime"]}
+        rawRequest        ${record["json_log"]["rawRequest"]}
+        request-decode    ${Base64.decode64(record["json_log"]["rawRequest"]["httpRequest"])}
+        requestPolicy     ${record["json_log"]["requestPolicy"]}
       </record>
+      remove_keys json_log
     </filter>
         
     <match nap.logs.local0.crit>
@@ -265,19 +284,20 @@ data:
       </filter>
 
       <filter nap.logs.*.*>
-        @type grep  
+        @type grep
         <regexp>
           key $.violations.violation.name
-          pattern /^(VIOL_ATTACK_SIGNATURE|VIOL_PARAMETER_VALUE_METACHAR)$/  # include only specifc violation types starting with VIOL_
+          pattern /^(VIOL_ATTACK_SIGNATURE|VIOL_PARAMETER_VALUE_METACHAR|VIOL_URL_METACHAR|VIOL_PARAMETER_NAME_METACHAR|VIOL_URL_LENGTH|VIOL_PARAMETER|VIOL_FILETYPE|VIOL_POST_DATA_LENGTH|VIOL_QUERY_STRING_LENGTH|VIOL_REQUEST_LENGTH|VIOL_COOKIE_LENGTH|VIOL_HEADER_LENGTH|VIOL_PARAMETER_EMPTY_VALUE|VIOL_PARAMETER_DATA_TYPE|VIOL_PARAMETER_NUMERIC_VALUE|VIOL_PARAMETER_VALUE_LENGTH|VIOL_PARAMETER_ARRAY_VALUE|VIOL_PARAMETER_LOCATION|VIOL_PARAMETER_STATIC_VALUE|VIOL_EVASION|VIOL_HTTP_PROTOCOL)$/  # include only specifc violation types starting with VIOL_
         </regexp>
       </filter>
-
+ 
 
       <filter nap.logs.local0.crit>
         @type record_transformer
-        remove_keys rawRequest,$.enforcementState.attackType,clientPort,request-decode,tag
+        remove_keys rawRequest,$.enforcementState.attackType,clientPort,request-decode,tag,bot_anomalies,bot_category,bot_signature_name,client_application,campaign_names,country
       </filter>
       
+
 
       <match nap.logs.local0.crit>
         @type elasticsearch

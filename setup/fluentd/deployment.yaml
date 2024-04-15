@@ -21,7 +21,7 @@ spec:
       containers:
       - name: fluentd
         #image: fluent/fluentd-kubernetes-daemonset:v1-debian-elasticsearch
-        image: skenderidis/nginx-fluentd:latest
+        image: skenderidis/nap-fluentd:1.0.2
         ports:
         - name: error-logs
           containerPort: 8513

@@ -78,7 +78,7 @@ controller:
     repository: private-registry.nginx.com/nginx-ic-nap-dos/nginx-plus-ingress
 
     ## The tag of the Ingress Controller image. If not specified the appVersion from Chart.yaml is used as a tag.
-    # tag: "3.4.3"
+    tag: "3.5.0"
     ## The digest of the Ingress Controller image.
     ## If digest is specified it has precedence over tag and will be used instead
     # digest: "sha256:CHANGEME"
@@ -148,7 +148,7 @@ controller:
     ## The annotations of the Ingress Controller HorizontalPodAutoscaler.
     annotations: {}
     ## Minimum number of replicas for the HPA.
-    minReplicas: 2
+    minReplicas: 1
     ## Maximum number of replicas for the HPA.
     maxReplicas: 4
     ## The target cpu utilization percentage.
@@ -252,7 +252,7 @@ controller:
   #   command: ['sh', '-c', 'echo this is a sidecar!']
 
   ## The number of replicas of the Ingress Controller deployment.
-  replicaCount: 2
+  replicaCount: 1
 
   ## Configures the ingress class the Ingress Controller uses.
   ingressClass:

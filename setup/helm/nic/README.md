@@ -10,7 +10,7 @@ helm install rancher1  nginx-stable/nginx-ingress --namespace nginx -f /home/ubu
 helm upgrade rancher1  nginx-stable/nginx-ingress --namespace nginx -f /home/ubuntu/oltra/setup/helm/nic/values.yml
 
 kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/v3.4.3/deploy/crds.yaml (check the latest on https://github.com/nginxinc/kubernetes-ingress/tree/main/charts/nginx-ingress)
-
+kubectl apply -f https://raw.githubusercontent.com/nginxinc/kubernetes-ingress/v3.5.0/deploy/crds.yaml
 
 # Update JWT Token
 1. Get a new JWT token. (From salesforce)
