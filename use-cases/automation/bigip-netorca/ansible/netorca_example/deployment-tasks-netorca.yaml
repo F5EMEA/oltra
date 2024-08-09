@@ -1,0 +1,157 @@
+---
+- name: Show name
+  ansible.builtin.debug:
+    msg: "{{ item.name }}"
+
+- name: Get APPROVED CI for environment
+  netautomate.netorca.get_change_instances:
+    url: "{{ netorca_url }}"
+    api_key: "{{ netorca_api_key }}"
+    context: serviceowner
+    filters:
+      service_name: "{{ service_name }}"
+      state: APPROVED
+      declaration: "{{ {'name': item.name} | to_json }}"
+  register: change_instances
+
+- name: Initialize tenants map
+  set_fact:
+    tenants: {}
+
+- name: Loop through CI and extract declarations for changed apps
+  set_fact:
+    tenants: >-
+      {{
+        tenants | combine({
+          _item.consumer_team.name: (
+            tenants[_item.consumer_team.name] | default([]) + [{
+              'name': _item.service_item.declaration.name,
+              'vs_ip': _item.service_item.declaration.vip,
+              'port': _item.service_item.declaration.port,
+              'pool-name': _item.service_item.declaration.pool-name,
+              'members': _item.service_item.declaration.members
+            }]
+          )
+        })
+      }}
+  loop: "{{ change_instances.change_instances.results }}"
+  loop_control:
+    index_var: index
+    loop_var: _item
+
+- name: Debug tenants
+  ansible.builtin.debug:
+    var: tenants
+
+- name: Render Jinja template to construct request body for AS3
+  template:
+    src: ./templates/as3_template.j2
+    dest: ./.requests/{{ tenant.key }}_{{ item.env }}.json
+  vars:
+    tenant: "{{ tenant.value }}"
+    tenant_name: "{{ tenant.key }}"
+  loop: "{{ tenants | dict2items }}"
+  loop_control:
+    loop_var: tenant
+    index_var: index
+  register: rendered_files
+  when: change_instances.change_instances.results | length > 0
+
+
+- name: Render Jinja template to construct request body for WAF policy
+  template:
+    src: ./templates/waf_policy.j2
+    dest: ./.requests/{{ tenant.key }}_{{ item.env }}.json
+  vars:
+    name: "{{ tenant.value.name }}"
+    partition: "{{ item.partition }}"
+  loop: "{{ tenants | dict2items }}"
+  loop_control:
+    loop_var: tenant
+    index_var: index
+  register: rendered_files
+  when: change_instances.change_instances.results | length > 0
+
+- name: Set change_items status as COMPLETED
+  netautomate.netorca.update_change_instances:
+    url: "{{ netorca_url }}"
+    api_key: "{{ netorca_api_key }}"
+    id: "{{ change_item.id }}"
+    state: COMPLETED
+  loop: "{{ change_instances.change_instances.results }}"
+  loop_control:
+    loop_var: change_item
+  when: change_instances.change_instances.count > 0
+
+# DELETE CI's
+- name: Get `DELETED` change_items
+  netautomate.netorca.get_change_instances:
+    url: "{{ netorca_url }}"
+    api_key: "{{ netorca_api_key }}"
+    context: serviceowner
+    filters:
+      service_name: "{{ service_name }}"
+      state: APPROVED
+      change_type: DELETE
+  register: change_instances_deleted
+
+- name: Show change_instances_deleted
+  ansible.builtin.debug:
+    msg: "{{ change_instances_deleted }}"
+
+- name: Initialize deleted grouped by env/tenants
+  set_fact:
+    deleted: {}
+
+- name: Loop through service items and group by tenant only if tenant is in change_instances_deleted
+  set_fact:
+    deleted: >-
+      {{
+            deleted | combine({
+              (_item.service_item.declaration.environment | default('unknown_env')): (
+                deleted.get(_item.service_item.declaration.environment | default('unknown_env'), {}) | combine({
+                  (_item.consumer_team.name | default('unknown_team')): (
+                    deleted.get(_item.service_item.declaration.environment | default('unknown_env'), {}).get(_item.service_item.consumer_team.name | default('unknown_team'), []) + [_item]
+                  )
+                })
+              )
+            })
+      }}
+  loop: "{{ change_instances_deleted.change_instances.results }}"
+  loop_control:
+    index_var: index
+    loop_var: _item
+  when: change_instances_deleted.change_instances.count > 0
+
+- name: Show deleted CI grouped by tenants
+  ansible.builtin.debug:
+    var: deleted
+
+- name: Handle delete item declarations [TODO]
+  ansible.builtin.debug:
+    msg: "Handling delete item declarations..."
+  when: change_instances_deleted.change_instances.count > 0
+
+- name: Render Jinja template to construct request body for AS3
+  template:
+    src: ./templates/as3_template_delete.j2
+    dest: ./.requests/delete_{{ _item.key }}_{{ item.env }}.json
+  vars:
+    items: "{{ _item }}"
+    bigip: "{{ item.bigip }}"
+  loop: "{{ deleted[item.env] | default({}) | dict2items  | flatten }}"
+  loop_control:
+    loop_var: _item
+    index_var: index
+  when: change_instances_deleted.change_instances.count > 0
+
+- name: Set `DELETED`` CI's for the environment as COMPLETED
+  netautomate.netorca.update_change_instances:
+    url: "{{ netorca_url }}"
+    api_key: "{{ netorca_api_key }}"
+    id: "{{ change_item.id }}"
+    state: COMPLETED
+  loop: "{{ deleted.get(item.env, {}).values() | flatten}}"
+  loop_control:
+    loop_var: change_item
+  when: change_instances_deleted.change_instances.count > 0

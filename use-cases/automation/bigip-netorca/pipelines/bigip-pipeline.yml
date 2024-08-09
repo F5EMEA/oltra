@@ -1,0 +1,122 @@
+default:
+  image: skenderidis/ansible-runner
+
+stages:
+  - validation
+  - update
+
+
+
+dry_run:
+  stage: validation
+  tags:
+    - shared  
+  script:
+    - echo "ok"
+  only:
+    - merge_requests
+  
+
+
+Delete from BIGIP:
+  stage: update
+  allow_failure: true
+  tags:
+    - shared  
+  script:
+    - file_count=$(wc -l < files_deleted.txt)
+    - echo "Number of declarations to be pushed on F5 are $file_count"
+    - |
+      count=0  # check if any DELETE requests fail 
+      if [ "$file_count" -ge 1 ]; then
+        # Read each line from the file and run a curl request
+        while IFS= read -r data; do
+          # Check if the line is not empty
+          if [[ "$data" == */* ]]; then
+            echo "Running as3 post request for $data"  # Just FYI
+            partition=$(echo "$data" | cut -d'/' -f1)  # extracting the partition name out of the filename
+            app_name=$(basename "$data" .json) # extracting the app name out of the filename
+            url="https://${bigip_ip}/mgmt/shared/appsvcs/declare/"$partition"/applications/path-"$app_name # set the URL
+            echo "Sending DELETE request to the following $url"  # Just FYI
+            start_time=$(date +%s)  # Get the start time
+            HTTP_CODE=$(curl -ks --output temp.json --write-out "%{http_code}" --header "Authorization: Basic ${bigip_auth}" --header "Content-Type: application/json" --request DELETE $url)
+            end_time=$(date +%s) # Get the end time
+            elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
+            echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time
+            if [[ ${HTTP_CODE} -ne 200 ]] ; then
+              echo "ERROR - ${HTTP_CODE}"
+              echo "Deletion for $data failed"
+              cat temp.json
+              ((count++))
+            else
+              echo "Deletion for $data succeeded"
+            fi
+            cat temp.json
+          else
+            echo "Excluding (top-level file) $data"
+          fi
+        done < "files_deleted.txt"
+      else
+        echo "There are no declarations to be pushed. Exiting the pipeline."
+      fi
+
+      if [ "$count" -ge 1 ]; then
+        echo "Some AS3 Delete operations Failed. Please review the logs"
+        exit 1 # exit the pipeline
+      fi
+
+  only:
+    - main
+
+
+Add to BIGIP:
+  stage: update
+  allow_failure: true
+  tags:
+    - shared  
+  script:
+    - file_count=$(wc -l < files_added.txt)
+    - echo "Number of declarations to be pushed on F5 are $file_count"
+    - start_time=$(date +%s)  # Get the start time
+    - echo $start_time
+    # Check if the file count is less than 1
+    - |
+      count=0
+      if [ $file_count -ge 1 ]; then
+        # Read each line from the file and run a curl request
+        while IFS= read -r data; do
+          # Check if the line is not empty
+          if [[ "$data" == */* ]]; then
+            echo "Running as3 post request for $data"
+            partition=$(echo "$data" | cut -d'/' -f1)
+            url="https://${bigip_ip}/mgmt/shared/appsvcs/declare/"$partition"/applications"
+            echo "Sending POST request to the following $url"  # Just FYI
+            start_time=$(date +%s)  # Get the start time
+            HTTP_CODE=$(curl -ks --output temp.json --write-out "%{http_code}" --header "Authorization: Basic ${bigip_auth}" --header "Content-Type: application/json" --data @$data --request POST $url)
+            end_time=$(date +%s) # Get the end time
+            elapsed_time=$((end_time - start_time)) # Calculate the elapsed time
+            echo "Time elapsed: $elapsed_time seconds" # Print the elapsed time
+            if [[ ${HTTP_CODE} -ne 200 ]] ; then
+              echo "ERROR - ${HTTP_CODE}"
+              echo "Deployment for $data failed"
+              cat temp.json
+              ((count++))
+            else
+              echo "Deployment for $data succeeded"
+            fi
+            cat temp.json
+          else
+            echo "Excluding (top-level file) $data"
+          fi
+        done < "files_added.txt"
+      else
+        echo "There are no declarations to be pushed. Exiting the pipeline."
+      fi
+
+      if [ "$count" -ge 1 ]; then
+        echo "Some AS3 Delete operations Failed. Please review the logs"
+        exit 1 # exit the pipeline
+      fi
+
+  only:
+    - main

@@ -1,0 +1,219 @@
+default:
+  image: skenderidis/ansible-runner
+
+stages:
+  - Changes
+  - Templates
+  - Update
+
+Detecting file changes:
+  stage: Changes
+  tags:
+    - shared  
+  script:
+    - echo Commit-ID $CI_COMMIT_SHA
+    - echo ProjectName $CI_PROJECT_NAME
+    - git diff --stat $CI_COMMIT_SHA^ $CI_COMMIT_SHA
+    - yaml_files=$(find . -maxdepth 1 -type f -name "*.yaml")
+    - |
+      
+      # In case there is a file_list.txt in the git folder, clear the contents
+      echo -n "" > file_list.txt
+      # Iterate over each YAML file
+      for file in $yaml_files; do
+          filename=$(basename -- "$file")
+          filename_no_extension="${filename%.*}"
+
+          # Extract the value associated with the 'name' key from the YAML file using yq
+          name_value=$(yq eval '.name' "$file")
+
+          # Check if the extracted name matches the filename without the extension
+          if [ "$name_value" == "$filename_no_extension" ]; then
+              echo "Adding filename "$filename_no_extension".yaml to the list for processing."
+              echo "$filename" >> file_list.txt
+          else
+              echo "Mismatch!!! $filename has the 'name' key configured as $name_value. Please correct it."
+              echo "Exiting the pipeline."
+              exit 1 
+          fi
+      done
+ 
+  artifacts:
+    paths:
+      - file_list.txt
+  only:
+    - main
+
+
+Series of Validations:
+  stage: Validation
+  tags:
+    - shared  
+  script:
+    - echo "ok"
+  only:
+    - main
+
+
+
+Create WAF policies:
+  stage: Templates
+  tags:
+    - shared  
+  script:
+    - files_added=$(wc -l < file_list.txt)  # Check if the "file_list.txt" (which is an artifact from stage A) has 1 or more lines/files in order to create the equivalent AS3 declarations
+    - mkdir templates
+    - mkdir waf
+    - curl -o templates/waf.j2 https://git.f5k8s.net/bigip/automation_files/-/raw/main/templates/waf.j2
+    - curl -o create-waf.yml https://git.f5k8s.net/bigip/automation_files/-/raw/main/create-waf.yml    
+    - |
+      if [ $files_added -ge 1 ]; then
+
+        while IFS= read -r line; do
+        # Read and output lines ending with ".yml" or ".yaml"
+        if [[ "$line" == *.yaml ]]; then
+          #"Checking if 'waf' key set and equals to true for each file"
+          waf_check=$(yq e .waf $line)
+          if [[ ! -z "$waf_check" && "$waf_check" == "true" ]]; then
+            echo "Key 'waf' is set to true in the YAML file ($line). Processing ... "
+
+            # create the name of the WAF policy that will combine the repo name and the app name
+            waf_name=$CI_PROJECT_NAME'_'$(yq e .name $line)
+            echo "$waf_name"
+
+            # check if the file exists and if not then create a WAF policy
+            url="https://git.f5k8s.net/bigip/waf_policies/-/raw/main/$waf_name"
+
+            # Make the HTTP request and store the response code in a variable
+            http_code=$(curl -o /dev/null -s -w "%{http_code}" "$url")
+
+            # Check if the HTTP response code is 200 (OK)
+            if [ "$http_code" -eq 200 ]; then            
+              echo "Policy $waf_name already exists"
+            else
+              #Create WAF policy with ansible that will save it on the waf_policies folder
+              echo "Returned Code $http_code"
+              echo "WAF Policy $waf_name does not exists, so we will create it."
+              ansible-playbook -e "name=$waf_name partition=$CI_PROJECT_NAME" create-waf.yml
+            fi
+
+          else
+            echo "Key 'waf' is either not set or not set to 'true' in the YAML file ($line)."
+          fi
+        else
+            echo "Skipped file $line as it doesn't end with '.yml' or '.yaml'"    
+        fi
+        done < "file_list.txt"
+      else
+        echo "There are no added files in the directory. Skipping rest of the stage."
+      fi
+  only:
+    - main
+  artifacts:
+    paths:
+      - waf/
+
+
+Push to WAF Repo:
+  stage: Update
+  tags:
+    - shared  
+  script:
+    - files_added=$(ls -1 waf | wc -l)
+    - echo "The number of files in the 'waf' directory is $files_added"
+    # Check if the file count is less than 1
+    - |
+    
+      if [ $files_added -lt 1 ]; then
+        echo "There are no files in the directory. Skipping the pipeline."
+      else
+        git clone https://root:${waf_access_token}@git.f5k8s.net/bigip/waf_policies.git
+        ls -la waf
+        
+        for source_file in waf/*; do
+          target_file=$(basename "$source_file")
+          echo "Processing file: $target_file"
+          # get the name of the file
+          if [ -e "waf_policies/$target_file" ]; then
+
+            echo " ************************ "
+            echo " ************************ "
+            echo " File ${target_file} already exists, so we will skip copying the new policy."
+            echo " ************************ "
+            echo " ************************ "
+          else
+            cp "$source_file" waf_policies/
+          fi
+        done
+        cd waf_policies
+        git config --global user.email ${git_email}
+        git config --global user.name ${git_name}
+        git add .
+        #git commit -m "JobID ($CI_JOB_ID) on PipelineID($CI_PIPELINE_ID) Added $files_added file(s)"
+        #git push -u origin HEAD
+        if ! git diff-index --quiet HEAD; then
+          git commit -m "JobID ($CI_JOB_ID) on PipelineID($CI_PIPELINE_ID) Added $files_added file(s)"
+          git push -u origin HEAD
+        fi
+      fi
+  only:
+    - main
+
+
+Push to BIGIP Repo:
+  stage: Update
+#  needs: ["Push to WAF Repo"]
+  tags:
+    - shared  
+  script:
+    - ls -la as3/
+    - files_added=$(ls -1 as3 | wc -l)
+    - echo "The number of files in the as3 directory is $files_added"
+    # clone bigip repo
+    - git clone https://root:${prod_access_token}@git.f5k8s.net/bigip/prod.git
+    - cd prod
+    - |
+      exists=$(git ls-remote --heads origin $CI_PROJECT_NAME)
+      echo $exists
+      if [ -n "$exists" ]; then
+        echo $CI_PROJECT_NAME branch exists;
+        git branch -a
+        git checkout main
+        git pull
+        git switch $CI_PROJECT_NAME
+      else
+        echo $CI_PROJECT_NAME branch does NOT exist;
+        git branch -a
+        git checkout main
+        git pull
+        git checkout -b $CI_PROJECT_NAME
+      fi      
+    -  git config --global user.email ${git_email}
+    -  git config --global user.name ${git_name}
+        
+      # Create a folder with this repository name. We use "-p" in case the folder already exists=, so that it doesnt give an error.
+    - mkdir -p $CI_PROJECT_NAME
+      # Remove all existing AS3 declarations
+    - rm -f $CI_PROJECT_NAME/*
+    - |
+      if [ $files_added -ge 1 ]; then
+        # Copy ALL existing AS3 declarations. 
+        cp ../as3/* $CI_PROJECT_NAME
+      fi
+
+    # Git Message and Commit
+    -  git add $CI_PROJECT_NAME
+    - |
+      if ! git diff-index --quiet HEAD; then
+        git commit -m "JobID ($CI_JOB_ID) on PipelineID($CI_PIPELINE_ID) Added $files_added file(s) and Deleted $files_deleted file(s)"
+        git push -u origin HEAD \
+          -o merge_request.create \
+          -o merge_request.title="New Merge Request $(git branch --show-current)" \
+          -o merge_request.description="This MR was create by the pipeline on repository $CI_PROJECT_NAME" \
+          -o merge_request.target=main \
+          -o merge_request.remove_source_branch \
+          -o merge_request.squash
+      fi    
+  only:
+    - main
+

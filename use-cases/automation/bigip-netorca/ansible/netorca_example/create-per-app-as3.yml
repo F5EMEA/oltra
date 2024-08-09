@@ -1,0 +1,16 @@
+---
+- name: Create AS3 configurations
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - netorca-vars.yaml  
+  vars:
+    as3_template: ./templates/as3_template.j2
+    as3_delete_template: ./templates/as3_delete_template.j2
+    waf_policy_template: ./templates/waf_policy.j2
+    partition: Common
+
+  tasks:
+    - name: Deploy AS3 configurations using Netorca for each environment
+      include_tasks: deployment-tasks-netorca.yaml
+      loop: "{{ environments }}"  
