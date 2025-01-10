@@ -24,8 +24,8 @@ cat f5k8s.crt | base64  | tr -d '\n'
 
 Replace the values on the following files
 
-- setup/nginx-ic/resources/default-server-secret.yaml
-- use-cases/nic-examples/ingress-resources/tls/secret.yaml
-- setup/apps/apps.yml
-
-- /home/ubuntu/oltra/use-cases/nic-examples/custom-resources/tls/cafe-secret.yaml
+- /home/ubuntu/oltra/setup/helm/nic/default-server-secret.yaml (apply)
+- /home/ubuntu/oltra/setup/apps/apps.yml (apply)
+- /home/ubuntu/oltra/setup/nginx-ic/resources/default-server-secret.yaml (no need to apply)
+- /home/ubuntu/oltra/examples/nic/ingress-resources/tls/secret.yaml (no need to apply)
+- /home/ubuntu/oltra/examples/nic/custom-resources/tls/cafe-secret.yaml (no need to apply)

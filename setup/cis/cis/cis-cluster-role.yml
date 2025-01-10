@@ -23,4 +23,6 @@ rules:
 - apiGroups: ["", "extensions"]
   resources: ["secrets"]
   verbs: ["get", "list", "watch"]
-  
+- apiGroups: ["crd.projectcalico.org"]
+  resources: ["blockaffinities"]
+  verbs: ["get", "list", "watch"]

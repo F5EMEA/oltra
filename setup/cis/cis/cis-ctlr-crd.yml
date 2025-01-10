@@ -18,8 +18,7 @@ spec:
       # permissions
       containers:
         - name: k8s-bigip-ctlr
-          #image: "f5networks/k8s-bigip-ctlr:2.15.1"
-          image: "quay.io/f5networks/k8s-bigip-ctlr-devel:ccd3ed32ff212f2d8e5f445b420832c015a0d20d"  # temp - Fixes the EDNS issue
+          image: "f5networks/k8s-bigip-ctlr:2.18.0"
           env:
             - name: BIGIP_USERNAME
               valueFrom:
@@ -53,11 +52,14 @@ spec:
             "--custom-resource-mode=true",
             "--log-level=DEBUG",
             "--log-as3-response=true",
+            "--shared-static-routes=true",
             "--agent=as3",
             "--ipam=true",
             "--share-nodes=true",
             "--insecure",
-            "--disable-teems=true"
+            "--disable-teems=true",
+            "--static-routing-mode=true",
+            "--orchestration-cni=calico-k8s"            
             ]
       serviceAccount: bigip-ctlr
       serviceAccountName: bigip-ctlr
