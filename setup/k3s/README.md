@@ -14,3 +14,12 @@ wget https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/ca
 kubectl apply -f calico.yam
 ```
 Note: Check calico documentation to see what is the latest calico you should use 
+
+### Update. 
+
+1. Run the following command to update k3s
+```
+curl -sfL https://get.k3s.io | K3S_KUBECONFIG_MODE="644" INSTALL_K3S_EXEC="--flannel-backend=none --cluster-cidr=10.221.0.0/16 --node-ip=10.1.20.21 --disable-network-policy --disable=traefik" sh -
+```
+
+2. Check compatibility of calico
