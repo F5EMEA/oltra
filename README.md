@@ -6,7 +6,7 @@ Dive into our collection of examples and demonstrations, that you illustrate how
 
 Whether you're building microservices, deploying containers, or orchestrating Kubernetes clusters, F5 Technologies offer robust solutions to empower your projects. Let this repository be your guide as you navigate the complexities of modern IT environments, providing you with the knowledge and tools needed to architect solutions that are resilient, scalable, and secure.
 
-**OLTRA** Lab can be deployed only in F5's [UDF environment](https://udf.f5.com/b/94afd04b-a46b-4429-b2e1-2b3ac9813579). OLTRA is maintained by F5's EMEA Solution Architect team.
+**OLTRA** Lab can be deployed only in F5's [UDF environment](https://udf.f5.com/b/a0fae003-69b4-4cb4-84b0-c68633f5b2c7). OLTRA is maintained by F5's EMEA Solution Architect team.
 
 The high level diagram for OLTRA environment can be found below along with the technologies that are being used on this lab.
 
@@ -16,23 +16,28 @@ The high level diagram for OLTRA environment can be found below along with the t
 </p>
 
 
+## Technologies
 The technologies used for this environment along with their credentials are shown on the following table.
 
 | Name | Notes | Credentials |
 |---|---|---|
-| **BIGIP (15.1)** |  Standalone BIGIP that has the LTM/ASM/DNS/AFM modules provisioned. | admin / Ingresslab123 |
+| **BIGIP** |  Standalone BIGIP that has the LTM/ASM/DNS modules provisioned. <br> *Access UI: On UDF under `F5 products` go to `bigip-01` -> `TMUI`* | admin / Ingresslab123 |
 | **NGINX IC** | Runs inside both K8s clusters and it is frequently updated to the latest one. The installation is done through Helm Charts. | - |
-| **CIS** |  Runs inside the K8s cluster. There are 2 instances running in Rancher 1 and a 1 instance in Rancher 2. In Rancher1 you will find `cis-crd` instance is used to deploy services based on VirtualServer/TransportServer CRDs and ServiceType LB whereas `cis-ingress` instance is used for Ingress Resources and ConfiMaps. In Rancher2 you will find only cis-crd-r2. The installation is done through Helm Charts. | - |
-| **K8s Clusters** | We have 2 single node Kubernetes clusters, Rancher1 and Rancher2, that you can access from VSCode. Both clusters are running verion 1.27 |  - |
-| **GitLab** | Runs on a dedicated server and provides three main functionalities: <br> - Source Code Management (git.f5k8s.net) <br> - CI/CD <br> - Container registry (registry.f5k8s.net) | root / Ingresslab123 |
-| **ArgoCD** | Argo CD is implemented as a kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo). | admin / Ingresslab123 |
+| **NGINX Plus** | The commercial version of NGINX has been deployed on a Virtual Machine and with the use of Nginx-Agent is managed from NIM.| - |
+| **NIM** |  Nginx Instance Manager has been installed on a virtual Machine. <br> *Access UI: On UDF under `Systems` go to `NIM` -> `NIM UI`* | admin / Ingresslab123 |
+| **CIS** |  Runs inside the K8s cluster. There are 2 CIS instances running in K3s-1 and a 1 instance in K3s-2. In K3s-1 you will find `cis-crd` instance is used to deploy services based on VirtualServer/TransportServer CRDs and ServiceType LB whereas `cis-ingress` instance is used for Ingress Resources and ConfiMaps. In K3s-2 you will find only cis-crd. The installation is done through manifests. | - |
+| **K8s Clusters** | We have 2 single node Kubernetes clusters, K3s-1 and K3s-2, that you can access from VSCode. Both clusters are running verion 1.31 |  - |
+| **VSCode** | Runs VScode through a web interface on the "Client" system. <br> *Access UI: On UDF under `Systems` go to `Client` -> `VSCode`* | - |
+| **Kubectl** | In order to access both clusters with ease we have installed `Kubectl` on the `Client` Virtual Machine and configured access for both clusters with `.kube/config`. <br> *Access UI: On UDF under `Systems` go to `Client` -> `VSCode`* |  - |
+| **GitLab** | Runs on a dedicated server and provides three main functionalities: <br> - Source Code Management (git.f5k8s.net) <br> - Gitlab Runner (CI/CD) <br> - Container registry (registry.f5k8s.net) <br> *Access UI: On UDF under `Systems` go to `Docker` -> `Gitlab`*| root / Ingresslab123 |
+| **ArgoCD** | Argo CD is implemented as a kubernetes controller which continuously monitors running applications and compares the current, live state against the desired target state (as specified in the Git repo). <br> *Access UI: Under F5 products go to `bigip-01` -> `ArgoCD`* | admin / Ingresslab123 |
 | **Elasticsearch** | Elastic runs as an instance on the "Docker" system and its main purpose is to store the Access, Error and Security logs for NAP, NGINX and BIGIP.   | - |
-| **Logstash** | Logstash runs as an instance on the "Docker" system and its main purpose is to process the logs, parse them and then forward them to Elastic.   | - |
-| **VSCode** | Runs VScode through a web interface on the "Client" system. | - |
-| **Prometheus** | Runs in Rancher1 and provides a time-series storage for monitoring both BIGIP and NGINX+. It is installed through Helm and exposed via CIS TransportServer| - |
-| **Grafana** | Multiple Dashboards have been developed for displaying metrics/events from both Prometheus and Elastic. Runs in Rancher1, is installed through Helm and exposed via CIS TransportServer | admin / Ingresslab123 |
-| **AWX** | The Opensource version of Ansible Tower has been installed on Rancher2 and is exposed via CIS TransportServer | admin / Ingresslab123 |
-
+| **Logstash** | Logstash runs as an instance on the "Docker" system and its main purpose is to process the logs, parse them and then forward them to Elastic. | - |
+| **Kibana** | Kibana runs as an instance on the "Docker" system and its purpose is to visualize the Elastic logs. <br> *Access UI: On UDF under `Systems` go to `Docker` -> `Kibana`*| - |
+| **Prometheus** | Runs in K3s-1 and provides a time-series storage for monitoring both BIGIP and NGINX+. It is installed through Helm and exposed via CIS TransportServer. <br> *Access UI: On UDF under `Systems` go to `k3s-1` -> `Prometheus`* | - |
+| **Grafana** | Multiple Dashboards have been developed for displaying metrics/events from both Prometheus and Elastic. Runs in K3s-1, is installed through Helm and exposed via CIS TransportServer. <br> *Access UI: On UDF under `Systems` go to `k3s-1` -> `Grafana`*  | admin / Ingresslab123 |
+| **AWX** | The Opensource version of Ansible Tower has been installed on K3s-2 and is exposed via CIS TransportServer. <br> *Access UI: Under F5 products go to `bigip-01` -> `AWX`* | admin / Ingresslab123 |
+| **RancherUI** | Rancher UI has been deployed as a docker on the `Client` VM and has been connected with both K8s clusters. <br> *Access UI: On UDF under `Systems` go to `Client` -> `Rancher`* | admin / Ingresslab123 |
 
 ## Use-Cases
 The use-cases build for OLTRA can be found below:
