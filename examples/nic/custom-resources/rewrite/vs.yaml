@@ -1,0 +1,24 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: api-gw
+spec:
+  host: api-gw.f5k8s.net
+  upstreams:
+  - name: app1
+    service: app1-svc
+    port: 80
+  - name: app2
+    service: app2-svc
+    port: 80
+  routes:
+  - path: /v1/
+    action:
+      proxy:
+        upstream: app1
+        rewritePath: /
+  - path: /v2/
+    action:
+      proxy:
+        upstream: app2
+        rewritePath: /
