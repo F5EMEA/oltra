@@ -5,14 +5,11 @@ In this example we use the [VirtualServer](https://docs.nginx.com/nginx-ingress-
 * Instead of one version of the coffee service, we have two: `coffee-v1-svc` and `coffee-v2-svc`. We send requests that include the cookie `version` set to `v2` to `coffee-v2-svc` and all other requests to `coffee-v1-svc`.
 * To simplify the example, we have removed TLS termination.
 
-## Prerequisites  
+## Prerequisites
+Use the terminal on VS Code. VS Code is under the `Client` on the `Access` drop-down menu. 
 
-Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
+Change the working directory on the terminal to match  this folder.
 
-Change the working directory to `advanced-routing`.
-```
-cd ~/oltra/use-cases/nic-examples/custom-resources/advanced-routing
-```
 
 ## Step 1 - Deploy the Cafe Application
 

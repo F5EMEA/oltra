@@ -3,12 +3,10 @@
 In this example, we deploy a web application; configure load balancing for it via a VirtualServer; and apply access control policies to deny and allow traffic from a specific subnet.
 
 ## Prerequisites
-Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
+Use the terminal on VS Code. VS Code is under the `Client` on the `Access` drop-down menu. 
 
-Change the working directory to `access-control`.
-```
-cd ~/oltra/use-cases/nic-examples/custom-resources/access-control
-```
+Change the working directory on the terminal to match  this folder.
+
 
 ## Step 1 - Deploy a Web Application
 
@@ -82,8 +80,3 @@ Request ID: 2a6d7758ed937b3262cd21a6dcfe534d
 
 In contrast with Step 4, we got a 200 response, which means that our updated policy successfully allowed our request.
 
-
-***Clean up the environment (Optional)***
-```
-kubectl delete -f .
-```

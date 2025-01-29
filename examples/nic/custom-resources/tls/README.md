@@ -5,7 +5,7 @@ In this example we configure load balancing with TLS termination for a simple we
 
 ## Prerequisites  
 
-Use the terminal on VS Code. VS Code is under the `bigip-01` on the `Access` drop-down menu. Click <a href="https://raw.githubusercontent.com/F5EMEA/oltra/main/vscode.png"> here </a> to see how 
+Use the terminal on VS Code. VS Code is under the `Client` on the `Access` drop-down menu. 
 
 Change the working directory to `tls`.
 ```
